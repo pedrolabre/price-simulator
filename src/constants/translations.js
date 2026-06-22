@@ -103,7 +103,7 @@ export const translations = {
     landscape: '📄 Paisagem',
     printBtn: '🖨️ Imprimir / Salvar PDF',
     xlsSheetName: 'Simulação',
-    popupBlocked: 'Pop-up bloqueado pelo navegador. Por favor, permita pop-ups para este site e tente novamente.',
+    popupBlocked: 'O navegador bloqueou a janela de impress\u00e3o. Libere pop-ups para este site na barra de endere\u00e7os e tente novamente.',
 
     // ExcelXLS col labels
     xlsColLabels: {
@@ -226,7 +226,7 @@ export const translations = {
     landscape: '📄 Landscape',
     printBtn: '🖨️ Print / Save as PDF',
     xlsSheetName: 'Simulation',
-    popupBlocked: 'Popup blocked by browser. Please allow popups for this site and try again.',
+    popupBlocked: 'The browser blocked the print window. Allow popups for this site from the address bar and try again.',
 
     // ExcelXLS col labels
     xlsColLabels: {

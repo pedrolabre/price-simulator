@@ -1,8 +1,14 @@
 export function generatePDF(products, calculations, totals, config, selectedColumns = {}) {
-  const printWindow = window.open('', '_blank');
+  let printWindow;
+
+  try {
+    printWindow = window.open('', '_blank');
+  } catch (error) {
+    console.error('N\u00e3o foi poss\u00edvel abrir a janela de impress\u00e3o:', error);
+  }
   
   if (!printWindow) {
-    alert(config.t ? config.t.popupBlocked : 'Pop-up bloqueado pelo navegador. Por favor, permita pop-ups para este site e tente novamente.');
+    window.alert(config.t ? config.t.popupBlocked : 'O navegador bloqueou a janela de impress\u00e3o. Libere pop-ups para este site na barra de endere\u00e7os e tente novamente.');
     return;
   }
   

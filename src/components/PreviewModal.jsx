@@ -14,13 +14,10 @@ export default function PreviewModal({
   if (!isOpen) return null;
 
   const overlayBg = darkMode ? 'bg-black/70' : 'bg-black/50';
-  const modalBg = darkMode 
-    ? 'bg-gray-900 border border-white/10' 
-    : 'bg-white border border-gray-200';
 
   return (
     <div className={`fixed inset-0 ${overlayBg} backdrop-blur-sm z-50 flex items-center justify-center p-4`}>
-      <div className={`${modalBg} rounded-2xl shadow-2xl max-w-6xl w-full max-h-[90vh] overflow-auto`}>
+      <div className="bg-white border border-gray-200 text-gray-900 rounded-2xl shadow-2xl max-w-6xl w-full max-h-[90vh] overflow-auto">
         <div className="sticky top-0 bg-gradient-to-r from-red-600 to-red-700 text-white p-6 flex justify-between items-center rounded-t-2xl">
           <div>
             <div className="flex items-baseline gap-3 flex-wrap">
@@ -43,7 +40,7 @@ export default function PreviewModal({
         <div className="p-6">
           <div>
             <table className="w-full text-sm border-collapse table-fixed">
-              <thead className="bg-gray-100 dark:bg-gray-800">
+              <thead className="bg-gray-100">
                 <tr>
                   <th className="p-2 text-left border w-8">{t.colNum}</th>
                   <th className="p-2 text-left border w-10">{t.colQty}</th>
