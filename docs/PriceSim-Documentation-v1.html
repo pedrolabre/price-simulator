@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="pt-BR">
 <head>
   <meta charset="UTF-8" />
@@ -124,9 +124,126 @@
     .out-list{list-style:none;padding:0;margin:0}
     .out-list li{display:flex;align-items:flex-start;gap:10px;padding:6px 0;font-size:13.5px;color:#64748b;line-height:1.6}
     .out-list .ico{font-size:14px;flex-shrink:0;opacity:0.6}
+    
+    /* RESPONSIVIDADE MOBILE */
+    #sidebar-overlay {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: rgba(0, 0, 0, 0.6);
+      z-index: 150;
+      backdrop-filter: blur(4px);
+      -webkit-backdrop-filter: blur(4px);
+    }
+    .menu-btn {
+      display: none;
+    }
+    @media (max-width: 768px) {
+      body {
+        display: block;
+      }
+      #sidebar {
+        position: fixed;
+        left: calc(-1 * var(--sidebar-w));
+        transition: left 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        z-index: 250;
+      }
+      #sidebar.open {
+        left: 0;
+      }
+      #sidebar-overlay.active {
+        display: block;
+      }
+      #main {
+        margin-left: 0 !important;
+        width: 100%;
+        min-width: 0;
+      }
+      #topbar {
+        padding: 0 20px;
+      }
+      .menu-btn {
+        display: flex !important;
+        align-items: center;
+        justify-content: center;
+        width: 36px;
+        height: 36px;
+        border-radius: 8px;
+        background: rgba(255, 255, 255, 0.08);
+        border: 1px solid var(--border);
+        color: white;
+        font-size: 18px;
+        cursor: pointer;
+        transition: all 0.2s;
+        margin-right: 12px;
+      }
+      .menu-btn:hover {
+        background: rgba(255, 255, 255, 0.15);
+      }
+      #content {
+        padding: 24px 20px 60px;
+      }
+      .hero {
+        padding: 32px 24px;
+        border-radius: 16px;
+        margin-bottom: 32px;
+      }
+      .hero h1 {
+        font-size: 28px;
+      }
+      .hero h1 em {
+        font-size: 20px;
+      }
+      .card-grid, .card-grid-3 {
+        grid-template-columns: 1fr;
+      }
+      /* Forçar todos os grids definidos em estilos inline a colapsar para uma única coluna no mobile */
+      [style*="grid-template-columns"] {
+        grid-template-columns: 1fr !important;
+      }
+      .card {
+        padding: 20px 16px !important;
+        overflow-wrap: break-word;
+        word-wrap: break-word;
+        min-width: 0;
+      }
+      pre {
+        max-width: 100%;
+        overflow-x: auto;
+      }
+      .section-header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 8px;
+      }
+      .table-wrap {
+        overflow-x: auto;
+        -webkit-overflow-scrolling: touch;
+        width: 100%;
+        margin-top: 8px;
+      }
+      table.doc-table {
+        min-width: 500px;
+      }
+    }
+    @media (max-width: 576px) {
+      .topbar-right .tag {
+        display: none;
+      }
+      #topbar .breadcrumb span:not(.current):not(.sep) {
+        display: none;
+      }
+      #topbar .breadcrumb .sep {
+        display: none;
+      }
+    }
   </style>
 </head>
 <body>
+<div id="sidebar-overlay" onclick="toggleSidebar()"></div>
 <aside id="sidebar">
   <div class="sidebar-brand">
     <div class="app-name"><span>Price</span>Simulator</div>
@@ -163,6 +280,9 @@
 
 <main id="main">
   <div id="topbar">
+    <button class="menu-btn" id="menu-btn" onclick="toggleSidebar()" aria-label="Toggle menu">
+      &#9776;
+    </button>
     <div class="breadcrumb">
       <span>PriceSimulator</span>
       <span class="sep">&#8250;</span>
@@ -2853,6 +2973,37 @@ function toggleLang() {
   document.querySelectorAll('.lang-pt').forEach(function(el){ el.style.display = lang === 'pt' ? 'block' : 'none'; });
   document.querySelectorAll('.lang-en').forEach(function(el){ el.style.display = lang === 'en' ? 'block' : 'none'; });
 }
+
+function toggleSidebar() {
+  const sidebar = document.getElementById('sidebar');
+  const overlay = document.getElementById('sidebar-overlay');
+  if (sidebar && overlay) {
+    sidebar.classList.toggle('open');
+    overlay.classList.toggle('active');
+  }
+}
+
+// Fechar sidebar ao clicar nos links no mobile
+document.querySelectorAll('#sidebar nav a').forEach(function(l) {
+  l.addEventListener('click', function() {
+    const sidebar = document.getElementById('sidebar');
+    const overlay = document.getElementById('sidebar-overlay');
+    if (sidebar && overlay) {
+      sidebar.classList.remove('open');
+      overlay.classList.remove('active');
+    }
+  });
+});
+
+// Envolver tabelas que não possuem o wrapper .table-wrap para garantir rolagem no mobile
+document.querySelectorAll('table.doc-table').forEach(function(table) {
+  if (!table.parentElement.classList.contains('table-wrap')) {
+    const wrapper = document.createElement('div');
+    wrapper.className = 'table-wrap';
+    table.parentNode.insertBefore(wrapper, table);
+    wrapper.appendChild(table);
+  }
+});
 
 var sections = document.querySelectorAll('.section');
 var links    = document.querySelectorAll('#sidebar nav a');
