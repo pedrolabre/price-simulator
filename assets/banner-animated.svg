@@ -1,0 +1,463 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 480" width="100%" height="100%">
+  <defs>
+    <!-- Google Fonts Import -->
+    <style type="text/css">
+      @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;700;800&amp;family=Share+Tech+Mono&amp;display=swap');
+      
+      /* --- CSS THEME VARIABLES --- */
+      :root {
+        /* Dark Mode (Default Theme of Banner and Mockup) */
+        --bg-color-1: #0d1117;
+        --bg-color-2: #161b22;
+        --bg-color-3: #21262d;
+        --grid-color: #21262d;
+        --tech-color: #5d6775;
+        --border-cota: #30363d;
+        --axis-color: #1f242c;
+        
+        --text-title-1: #ffffff;
+        --text-title-2: #f0f6fc;
+        --text-body: #8b949e;
+        
+        /* Mockup of page in DARK mode (default) */
+        --mockup-bg: #0f172a;
+        --mockup-border: #1e293b;
+        --mockup-titlebar-bg: #1e293b;
+        --mockup-url-bg: #0f172a;
+        --mockup-url-border: #334155;
+        --mockup-url-text: #94a3b8;
+        --mockup-title-text: #ffffff;
+        --mockup-subtitle-text: #94a3b8;
+        --mockup-config-title-text: #f8fafc;
+        --mockup-config-text: #94a3b8;
+        --mockup-cell-bg: #1e293b;
+        --mockup-cell-border: #334155;
+        --mockup-cell-text: #f8fafc;
+        
+        /* Table Footer / Totals styling */
+        --mockup-footer-bg: #1e293b;
+        --mockup-footer-subbg: rgba(255, 255, 255, 0.05);
+        --mockup-totals-cost-bg: rgba(245, 158, 11, 0.15);
+        --mockup-totals-cost-text: #fcd34d;
+        --mockup-totals-sale-bg: rgba(34, 197, 94, 0.15);
+        --mockup-totals-sale-text: #86efac;
+        --mockup-footer-text: #94a3b8;
+
+        /* Buttons in status bar */
+        --btn-orange-bg: rgba(249, 115, 22, 0.2);
+        --btn-orange-border: rgba(249, 115, 22, 0.3);
+        --btn-orange-text: #fdba74;
+        --btn-green-bg: rgba(34, 197, 94, 0.2);
+        --btn-green-border: rgba(34, 197, 94, 0.3);
+        --btn-green-text: #86efac;
+        --btn-red-bg: rgba(239, 68, 68, 0.2);
+        --btn-red-border: rgba(239, 68, 68, 0.3);
+        --btn-red-text: #fca5a5;
+        
+        --accent-red: #E31837;
+        --accent-red-glow: #ff4d6a;
+        --accent-green: #2ea043;
+        --accent-green-glow: #56d364;
+        
+        --card-bg: rgba(22, 27, 34, 0.85);
+        --card-border: #30363d;
+        
+        --shadow-opacity: 0.65;
+      }
+
+      @media (prefers-color-scheme: light) {
+        :root {
+          /* Light Mode (Light Theme of Banner and Mockup) */
+          --bg-color-1: #f6f8fa;
+          --bg-color-2: #ffffff;
+          --bg-color-3: #f0f2f5;
+          --grid-color: #e1e4e8;
+          --tech-color: #6a737d;
+          --border-cota: #d1d5da;
+          --axis-color: #e1e4e8;
+          
+          --text-title-1: #24292e;
+          --text-title-2: #1f2327;
+          --text-body: #586069;
+          
+          /* Mockup of page in DARK mode (always dark mode for mockup) */
+          --mockup-bg: #0f172a;
+          --mockup-border: #1e293b;
+          --mockup-titlebar-bg: #1e293b;
+          --mockup-url-bg: #0f172a;
+          --mockup-url-border: #334155;
+          --mockup-url-text: #94a3b8;
+          --mockup-title-text: #ffffff;
+          --mockup-subtitle-text: #94a3b8;
+          --mockup-config-title-text: #f8fafc;
+          --mockup-config-text: #94a3b8;
+          --mockup-cell-bg: #1e293b;
+          --mockup-cell-border: #334155;
+          --mockup-cell-text: #f8fafc;
+          
+          /* Table Footer / Totals styling */
+          --mockup-footer-bg: #1e293b;
+          --mockup-footer-subbg: rgba(255, 255, 255, 0.05);
+          --mockup-totals-cost-bg: rgba(245, 158, 11, 0.15);
+          --mockup-totals-cost-text: #fcd34d;
+          --mockup-totals-sale-bg: rgba(34, 197, 94, 0.15);
+          --mockup-totals-sale-text: #86efac;
+          --mockup-footer-text: #94a3b8;
+
+          /* Buttons in status bar */
+          --btn-orange-bg: rgba(249, 115, 22, 0.2);
+          --btn-orange-border: rgba(249, 115, 22, 0.3);
+          --btn-orange-text: #fdba74;
+          --btn-green-bg: rgba(34, 197, 94, 0.2);
+          --btn-green-border: rgba(34, 197, 94, 0.3);
+          --btn-green-text: #86efac;
+          --btn-red-bg: rgba(239, 68, 68, 0.2);
+          --btn-red-border: rgba(239, 68, 68, 0.3);
+          --btn-red-text: #fca5a5;
+          
+          --accent-red: #d73a49;
+          --accent-red-glow: #ea4a5a;
+          --accent-green: #28a745;
+          --accent-green-glow: #34d058;
+          
+          --card-bg: rgba(255, 255, 255, 0.9);
+          --card-border: #e1e4e8;
+          
+          --shadow-opacity: 0.15;
+        }
+      }
+
+      /* Font Styling Classes */
+      .text-title {
+        font-family: 'Plus Jakarta Sans', -apple-system, sans-serif;
+        font-weight: 800;
+        fill: var(--text-title-1);
+      }
+      .text-subtitle {
+        font-family: 'Plus Jakarta Sans', -apple-system, sans-serif;
+        font-weight: 700;
+        fill: #E31837;
+        letter-spacing: 5px;
+      }
+      .text-body-style {
+        font-family: 'Plus Jakarta Sans', -apple-system, sans-serif;
+        font-weight: 400;
+        fill: var(--text-body);
+      }
+      .text-tech {
+        font-family: 'Share Tech Mono', monospace;
+        fill: var(--tech-color);
+        font-size: 11px;
+      }
+      .mockup-title {
+        font-family: 'Plus Jakarta Sans', -apple-system, sans-serif;
+        font-weight: 800;
+        fill: var(--mockup-title-text);
+        font-size: 13px;
+      }
+      .mockup-btn-status-text {
+        font-family: 'Plus Jakarta Sans', -apple-system, sans-serif;
+        font-weight: 700;
+        font-size: 5px;
+      }
+      .mockup-subtitle {
+        font-family: 'Plus Jakarta Sans', -apple-system, sans-serif;
+        font-weight: 500;
+        fill: var(--mockup-subtitle-text);
+        font-size: 8px;
+      }
+      .mockup-config-label {
+        font-family: 'Plus Jakarta Sans', -apple-system, sans-serif;
+        font-weight: 600;
+        fill: #ffffff;
+        font-size: 7px;
+      }
+      .mockup-table-header {
+        font-family: 'Plus Jakarta Sans', -apple-system, sans-serif;
+        font-weight: 700;
+        fill: #ffffff;
+        font-size: 7px;
+      }
+      .mockup-table-cell {
+        font-family: 'Share Tech Mono', monospace;
+        fill: var(--mockup-cell-text);
+        font-size: 7px;
+      }
+      .mockup-table-cell-bold {
+        font-family: 'Share Tech Mono', monospace;
+        font-weight: 700;
+        fill: var(--mockup-cell-text);
+        font-size: 7px;
+      }
+      .mockup-btn-text {
+        font-family: 'Plus Jakarta Sans', -apple-system, sans-serif;
+        font-weight: 700;
+        fill: #ffffff;
+        font-size: 9px;
+      }
+      .badge-text {
+        font-family: 'Share Tech Mono', monospace;
+        font-weight: 700;
+        fill: #ffffff;
+        font-size: 10px;
+        text-anchor: middle;
+      }
+
+      /* Animations and Transitions */
+      rect, path, circle, line, text, stop {
+        transition: fill 0.6s ease-in-out, stroke 0.6s ease-in-out, stop-color 0.6s ease-in-out, opacity 0.6s ease-in-out;
+      }
+
+      @keyframes float-mockup {
+        0%, 100% {
+          transform: translateY(0px) rotate(0.5deg);
+        }
+        50% {
+          transform: translateY(-6px) rotate(-0.5deg);
+        }
+      }
+      .mockup-group {
+        animation: float-mockup 6s ease-in-out infinite;
+        transform-origin: 975px 225px;
+      }
+
+      @keyframes float-badge-1 {
+        0%, 100% { transform: translate(0px, 0px); }
+        50% { transform: translate(-2px, -6px); }
+      }
+      @keyframes float-badge-2 {
+        0%, 100% { transform: translate(0px, 0px); }
+        50% { transform: translate(3px, -4px); }
+      }
+      @keyframes float-badge-3 {
+        0%, 100% { transform: translate(0px, 0px); }
+        50% { transform: translate(-2px, 5px); }
+      }
+      .badge-float-1 { animation: float-badge-1 5s ease-in-out infinite; }
+      .badge-float-2 { animation: float-badge-2 4.5s ease-in-out infinite; }
+      .badge-float-3 { animation: float-badge-3 4.8s ease-in-out infinite; }
+
+      @keyframes rotate-radar {
+        0% { transform: rotate(0deg); }
+        100% { transform: rotate(360deg); }
+      }
+      .tech-radar {
+        animation: rotate-radar 20s linear infinite;
+        transform-origin: 600px 240px;
+      }
+    </style>
+
+    <!-- Clip path for browser window mockup top header rounded corners -->
+    <clipPath id="topRoundedClip">
+      <rect x="0" y="0" width="390" height="28" rx="14" ry="14" />
+    </clipPath>
+
+    <!-- Clip path for rounding the logo card corners exactly as in icon.svg -->
+    <clipPath id="roundedClip">
+      <rect width="100" height="100" rx="22" ry="22"/>
+    </clipPath>
+
+    <!-- Gradients -->
+    <linearGradient id="bg-grad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="var(--bg-color-1)" />
+      <stop offset="50%" stop-color="var(--bg-color-2)" />
+      <stop offset="100%" stop-color="var(--bg-color-3)" />
+    </linearGradient>
+
+    <linearGradient id="bgGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#0d1117"/>
+      <stop offset="100%" stop-color="#1e2535"/>
+    </linearGradient>
+
+    <linearGradient id="redGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#E31837"/>
+      <stop offset="100%" stop-color="#C8102E"/>
+    </linearGradient>
+
+    <linearGradient id="textGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#ffffff"/>
+      <stop offset="100%" stop-color="rgba(255,255,255,0.75)"/>
+    </linearGradient>
+
+
+  </defs>
+
+  <!-- Background Base -->
+  <rect width="1200" height="480" fill="url(#bg-grad)" />
+
+  <!-- Isometric Grid Pattern -->
+  <g opacity="0.12">
+    <path d="M-100,0 L1300,0 M-100,40 L1300,40 M-100,80 L1300,80 M-100,120 L1300,120 M-100,160 L1300,160 M-100,200 L1300,200 M-100,240 L1300,240 M-100,280 L1300,280 M-100,320 L1300,320 M-100,360 L1300,360 M-100,400 L1300,400 M-100,440 L1300,440" stroke="var(--border-cota)" stroke-width="1"/>
+    <path d="M-100,0 L1300,700 M-100,-200 L1300,500 M-100,-400 L1300,300 M-100,-600 L1300,100 M-100,200 L1300,900 M-100,400 L1300,1100" stroke="var(--border-cota)" stroke-width="0.5" stroke-dasharray="3,3"/>
+  </g>
+
+  <!-- Technical Marks -->
+  <path d="M 30 50 L 30 30 L 50 30" fill="none" stroke="var(--border-cota)" stroke-width="1.5"/>
+  <path d="M 1170 50 L 1170 30 L 1150 30" fill="none" stroke="var(--border-cota)" stroke-width="1.5"/>
+  <path d="M 30 430 L 30 450 L 50 450" fill="none" stroke="var(--border-cota)" stroke-width="1.5"/>
+  <path d="M 1170 430 L 1170 450 L 1150 450" fill="none" stroke="var(--border-cota)" stroke-width="1.5"/>
+
+  <text x="40" y="45" class="text-tech">REF: PS_APP_BANNER_V1.7</text>
+  <text x="1065" y="45" class="text-tech">COORD: 1200 x 480 px</text>
+  <text x="40" y="445" class="text-tech">SYS: REACT_18 // VITE</text>
+  <text x="1080" y="445" class="text-tech">THEME: COLOR_MATCH</text>
+
+  <g class="tech-radar">
+    <circle cx="600" cy="240" r="10" fill="none" stroke="var(--border-cota)" stroke-width="0.75" />
+    <line x1="580" y1="240" x2="620" y2="240" stroke="var(--border-cota)" stroke-width="0.75"/>
+    <line x1="600" y1="220" x2="600" y2="260" stroke="var(--border-cota)" stroke-width="0.75"/>
+  </g>
+
+  <!-- LEFT SIDE: Project Identity -->
+  <g transform="rotate(-3, 145, 220)">
+    <g transform="translate(60, 140) scale(1.5)">
+      <!-- Main Icon Background rounded rect -->
+      <rect width="100" height="100" rx="22" ry="22" fill="url(#bgGrad)" />
+      
+      <!-- Red accent top line -->
+      <rect x="0" y="0" width="100" height="4" rx="2" fill="url(#redGrad)" clip-path="url(#roundedClip)" />
+      
+      <!-- Icon letters P and S -->
+      <text x="42" y="60"
+            font-family="'Segoe UI', system-ui, Arial, sans-serif"
+            font-size="58" font-weight="800"
+            fill="url(#textGrad)"
+            text-anchor="middle">P</text>
+      <text x="62" y="76"
+            font-family="'Segoe UI', system-ui, Arial, sans-serif"
+            font-size="58" font-weight="800"
+            fill="url(#redGrad)"
+            text-anchor="middle">S</text>
+    </g>
+  </g>
+
+  <!-- Typography Block (Shifted left + smaller title to avoid overlap) -->
+  <g transform="translate(230, 0)">
+    <text x="0" y="215" class="text-title" font-size="44" letter-spacing="1">PRICE SIMULATOR</text>
+    <text x="2" y="255" class="text-subtitle" font-size="15">SIMULAÇÃO &amp; PRECIFICAÇÃO</text>
+    <text x="2" y="295" class="text-body-style" font-size="14">Cálculo dinâmico de impostos, frete e margem de lucro com exportação standalone</text>
+    <text x="2" y="325" class="text-tech" font-size="10">ECMA // SPA // STANDALONE_HTML // EXCEL // PRINT_PDF</text>
+  </g>
+
+  <!-- XLS, PDF, and HTML Circular Badges (Positioned in the empty space below the text block) -->
+  <!-- XLS Badge (Green) -->
+  <g transform="translate(270, 390)">
+    <g class="badge-float-1">
+      <circle r="22" fill="#2ea043" stroke="#ffffff" stroke-width="1.5" />
+      <text y="4" class="badge-text">XLS</text>
+    </g>
+  </g>
+  
+  <!-- PDF Badge (Red) -->
+  <g transform="translate(365, 410)">
+    <g class="badge-float-2">
+      <circle r="22" fill="#E31837" stroke="#ffffff" stroke-width="1.5" />
+      <text y="4" class="badge-text">PDF</text>
+    </g>
+  </g>
+  
+  <!-- HTML Badge (Blue) -->
+  <g transform="translate(460, 390)">
+    <g class="badge-float-3">
+      <circle r="22" fill="#0052cc" stroke="#ffffff" stroke-width="1.5" />
+      <text y="4" class="badge-text">HTML</text>
+    </g>
+  </g>
+
+
+  <!-- RIGHT SIDE: Stylized Application Interface Mockup (Floats, Shifted right to x=780) -->
+  <g class="mockup-group">
+    <!-- Browser Window Card representing the App (width 390, height 280, theme-dependent fill and border) -->
+    <rect x="780" y="85" width="390" height="280" rx="14" fill="var(--mockup-bg)" stroke="var(--mockup-border)" stroke-width="1.5" />
+    
+    <!-- Browser Title Bar (Mac-like dots) -->
+    <g clip-path="url(#topRoundedClip)" transform="translate(780, 85)">
+      <rect x="0" y="0" width="390" height="28" fill="var(--mockup-titlebar-bg)" />
+    </g>
+    <circle cx="800" cy="99" r="4" fill="#ea4aaa" />
+    <circle cx="812" cy="99" r="4" fill="#ffc72c" />
+    <circle cx="824" cy="99" r="4" fill="#28a745" />
+    
+    <!-- Browser Address Bar (Fake URL) -->
+    <rect x="850" y="92" width="220" height="14" rx="4" fill="var(--mockup-url-bg)" stroke="var(--mockup-url-border)" stroke-width="0.75" />
+    <text x="960" y="102" font-family="'Segoe UI', system-ui, sans-serif" font-size="7" fill="var(--mockup-url-text)" text-anchor="middle">price-simulator.vercel.app</text>
+    
+    <!-- App Workspace Area (Stacked vertically to prevent any overlap) -->
+    <!-- App Header Title: Simulador de Preços -->
+    <text x="800" y="126" class="mockup-title">Simulador de Preços</text>
+    
+    <!-- Subtitle (Stacked underneath Title) -->
+    <text x="800" y="137" class="mockup-subtitle" text-anchor="start">Simulação e análise de precificação de produtos</text>
+    
+    <!-- Config values details -->
+    <text x="800" y="146" font-family="'Segoe UI', system-ui, sans-serif" font-size="6.5" fill="var(--mockup-config-title-text)" font-weight="700">Configurações: <tspan fill="var(--mockup-config-text)">IPI: 3.25% | Frete: 0% | Margem: +100%</tspan></text>
+    
+    <!-- Status Bar Component (Lighter transparent card background with icons and buttons) -->
+    <rect x="800" y="152" width="340" height="24" rx="6" fill="var(--mockup-cell-bg)" stroke="var(--mockup-border)" stroke-width="0.75" />
+    
+    <!-- Red Badge '1' -->
+    <rect x="805" y="157" width="14" height="14" rx="3" fill="#E31837" />
+    <text x="812" y="167" font-family="'Segoe UI', system-ui, sans-serif" font-size="7.5" font-weight="700" fill="#ffffff" text-anchor="middle">1</text>
+    
+    <!-- Labels -->
+    <text x="825" y="162" font-family="'Segoe UI', system-ui, sans-serif" font-size="5.5" font-weight="700" fill="var(--mockup-subtitle-text)">TOTAL DE PRODUTOS</text>
+    <text x="825" y="171" font-family="'Segoe UI', system-ui, sans-serif" font-size="6.5" font-weight="700" fill="var(--mockup-title-text)">1 item cadastrado</text>
+    
+    <!-- Colored Buttons -->
+    <!-- Limpar (Orange) -->
+    <rect x="1042" y="157" width="28" height="14" rx="4" fill="var(--btn-orange-bg)" stroke="var(--btn-orange-border)" stroke-width="0.5" />
+    <text x="1056" y="166" class="mockup-btn-status-text" fill="var(--btn-orange-text)" text-anchor="middle">Limpar</text>
+    
+    <!-- Excel (Green) -->
+    <rect x="1074" y="157" width="28" height="14" rx="4" fill="var(--btn-green-bg)" stroke="var(--btn-green-border)" stroke-width="0.5" />
+    <text x="1088" y="166" class="mockup-btn-status-text" fill="var(--btn-green-text)" text-anchor="middle">Excel</text>
+    
+    <!-- PDF (Red) -->
+    <rect x="1106" y="157" width="28" height="14" rx="4" fill="var(--btn-red-bg)" stroke="var(--btn-red-border)" stroke-width="0.5" />
+    <text x="1120" y="166" class="mockup-btn-status-text" fill="var(--btn-red-text)" text-anchor="middle">PDF</text>
+    
+    <!-- Divider (Subtle card border) -->
+    <line x1="800" y1="182" x2="1140" y2="182" stroke="var(--mockup-border)" stroke-width="0.75" />
+    
+    <!-- Product Data Table -->
+    <!-- Table Header Row (Red Gradient) -->
+    <rect x="800" y="187" width="340" height="20" fill="url(#redGrad)" rx="3" />
+    <text x="805" y="199" class="mockup-table-header">QTD</text>
+    <text x="835" y="199" class="mockup-table-header">DESCRIÇÃO</text>
+    <text x="925" y="199" class="mockup-table-header">PREÇO UNIT.</text>
+    <text x="985" y="199" class="mockup-table-header">IPI</text>
+    <text x="1025" y="199" class="mockup-table-header">CUSTO REAL</text>
+    <text x="1080" y="199" class="mockup-table-header">PREÇO VENDA</text>
+    
+    <!-- Table Data Row -->
+    <rect x="800" y="207" width="340" height="20" fill="var(--mockup-cell-bg)" stroke="var(--mockup-cell-border)" stroke-width="0.5" rx="1" />
+    <text x="805" y="219" class="mockup-table-cell">1</text>
+    <text x="835" y="219" class="mockup-table-cell">PRODUTO</text>
+    <text x="925" y="219" class="mockup-table-cell">R$ 249.06</text>
+    <text x="985" y="219" class="mockup-table-cell">R$ 8.09</text>
+    <text x="1025" y="219" class="mockup-table-cell-bold">R$ 257.15</text>
+    <text x="1080" y="219" class="mockup-table-cell-bold" fill="var(--accent-green)">R$ 514.31</text>
+    
+    <!-- Totals Row (Custom segments matching actual app footer) -->
+    <rect x="800" y="227" width="340" height="20" fill="var(--mockup-footer-bg)" rx="2" />
+    <!-- Sub-backgrounds for specific cells -->
+    <rect x="920" y="227" width="100" height="20" fill="var(--mockup-footer-subbg)" />
+    <rect x="1020" y="227" width="55" height="20" fill="var(--mockup-totals-cost-bg)" />
+    <rect x="1075" y="227" width="65" height="20" fill="var(--mockup-totals-sale-bg)" rx="2" />
+    
+    <!-- Totals Text -->
+    <text x="805" y="239" class="mockup-table-cell-bold" fill="var(--mockup-footer-text)">TOTAIS:</text>
+    <text x="925" y="239" class="mockup-table-cell-bold" fill="var(--mockup-footer-text)">R$ 249.06</text>
+    <text x="985" y="239" class="mockup-table-cell-bold" fill="var(--mockup-footer-text)">R$ 8.09</text>
+    <text x="1025" y="239" class="mockup-table-cell-bold" fill="var(--mockup-totals-cost-text)">R$ 257.15</text>
+    <text x="1080" y="239" class="mockup-table-cell-bold" fill="var(--mockup-totals-sale-text)">R$ 514.31</text>
+    
+    <!-- Print / Export Pill Button -->
+    <g transform="translate(900, 252)">
+      <rect width="140" height="22" rx="11" fill="#E31837" />
+      <!-- Printer icon -->
+      <path d="M 22 9 L 22 12 L 14 12 L 14 9 Z M 12 13 L 24 13 L 24 19 L 21 19 L 21 21 L 15 21 L 15 19 L 12 19 Z M 16 16 L 20 16 L 20 18 L 16 18 Z" fill="#ffffff" transform="scale(0.75) translate(6, 1)"/>
+      <text x="78" y="14" class="mockup-btn-text" text-anchor="middle">Imprimir / Salvar PDF</text>
+    </g>
+  </g>
+</svg>
