@@ -8,7 +8,7 @@
       :root {
         /* Dark Mode (Default Theme of Banner and Mockup) */
         --bg-color-1: #0d1117;
-        --bg-color-2: #161b22;
+        --bg-color-2: #161b26;
         --bg-color-3: #21262d;
         --grid-color: #21262d;
         --tech-color: #5d6775;
@@ -67,7 +67,7 @@
 
       @media (prefers-color-scheme: light) {
         :root {
-          /* Light Mode (Light Theme of Banner and Mockup) */
+          /* Light Mode (Light Theme of Banner) */
           --bg-color-1: #f6f8fa;
           --bg-color-2: #ffffff;
           --bg-color-3: #f0f2f5;
@@ -278,8 +278,6 @@
       <stop offset="0%" stop-color="#ffffff"/>
       <stop offset="100%" stop-color="rgba(255,255,255,0.75)"/>
     </linearGradient>
-
-
   </defs>
 
   <!-- Background Base -->
@@ -331,11 +329,11 @@
     </g>
   </g>
 
-  <!-- Typography Block (Shifted left + smaller title to avoid overlap) -->
+  <!-- Typography Block -->
   <g transform="translate(230, 0)">
     <text x="0" y="215" class="text-title" font-size="44" letter-spacing="1">PRICE SIMULATOR</text>
-    <text x="2" y="255" class="text-subtitle" font-size="15">SIMULAÇÃO &amp; PRECIFICAÇÃO</text>
-    <text x="2" y="295" class="text-body-style" font-size="14">Cálculo dinâmico de impostos, frete e margem de lucro com exportação standalone</text>
+    <text x="2" y="255" class="text-subtitle" font-size="15">SIMULATION &amp; PRICING</text>
+    <text x="2" y="295" class="text-body-style" font-size="14">Dynamic calculation of taxes, freight, and profit margin with standalone export</text>
     <text x="2" y="325" class="text-tech" font-size="10">ECMA // SPA // STANDALONE_HTML // EXCEL // PRINT_PDF</text>
   </g>
 
@@ -383,14 +381,14 @@
     <text x="960" y="102" font-family="'Segoe UI', system-ui, sans-serif" font-size="7" fill="var(--mockup-url-text)" text-anchor="middle">price-simulator.vercel.app</text>
     
     <!-- App Workspace Area (Stacked vertically to prevent any overlap) -->
-    <!-- App Header Title: Simulador de Preços -->
-    <text x="800" y="126" class="mockup-title">Simulador de Preços</text>
+    <!-- App Header Title: Price Simulator -->
+    <text x="800" y="126" class="mockup-title">Price Simulator</text>
     
     <!-- Subtitle (Stacked underneath Title) -->
-    <text x="800" y="137" class="mockup-subtitle" text-anchor="start">Simulação e análise de precificação de produtos</text>
+    <text x="800" y="137" class="mockup-subtitle" text-anchor="start">Product pricing simulation and analysis</text>
     
     <!-- Config values details -->
-    <text x="800" y="146" font-family="'Segoe UI', system-ui, sans-serif" font-size="6.5" fill="var(--mockup-config-title-text)" font-weight="700">Configurações: <tspan fill="var(--mockup-config-text)">IPI: 3.25% | Frete: 0% | Margem: +100%</tspan></text>
+    <text x="800" y="146" font-family="'Segoe UI', system-ui, sans-serif" font-size="6.5" fill="var(--mockup-config-title-text)" font-weight="700">Configurations: <tspan fill="var(--mockup-config-text)">IPI: 3.25% | Freight: 0% | Margin: +100%</tspan></text>
     
     <!-- Status Bar Component (Lighter transparent card background with icons and buttons) -->
     <rect x="800" y="152" width="340" height="24" rx="6" fill="var(--mockup-cell-bg)" stroke="var(--mockup-border)" stroke-width="0.75" />
@@ -400,13 +398,13 @@
     <text x="812" y="167" font-family="'Segoe UI', system-ui, sans-serif" font-size="7.5" font-weight="700" fill="#ffffff" text-anchor="middle">1</text>
     
     <!-- Labels -->
-    <text x="825" y="162" font-family="'Segoe UI', system-ui, sans-serif" font-size="5.5" font-weight="700" fill="var(--mockup-subtitle-text)">TOTAL DE PRODUTOS</text>
-    <text x="825" y="171" font-family="'Segoe UI', system-ui, sans-serif" font-size="6.5" font-weight="700" fill="var(--mockup-title-text)">1 item cadastrado</text>
+    <text x="825" y="162" font-family="'Segoe UI', system-ui, sans-serif" font-size="5.5" font-weight="700" fill="var(--mockup-subtitle-text)">TOTAL PRODUCTS</text>
+    <text x="825" y="171" font-family="'Segoe UI', system-ui, sans-serif" font-size="6.5" font-weight="700" fill="var(--mockup-title-text)">1 item registered</text>
     
     <!-- Colored Buttons -->
-    <!-- Limpar (Orange) -->
+    <!-- Clear (Orange) -->
     <rect x="1042" y="157" width="28" height="14" rx="4" fill="var(--btn-orange-bg)" stroke="var(--btn-orange-border)" stroke-width="0.5" />
-    <text x="1056" y="166" class="mockup-btn-status-text" fill="var(--btn-orange-text)" text-anchor="middle">Limpar</text>
+    <text x="1056" y="166" class="mockup-btn-status-text" fill="var(--btn-orange-text)" text-anchor="middle">Clear</text>
     
     <!-- Excel (Green) -->
     <rect x="1074" y="157" width="28" height="14" rx="4" fill="var(--btn-green-bg)" stroke="var(--btn-green-border)" stroke-width="0.5" />
@@ -422,17 +420,17 @@
     <!-- Product Data Table -->
     <!-- Table Header Row (Red Gradient) -->
     <rect x="800" y="187" width="340" height="20" fill="url(#redGrad)" rx="3" />
-    <text x="805" y="199" class="mockup-table-header">QTD</text>
-    <text x="835" y="199" class="mockup-table-header">DESCRIÇÃO</text>
-    <text x="925" y="199" class="mockup-table-header">PREÇO UNIT.</text>
+    <text x="805" y="199" class="mockup-table-header">QTY</text>
+    <text x="835" y="199" class="mockup-table-header">DESCRIPTION</text>
+    <text x="925" y="199" class="mockup-table-header">UNIT PRICE</text>
     <text x="985" y="199" class="mockup-table-header">IPI</text>
-    <text x="1025" y="199" class="mockup-table-header">CUSTO REAL</text>
-    <text x="1080" y="199" class="mockup-table-header">PREÇO VENDA</text>
+    <text x="1025" y="199" class="mockup-table-header">REAL COST</text>
+    <text x="1080" y="199" class="mockup-table-header">SALE PRICE</text>
     
     <!-- Table Data Row -->
     <rect x="800" y="207" width="340" height="20" fill="var(--mockup-cell-bg)" stroke="var(--mockup-cell-border)" stroke-width="0.5" rx="1" />
     <text x="805" y="219" class="mockup-table-cell">1</text>
-    <text x="835" y="219" class="mockup-table-cell">PRODUTO</text>
+    <text x="835" y="219" class="mockup-table-cell">PRODUCT</text>
     <text x="925" y="219" class="mockup-table-cell">R$ 249.06</text>
     <text x="985" y="219" class="mockup-table-cell">R$ 8.09</text>
     <text x="1025" y="219" class="mockup-table-cell-bold">R$ 257.15</text>
@@ -446,7 +444,7 @@
     <rect x="1075" y="227" width="65" height="20" fill="var(--mockup-totals-sale-bg)" rx="2" />
     
     <!-- Totals Text -->
-    <text x="805" y="239" class="mockup-table-cell-bold" fill="var(--mockup-footer-text)">TOTAIS:</text>
+    <text x="805" y="239" class="mockup-table-cell-bold" fill="var(--mockup-footer-text)">TOTALS:</text>
     <text x="925" y="239" class="mockup-table-cell-bold" fill="var(--mockup-footer-text)">R$ 249.06</text>
     <text x="985" y="239" class="mockup-table-cell-bold" fill="var(--mockup-footer-text)">R$ 8.09</text>
     <text x="1025" y="239" class="mockup-table-cell-bold" fill="var(--mockup-totals-cost-text)">R$ 257.15</text>
@@ -457,7 +455,7 @@
       <rect width="140" height="22" rx="11" fill="#E31837" />
       <!-- Printer icon -->
       <path d="M 22 9 L 22 12 L 14 12 L 14 9 Z M 12 13 L 24 13 L 24 19 L 21 19 L 21 21 L 15 21 L 15 19 L 12 19 Z M 16 16 L 20 16 L 20 18 L 16 18 Z" fill="#ffffff" transform="scale(0.75) translate(6, 1)"/>
-      <text x="78" y="14" class="mockup-btn-text" text-anchor="middle">Imprimir / Salvar PDF</text>
+      <text x="78" y="14" class="mockup-btn-text" text-anchor="middle">Print / Save PDF</text>
     </g>
   </g>
 </svg>

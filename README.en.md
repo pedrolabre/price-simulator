@@ -4,7 +4,7 @@
 
 <div align="center">
 
-![Price Simulator Banner](./assets/banner-animated.svg)
+![Price Simulator Banner](./assets/banner-animated.en.svg)
 
 </div>
 
