@@ -10,10 +10,26 @@
 
 html {
   font-size: 90%;
+  width: 100%;
 }
 
 body {
   font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+  width: 100%;
+  overflow-x: hidden;
+}
+
+#root {
+  width: 100%;
+  min-width: 0;
+}
+
+img,
+input,
+textarea,
+select,
+button {
+  max-width: 100%;
 }

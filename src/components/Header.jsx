@@ -11,18 +11,18 @@ export default function Header({ darkMode, onToggleDarkMode, empresa, onEmpresaC
     : 'bg-gray-900/80 hover:bg-gray-900';
 
   return (
-    <div className="flex justify-between items-start mb-8 gap-6">
-      <div className="flex-1">
-        <div className="flex items-end gap-4 flex-wrap">
-          <div>
-            <h1 className={`text-4xl font-bold ${darkMode ? 'text-white' : 'text-gray-900'} mb-2`}>
+    <div className="flex w-full min-w-0 flex-col gap-4 mb-6 sm:mb-8 sm:flex-row sm:items-start sm:justify-between sm:gap-6">
+      <div className="w-full min-w-0 flex-1">
+        <div className="flex min-w-0 flex-col gap-4 sm:flex-row sm:items-end sm:gap-4 sm:flex-wrap">
+          <div className="min-w-0">
+            <h1 className={`text-3xl sm:text-4xl leading-tight font-bold ${darkMode ? 'text-white' : 'text-gray-900'} mb-2`}>
               {t.appTitle}
             </h1>
             <p className={`${darkMode ? 'text-gray-400' : 'text-gray-500'} text-sm`}>
               {t.appSubtitle}
             </p>
           </div>
-          <div className="flex flex-col gap-1 pb-0.5">
+          <div className="flex w-full min-w-0 flex-col gap-1 pb-0.5 sm:w-auto">
             <label className={`text-xs font-medium flex items-center gap-1.5 ${darkMode ? 'text-gray-400' : 'text-gray-500'}`}>
               <Building2 size={12} />
               {t.companyLabel}
@@ -32,12 +32,12 @@ export default function Header({ darkMode, onToggleDarkMode, empresa, onEmpresaC
               value={empresa}
               onChange={(e) => onEmpresaChange(e.target.value)}
               placeholder={t.companyPlaceholder}
-              className={`border rounded-xl px-3 py-2 text-sm backdrop-blur-sm focus:outline-none focus:ring-2 focus:ring-red-500/50 transition min-w-[220px] ${inputBg}`}
+              className={`w-full min-w-0 border rounded-xl px-3 py-2 text-sm backdrop-blur-sm focus:outline-none focus:ring-2 focus:ring-red-500/50 transition sm:min-w-[220px] ${inputBg}`}
             />
           </div>
         </div>
       </div>
-      <div className="flex items-center gap-2 mt-1 flex-shrink-0">
+      <div className="flex flex-shrink-0 items-center gap-2 self-start sm:mt-1 sm:self-auto">
         <button
           onClick={onToggleLang}
           title={lang === 'pt' ? 'Switch to English' : 'Mudar para Português'}

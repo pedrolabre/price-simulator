@@ -41,14 +41,16 @@ export default function StatusBar({
     }
   };
 
+  const actionBtn = 'min-w-0 justify-center px-3 py-2.5 rounded-xl flex items-center gap-2 transition-all shadow-md font-medium backdrop-blur-sm text-sm sm:px-4 sm:text-base whitespace-nowrap';
+
   return (
-    <div className={`${cardBg} rounded-2xl shadow-xl p-5 mb-6`}>
-      <div className="flex items-center justify-between">
-        <div className="flex items-center gap-4">
-          <div className="bg-gradient-to-br from-red-500 to-red-600 w-14 h-14 rounded-xl flex items-center justify-center font-bold text-xl text-white shadow-lg">
+    <div className={`${cardBg} w-full max-w-full rounded-2xl shadow-xl p-4 mb-6 sm:p-5`}>
+      <div className="flex min-w-0 flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+        <div className="flex min-w-0 items-center gap-4">
+          <div className="bg-gradient-to-br from-red-500 to-red-600 w-14 h-14 flex-shrink-0 rounded-xl flex items-center justify-center font-bold text-xl text-white shadow-lg">
             {productCount}
           </div>
-          <div>
+          <div className="min-w-0">
             <div className={`text-xs ${darkMode ? 'text-gray-400' : 'text-gray-500'} uppercase tracking-wide`}>
               {t.totalProducts}
             </div>
@@ -57,21 +59,21 @@ export default function StatusBar({
             </div>
           </div>
         </div>
-        <div className="flex gap-2">
-          <button onClick={handleClearClick} className={`${btnOrange} px-4 py-2.5 rounded-xl flex items-center gap-2 transition-all shadow-md font-medium backdrop-blur-sm`}>
-            <Trash2 size={18} /> {t.clear}
+        <div className="grid w-full grid-cols-2 gap-2 sm:flex sm:w-auto sm:flex-wrap sm:justify-end">
+          <button onClick={handleClearClick} className={`${btnOrange} ${actionBtn}`}>
+            <Trash2 size={18} className="flex-shrink-0" /> {t.clear}
           </button>
-          <button onClick={onPreview} className={`${btnBlue} px-4 py-2.5 rounded-xl flex items-center gap-2 transition-all shadow-md font-medium backdrop-blur-sm`}>
-            <Eye size={18} /> {t.preview}
+          <button onClick={onPreview} className={`${btnBlue} ${actionBtn}`}>
+            <Eye size={18} className="flex-shrink-0" /> {t.preview}
           </button>
-          <button onClick={onExportXLS} className={`${btnGreen} px-4 py-2.5 rounded-xl flex items-center gap-2 transition-all shadow-md font-medium backdrop-blur-sm`}>
-            <Download size={18} /> Excel
+          <button onClick={onExportXLS} className={`${btnGreen} ${actionBtn}`}>
+            <Download size={18} className="flex-shrink-0" /> Excel
           </button>
-          <button onClick={onExportHTML} className={`${btnTeal} px-4 py-2.5 rounded-xl flex items-center gap-2 transition-all shadow-md font-medium backdrop-blur-sm`}>
-            <Globe size={18} /> HTML
+          <button onClick={onExportHTML} className={`${btnTeal} ${actionBtn}`}>
+            <Globe size={18} className="flex-shrink-0" /> HTML
           </button>
-          <button onClick={onExportPDF} className={`${btnRed} px-4 py-2.5 rounded-xl flex items-center gap-2 transition-all shadow-md font-medium backdrop-blur-sm`}>
-            <FileText size={18} /> PDF
+          <button onClick={onExportPDF} className={`${btnRed} ${actionBtn}`}>
+            <FileText size={18} className="flex-shrink-0" /> PDF
           </button>
         </div>
       </div>

@@ -70,8 +70,8 @@ export default function App() {
     : 'bg-gradient-to-br from-gray-100 via-slate-100 to-gray-200';
 
   return (
-    <div className={`min-h-screen ${bgMain} p-8 transition-all duration-500`}>
-      <div className="max-w-[1440px] mx-auto">
+    <div className={`min-h-screen ${bgMain} overflow-x-hidden px-4 py-6 sm:p-6 lg:p-8 transition-all duration-500`}>
+      <div className="w-full max-w-[1440px] min-w-0 mx-auto">
         <Header 
           darkMode={darkMode} 
           onToggleDarkMode={() => setDarkMode(!darkMode)}

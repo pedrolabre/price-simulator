@@ -18,8 +18,8 @@ export default function PreviewModal({
   return (
     <div className={`fixed inset-0 ${overlayBg} backdrop-blur-sm z-50 flex items-center justify-center p-4`}>
       <div className="bg-white border border-gray-200 text-gray-900 rounded-2xl shadow-2xl max-w-6xl w-full max-h-[90vh] overflow-auto">
-        <div className="sticky top-0 bg-gradient-to-r from-red-600 to-red-700 text-white p-6 flex justify-between items-center rounded-t-2xl">
-          <div>
+        <div className="sticky top-0 bg-gradient-to-r from-red-600 to-red-700 text-white p-4 flex flex-col gap-4 rounded-t-2xl sm:flex-row sm:items-center sm:justify-between sm:p-6">
+          <div className="min-w-0">
             <div className="flex items-baseline gap-3 flex-wrap">
               <h2 className="text-2xl font-bold">{t.previewTitle}</h2>
               {config.empresa && (
@@ -37,9 +37,9 @@ export default function PreviewModal({
           </button>
         </div>
 
-        <div className="p-6">
-          <div>
-            <table className="w-full text-sm border-collapse table-fixed">
+        <div className="p-4 sm:p-6">
+          <div className="w-full max-w-full overflow-x-auto rounded-xl">
+            <table className="min-w-[980px] w-full text-sm border-collapse table-fixed">
               <thead className="bg-gray-100">
                 <tr>
                   <th className="p-2 text-left border w-8">{t.colNum}</th>

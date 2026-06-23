@@ -19,7 +19,7 @@ export default function ImportSection({
   const mutedColor = darkMode ? 'text-gray-400' : 'text-gray-500';
 
   return (
-    <div className={`${cardBg} rounded-2xl shadow-xl p-6 mb-6`}>
+    <div className={`${cardBg} w-full max-w-full rounded-2xl shadow-xl p-4 mb-6 sm:p-6`}>
       <h2 className={`text-lg font-semibold mb-3 ${textColor}`}>
         {t.importTitle}
       </h2>
@@ -35,7 +35,7 @@ export default function ImportSection({
       />
       <button
         onClick={onProcess}
-        className="bg-gradient-to-r from-red-500 to-red-600 hover:from-red-600 hover:to-red-700 text-white px-6 py-3 rounded-xl font-semibold transition-all shadow-lg"
+        className="w-full bg-gradient-to-r from-red-500 to-red-600 hover:from-red-600 hover:to-red-700 text-white px-6 py-3 rounded-xl font-semibold transition-all shadow-lg sm:w-auto"
       >
         {t.processBtn}
       </button>

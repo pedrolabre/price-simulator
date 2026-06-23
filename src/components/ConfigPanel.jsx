@@ -31,7 +31,7 @@ export default function ConfigPanel({
   : 'bg-yellow-100/80 border-yellow-300/50 backdrop-blur-xl';
 
   return (
-    <div className={`${cardBg} rounded-2xl shadow-xl p-6 mb-6`}>
+    <div className={`${cardBg} w-full max-w-full rounded-2xl shadow-xl p-4 mb-6 sm:p-6`}>
       <h2 className={`text-lg font-semibold mb-5 ${textColor}`}>
         {t.configTitle}
       </h2>
@@ -52,8 +52,8 @@ export default function ConfigPanel({
 
       {frete > 0 && (
         <div className={`mb-5 p-4 rounded-xl border-2 ${toggleBg} backdrop-blur-sm`}>
-          <div className="flex items-center justify-between">
-            <div>
+          <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+            <div className="min-w-0">
               <h3 className={`font-semibold ${textColor} mb-1`}>{t.freightMode}</h3>
               <p className={`text-sm ${mutedColor}`}>
                 {freteEmbutido ? t.freightEmbedded : t.freightNotEmbedded}
@@ -61,7 +61,7 @@ export default function ConfigPanel({
             </div>
             <button
               onClick={onToggleFrete}
-              className={`px-5 py-2.5 rounded-xl font-medium transition-all shadow-md text-white ${
+              className={`w-full px-5 py-2.5 rounded-xl font-medium transition-all shadow-md text-white sm:w-auto ${
                 freteEmbutido ? 'bg-green-500 hover:bg-green-600' : 'bg-red-500 hover:bg-red-600'
               }`}
             >

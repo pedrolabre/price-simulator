@@ -26,19 +26,19 @@ export default function ProductTable({
   const textMain = darkMode ? 'text-gray-100' : 'text-gray-900';
 
   return (
-    <div className={`${cardBg} rounded-2xl shadow-xl p-6`}>
-      <div className="flex justify-between items-center mb-5">
+    <div className={`${cardBg} w-full max-w-full rounded-2xl shadow-xl p-4 sm:p-6`}>
+      <div className="flex flex-col gap-3 mb-5 min-[380px]:flex-row min-[380px]:items-center min-[380px]:justify-between">
         <h2 className={`text-lg font-semibold ${textColor}`}>{t.processedProducts}</h2>
         <button
           onClick={onAddRow}
-          className="bg-gradient-to-r from-green-500 to-green-600 hover:from-green-600 hover:to-green-700 text-white px-4 py-2 rounded-xl flex items-center gap-2 transition-all shadow-lg font-medium"
+          className="w-full bg-gradient-to-r from-green-500 to-green-600 hover:from-green-600 hover:to-green-700 text-white px-4 py-2 rounded-xl flex items-center justify-center gap-2 transition-all shadow-lg font-medium min-[380px]:w-auto"
         >
           <Plus size={18} /> {t.addRow}
         </button>
       </div>
 
-      <div className="rounded-xl w-full">
-        <table className="w-full text-sm table-fixed">
+      <div className="w-full max-w-full overflow-x-auto rounded-xl">
+        <table className="min-w-[1120px] w-full text-sm table-fixed">
           <thead className={`${headerBg} text-white`}>
             <tr>
               <th className="p-3 text-left font-semibold w-8">{t.colNum}</th>
