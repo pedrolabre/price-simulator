@@ -12,7 +12,7 @@ import { useParser } from './hooks/useParser';
 import { useExport } from './hooks/useExport';
 import { DEFAULT_CONFIG } from './constants/defaults';
 import { translations } from './constants/translations';
-import { appShellClasses } from './components/ui/themeClasses';
+import { appContentClasses, appShellClasses } from './components/ui/themeClasses';
 
 export default function App() {
   const [darkMode, setDarkMode] = useState(false);
@@ -63,7 +63,7 @@ export default function App() {
 
   return (
     <div className={appShellClasses(darkMode)}>
-      <div className="w-full max-w-[1440px] min-w-0 mx-auto">
+      <main className={appContentClasses()}>
         <Header
           darkMode={darkMode}
           onToggleDarkMode={() => setDarkMode(!darkMode)}
@@ -139,7 +139,7 @@ export default function App() {
           darkMode={darkMode}
           t={t}
         />
-      </div>
+      </main>
     </div>
   );
 }

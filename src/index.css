@@ -11,10 +11,16 @@
 html {
   font-size: 90%;
   width: 100%;
+  min-height: 100%;
+  background: #f6f7f9;
 }
 
 body {
-  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  min-height: 100%;
+  background: #f6f7f9;
+  color: #111827;
+  font-family: Inter, ui-sans-serif, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+  line-height: 1.45;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   width: 100%;
@@ -23,6 +29,7 @@ body {
 
 #root {
   width: 100%;
+  min-height: 100vh;
   min-width: 0;
 }
 

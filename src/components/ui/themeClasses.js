@@ -4,11 +4,15 @@ export function cx(...classes) {
 
 export function appShellClasses(darkMode) {
   return cx(
-    'min-h-screen overflow-x-hidden px-4 py-6 sm:p-6 lg:p-8 transition-all duration-500',
+    'min-h-screen overflow-x-hidden px-3 py-4 text-base transition-colors duration-200 sm:px-4 lg:px-6',
     darkMode
-      ? 'bg-gradient-to-br from-gray-900 via-gray-800 to-gray-900'
-      : 'bg-gradient-to-br from-gray-100 via-slate-100 to-gray-200'
+      ? 'bg-[#111318] text-[#f5f7fa]'
+      : 'bg-[#f6f7f9] text-[#111827]'
   );
+}
+
+export function appContentClasses() {
+  return 'app-shell mx-auto flex w-full max-w-[1320px] min-w-0 flex-col pb-6';
 }
 
 export function surfaceCardClasses(darkMode) {
@@ -22,16 +26,16 @@ export function surfaceCardClasses(darkMode) {
 
 export function textClasses(darkMode) {
   return {
-    title: darkMode ? 'text-white' : 'text-gray-900',
-    main: darkMode ? 'text-gray-100' : 'text-gray-900',
-    body: darkMode ? 'text-gray-200' : 'text-gray-700',
-    muted: darkMode ? 'text-gray-400' : 'text-gray-500',
-    softMuted: darkMode ? 'text-gray-400' : 'text-gray-600'
+    title: darkMode ? 'text-[#f5f7fa]' : 'text-[#111827]',
+    main: darkMode ? 'text-[#f5f7fa]' : 'text-[#111827]',
+    body: darkMode ? 'text-[#d4d8df]' : 'text-[#374151]',
+    muted: darkMode ? 'text-[#9ca3af]' : 'text-[#6b7280]',
+    softMuted: darkMode ? 'text-[#9ca3af]' : 'text-[#4b5563]'
   };
 }
 
 const inputSizes = {
-  header: 'px-3 py-2 text-sm rounded-xl',
+  header: 'h-9 px-2.5 text-[0.82rem] rounded-xl',
   md: 'p-3 rounded-xl',
   textarea: 'p-4 rounded-xl',
   compact: 'p-2 text-sm rounded-lg',
@@ -63,6 +67,8 @@ const buttonSizes = {
   action: 'px-3 py-2.5 rounded-xl shadow-md backdrop-blur-sm text-sm sm:px-4 sm:text-base whitespace-nowrap',
   icon: 'p-3 rounded-2xl shadow-lg backdrop-blur-lg',
   iconLang: 'p-2 rounded-2xl shadow-lg backdrop-blur-lg',
+  topbarIcon: 'h-9 w-9 rounded-xl shadow-sm',
+  topbarLang: 'h-9 w-9 rounded-xl shadow-sm',
   iconPlain: 'p-1 rounded-lg'
 };
 
@@ -91,6 +97,9 @@ export function buttonVariantClasses(variant, darkMode) {
     header: darkMode
       ? 'bg-white/10 hover:bg-white/20'
       : 'bg-gray-900/80 hover:bg-gray-900',
+    topbar: darkMode
+      ? 'border border-white/10 bg-[#303744] text-white shadow-[0_8px_18px_rgba(0,0,0,0.22)] hover:-translate-y-px hover:bg-[#3a4352]'
+      : 'border border-transparent bg-[#303744] text-white shadow-[0_8px_18px_rgba(24,31,43,0.18)] hover:-translate-y-px hover:bg-[#232a35]',
     iconDanger: 'text-red-600 hover:text-red-800'
   };
 
