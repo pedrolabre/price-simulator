@@ -12,9 +12,9 @@ import { useParser } from './hooks/useParser';
 import { useExport } from './hooks/useExport';
 import { DEFAULT_CONFIG } from './constants/defaults';
 import { translations } from './constants/translations';
+import { appShellClasses } from './components/ui/themeClasses';
 
 export default function App() {
-  // Estados principais
   const [darkMode, setDarkMode] = useState(false);
   const [lang, setLang] = useState('pt');
   const t = translations[lang];
@@ -26,19 +26,16 @@ export default function App() {
   const [fornecedorPadrao, setFornecedorPadrao] = useState('');
   const [showPreview, setShowPreview] = useState(false);
   const [showExportModal, setShowExportModal] = useState(false);
-  const [exportType, setExportType] = useState(null); // 'csv' ou 'pdf'
+  const [exportType, setExportType] = useState(null); // 'xls', 'html' or 'pdf'
   const [empresa, setEmpresa] = useState('');
 
-  // Hooks customizados
   const { products, addProducts, updateProduct, deleteProduct, addEmptyRow, clearProducts } = useProducts();
   const { parse } = useParser();
   const { exportXLS, exportHTML, exportPDF } = useExport();
 
-  // Configurações para cálculos
   const config = { ipi, frete, margem, freteEmbutido, empresa, t };
   const { calculations, totals } = useCalculations(products, config);
 
-  // Handlers
   const handleProcessText = () => {
     const parsedProducts = parse(textInput, fornecedorPadrao);
     addProducts(parsedProducts);
@@ -64,16 +61,11 @@ export default function App() {
     addEmptyRow(fornecedorPadrao);
   };
 
-  // Estilos do background
-  const bgMain = darkMode 
-    ? 'bg-gradient-to-br from-gray-900 via-gray-800 to-gray-900' 
-    : 'bg-gradient-to-br from-gray-100 via-slate-100 to-gray-200';
-
   return (
-    <div className={`min-h-screen ${bgMain} overflow-x-hidden px-4 py-6 sm:p-6 lg:p-8 transition-all duration-500`}>
+    <div className={appShellClasses(darkMode)}>
       <div className="w-full max-w-[1440px] min-w-0 mx-auto">
-        <Header 
-          darkMode={darkMode} 
+        <Header
+          darkMode={darkMode}
           onToggleDarkMode={() => setDarkMode(!darkMode)}
           lang={lang}
           onToggleLang={() => setLang(l => l === 'pt' ? 'en' : 'pt')}

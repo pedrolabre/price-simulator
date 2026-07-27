@@ -1,45 +1,48 @@
 import React from 'react';
 import { Plus } from 'lucide-react';
 import TableRow from './TableRow';
+import Button from './ui/Button';
+import Card from './ui/Card';
+import {
+  cx,
+  softCellClasses,
+  tableHeaderClasses,
+  textClasses,
+  totalCellClasses
+} from './ui/themeClasses';
 
-export default function ProductTable({ 
-  products, 
+export default function ProductTable({
+  products,
   calculations,
   totals,
-  onAddRow, 
-  onUpdateProduct, 
-  onDeleteProduct, 
+  onAddRow,
+  onUpdateProduct,
+  onDeleteProduct,
   darkMode,
   t
 }) {
   if (products.length === 0) return null;
 
-  const cardBg = darkMode 
-  ? 'bg-white/10 backdrop-blur-2xl border border-white/20 shadow-2xl' 
-  : 'bg-white/70 backdrop-blur-2xl border border-gray-300/30 shadow-2xl';
-
-  const headerBg = darkMode 
-    ? 'bg-gradient-to-r from-red-600/80 to-red-700/80' 
-    : 'bg-gradient-to-r from-red-600 to-red-700';
-
-  const textColor = darkMode ? 'text-gray-200' : 'text-gray-700';
-  const textMain = darkMode ? 'text-gray-100' : 'text-gray-900';
+  const text = textClasses(darkMode);
 
   return (
-    <div className={`${cardBg} w-full max-w-full rounded-2xl shadow-xl p-4 sm:p-6`}>
+    <Card darkMode={darkMode} className="p-4 sm:p-6">
       <div className="flex flex-col gap-3 mb-5 min-[380px]:flex-row min-[380px]:items-center min-[380px]:justify-between">
-        <h2 className={`text-lg font-semibold ${textColor}`}>{t.processedProducts}</h2>
-        <button
+        <h2 className={cx('text-lg font-semibold', text.body)}>{t.processedProducts}</h2>
+        <Button
+          darkMode={darkMode}
+          variant="success"
+          size="sm"
           onClick={onAddRow}
-          className="w-full bg-gradient-to-r from-green-500 to-green-600 hover:from-green-600 hover:to-green-700 text-white px-4 py-2 rounded-xl flex items-center justify-center gap-2 transition-all shadow-lg font-medium min-[380px]:w-auto"
+          className="w-full min-[380px]:w-auto"
         >
           <Plus size={18} /> {t.addRow}
-        </button>
+        </Button>
       </div>
 
       <div className="w-full max-w-full overflow-x-auto rounded-xl">
         <table className="min-w-[1120px] w-full text-sm table-fixed">
-          <thead className={`${headerBg} text-white`}>
+          <thead className={tableHeaderClasses(darkMode)}>
             <tr>
               <th className="p-3 text-left font-semibold w-8">{t.colNum}</th>
               <th className="p-3 text-left font-semibold w-16">{t.colQty}</th>
@@ -70,22 +73,22 @@ export default function ProductTable({
               />
             ))}
           </tbody>
-          <tfoot className={`${darkMode ? 'bg-white/5' : 'bg-gray-100'} font-bold text-sm`}>
+          <tfoot className={cx(darkMode ? 'bg-white/5' : 'bg-gray-100', 'font-bold text-sm')}>
             <tr>
-              <td colSpan="4" className={`p-3 text-right ${textMain} uppercase tracking-wide`}>{t.grandTotals}</td>
-              <td className={`p-3 text-right ${darkMode ? 'bg-white/10' : 'bg-gray-200'} ${textMain}`}>R$ {totals.totalPrecoOriginal.toFixed(2)}</td>
-              <td className={`p-3 text-right ${darkMode ? 'bg-white/10' : 'bg-gray-200'} ${textMain}`}>R$ {totals.totalIPI.toFixed(2)}</td>
-              <td className={`p-3 text-right ${darkMode ? 'bg-white/10' : 'bg-gray-200'} ${textMain}`}>R$ {totals.totalFrete.toFixed(2)}</td>
+              <td colSpan="4" className={cx('p-3 text-right uppercase tracking-wide', text.main)}>{t.grandTotals}</td>
+              <td className={cx('p-3 text-right', softCellClasses(darkMode), text.main)}>R$ {totals.totalPrecoOriginal.toFixed(2)}</td>
+              <td className={cx('p-3 text-right', softCellClasses(darkMode), text.main)}>R$ {totals.totalIPI.toFixed(2)}</td>
+              <td className={cx('p-3 text-right', softCellClasses(darkMode), text.main)}>R$ {totals.totalFrete.toFixed(2)}</td>
               <td className="p-3"></td>
               <td className="p-3"></td>
-              <td className={`p-3 text-right ${darkMode ? 'bg-amber-500/20 text-amber-200' : 'bg-amber-100 text-amber-800'}`}>R$ {totals.totalCustoReal.toFixed(2)}</td>
-              <td className={`p-3 text-right ${darkMode ? 'bg-green-500/20 text-green-200' : 'bg-green-100 text-green-800'}`}>R$ {totals.totalPrecoVista.toFixed(2)}</td>
+              <td className={cx('p-3 text-right', totalCellClasses('amber', darkMode))}>R$ {totals.totalCustoReal.toFixed(2)}</td>
+              <td className={cx('p-3 text-right', totalCellClasses('green', darkMode))}>R$ {totals.totalPrecoVista.toFixed(2)}</td>
               <td className="p-3"></td>
               <td></td>
             </tr>
           </tfoot>
         </table>
       </div>
-    </div>
+    </Card>
   );
 }
