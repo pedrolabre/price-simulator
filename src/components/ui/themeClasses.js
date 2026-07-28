@@ -103,6 +103,7 @@ const buttonSizes = {
   sm: 'px-4 py-2 rounded-xl text-sm shadow-lg',
   md: 'px-4 py-2.5 rounded-xl shadow-md',
   lg: 'px-6 py-3 rounded-xl font-semibold shadow-lg',
+  modal: 'h-10 px-4 rounded-md text-sm font-semibold shadow-none',
   action: 'px-3 py-2.5 rounded-xl shadow-md backdrop-blur-sm text-sm sm:px-4 sm:text-base whitespace-nowrap',
   summaryAction: 'h-8 px-2.5 rounded-md border text-xs shadow-none backdrop-blur-none sm:px-3 whitespace-nowrap',
   primaryCompact: 'h-9 px-4 rounded-md text-sm font-semibold shadow-none',
@@ -121,6 +122,12 @@ export function buttonVariantClasses(variant, darkMode) {
     solidSuccess: 'bg-green-600 hover:bg-green-700 text-white',
     solidDanger: 'bg-red-500 hover:bg-red-600 text-white',
     neutral: 'bg-gray-500 hover:bg-gray-600 text-white',
+    secondary: darkMode
+      ? 'border border-white/10 bg-[#171b22] text-[#d4d8df] hover:bg-[#202631]'
+      : 'border border-[#d8dee7] bg-white text-[#374151] hover:bg-[#f8f9fb]',
+    dangerSoft: darkMode
+      ? 'border border-[#5a2e25] bg-[#3b211b] text-[#ffb8a7] hover:bg-[#4a2b22]'
+      : 'border border-[#ffded0] bg-[#fff1ea] text-[#b93a20] hover:bg-[#ffe8dc]',
     subtleGreen: darkMode
       ? 'bg-green-500/20 hover:bg-green-500/30 text-green-300'
       : 'bg-green-500/10 hover:bg-green-500/20 text-green-700',
@@ -299,13 +306,15 @@ export function totalCellClasses(tone, darkMode) {
 
 export function modalOverlayClasses(darkMode) {
   return cx(
-    'fixed inset-0 z-50 flex items-center justify-center p-4 backdrop-blur-sm',
-    darkMode ? 'bg-black/70' : 'bg-black/50'
+    'fixed inset-0 z-50 grid place-items-center overflow-y-auto p-3 backdrop-blur-[7px] sm:p-5',
+    darkMode ? 'bg-[#05070b]/75' : 'bg-[#0d121a]/60'
   );
 }
 
 export function modalPanelClasses(darkMode) {
-  return darkMode ? 'bg-gray-900 border border-white/10' : 'bg-white border border-gray-200';
+  return darkMode
+    ? 'border border-white/10 bg-[#171b22] text-[#f5f7fa] shadow-[0_24px_70px_rgba(0,0,0,0.46)]'
+    : 'border border-[#e2e6ec] bg-white text-[#111827] shadow-[0_20px_55px_rgba(17,24,39,0.18)]';
 }
 
 export function modalHeaderClasses() {
@@ -314,6 +323,6 @@ export function modalHeaderClasses() {
 
 export function modalFooterClasses(darkMode) {
   return darkMode
-    ? 'bg-gradient-to-t from-gray-900 to-transparent'
-    : 'bg-gradient-to-t from-gray-100 to-transparent';
+    ? 'border-white/10 bg-[#202631]'
+    : 'border-[#e2e6ec] bg-[#f8f9fb]';
 }

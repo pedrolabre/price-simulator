@@ -16,12 +16,6 @@ export default function StatusBar({
 }) {
   const text = textClasses(darkMode);
 
-  const handleClearClick = () => {
-    if (window.confirm(t.confirmClear(productCount))) {
-      onClear();
-    }
-  };
-
   return (
     <Card
       darkMode={darkMode}
@@ -42,7 +36,7 @@ export default function StatusBar({
           </div>
         </div>
         <div className="grid w-full grid-cols-2 gap-1.5 min-[520px]:grid-cols-3 md:flex md:w-auto md:flex-wrap md:justify-end">
-          <Button darkMode={darkMode} variant="actionClear" size="summaryAction" onClick={handleClearClick} className="w-full md:w-auto">
+          <Button darkMode={darkMode} variant="actionClear" size="summaryAction" onClick={onClear} className="w-full md:w-auto">
             <Trash2 size={14} className="flex-shrink-0" /> {t.clear}
           </Button>
           <Button darkMode={darkMode} variant="actionPreview" size="summaryAction" onClick={onPreview} className="w-full md:w-auto">

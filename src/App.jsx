@@ -6,6 +6,7 @@ import ConfigPanel from './components/ConfigPanel';
 import ProductTable from './components/ProductTable';
 import PreviewModal from './components/PreviewModal';
 import ExportModal from './components/ExportModal';
+import ConfirmModal from './components/ConfirmModal';
 import { useProducts } from './hooks/useProducts';
 import { useCalculations } from './hooks/useCalculations';
 import { useParser } from './hooks/useParser';
@@ -26,6 +27,7 @@ export default function App() {
   const [fornecedorPadrao, setFornecedorPadrao] = useState('');
   const [showPreview, setShowPreview] = useState(false);
   const [showExportModal, setShowExportModal] = useState(false);
+  const [showClearConfirm, setShowClearConfirm] = useState(false);
   const [exportType, setExportType] = useState(null); // 'xls', 'html' or 'pdf'
   const [empresa, setEmpresa] = useState('');
 
@@ -61,6 +63,10 @@ export default function App() {
     addEmptyRow(fornecedorPadrao);
   };
 
+  const handleConfirmClear = () => {
+    clearProducts();
+  };
+
   return (
     <div className={appShellClasses(darkMode)}>
       <main className={appContentClasses()}>
@@ -82,7 +88,7 @@ export default function App() {
             onExportHTML={() => handleOpenExportModal('html')}
             onExportPDF={() => handleOpenExportModal('pdf')}
             onPreview={() => setShowPreview(true)}
-            onClear={clearProducts}
+            onClear={() => setShowClearConfirm(true)}
             t={t}
           />
         )}
@@ -138,6 +144,14 @@ export default function App() {
           onClose={() => setShowExportModal(false)}
           onExport={handleExport}
           exportType={exportType}
+          darkMode={darkMode}
+          t={t}
+        />
+        <ConfirmModal
+          isOpen={showClearConfirm}
+          onClose={() => setShowClearConfirm(false)}
+          onConfirm={handleConfirmClear}
+          productCount={products.length}
           darkMode={darkMode}
           t={t}
         />
