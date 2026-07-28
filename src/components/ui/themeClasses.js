@@ -56,7 +56,7 @@ const inputSizes = {
   textarea: 'p-4 rounded-xl',
   control: 'h-9 px-3 text-sm rounded-md',
   compact: 'p-2 text-sm rounded-lg',
-  table: 'p-1.5 rounded-lg'
+  table: 'h-8 px-2 py-0 text-[0.76rem] rounded-sm'
 };
 
 const focusRings = {
@@ -83,6 +83,18 @@ export function operationalInputClasses(darkMode, className = '') {
     darkMode
       ? '!border-white/10 !bg-[#10141b] !text-[#f5f7fa] placeholder:!text-[#697386] focus:!ring-white/10'
       : '!border-[#c7ced8] !bg-white !text-[#111827] placeholder:!text-[#99a3b3] focus:!ring-gray-900/5',
+    className
+  );
+}
+
+export function tableInputClasses(darkMode, className = '') {
+  return cx(
+    operationalInputClasses(darkMode),
+    '!h-8 !rounded-sm !border-transparent !bg-transparent !px-2 !py-0 text-[0.76rem]',
+    'hover:!border-[#c7ced8] focus:!border-[#8d98a7] focus:!ring-1',
+    darkMode
+      ? 'hover:!border-white/20 focus:!bg-[#10141b] focus:!ring-white/10'
+      : 'focus:!bg-white focus:!ring-gray-900/5',
     className
   );
 }
@@ -174,32 +186,112 @@ export function freightNoticeClasses(darkMode) {
     : 'bg-yellow-100/80 border-yellow-300/50 backdrop-blur-xl';
 }
 
-export function tableHeaderClasses(darkMode) {
+export function tableHeaderClasses() {
+  return 'text-white';
+}
+
+export function tableWrapClasses(darkMode) {
   return cx(
-    'text-white',
-    darkMode
-      ? 'bg-gradient-to-r from-red-600/80 to-red-700/80'
-      : 'bg-gradient-to-r from-red-600 to-red-700'
+    'w-full max-w-full overflow-auto rounded border shadow-none',
+    darkMode ? 'border-white/10 bg-[#10141b]' : 'border-[#d8dee7] bg-white'
+  );
+}
+
+export function productTableClasses() {
+  return 'w-full min-w-[1120px] table-fixed border-separate border-spacing-0 text-[0.74rem]';
+}
+
+export function tableHeaderCellClasses(darkMode, tone = 'default', className = '') {
+  const tones = {
+    default: darkMode
+      ? 'border-b-[#b91f32] border-r-white/20 bg-[#e62d43] text-white'
+      : 'border-b-[#a80d1f] border-r-white/20 bg-[#cf1026] text-white',
+    cost: darkMode
+      ? 'border-b-[#6d4c12] border-r-white/20 bg-[#8b641d] text-[#fff4d2]'
+      : 'border-b-[#d99e0d] border-r-white/25 bg-[#f3bd2f] text-[#302000]',
+    sale: darkMode
+      ? 'border-b-[#10482b] border-r-white/20 bg-[#17613b] text-[#eafff1]'
+      : 'border-b-[#176437] border-r-white/20 bg-[#23824a] text-white'
+  };
+
+  return cx(
+    'sticky top-0 z-10 whitespace-nowrap border-b border-r px-2 py-2 align-middle text-[0.66rem] font-bold leading-tight last:border-r-0',
+    tones[tone] || tones.default,
+    className
   );
 }
 
 export function tableRowClasses(darkMode) {
+  return cx('group transition-colors', darkMode ? 'text-[#f5f7fa]' : 'text-[#111827]');
+}
+
+export function tableCellClasses(darkMode, { align = 'left', interactive = true, className = '' } = {}) {
+  const alignClasses = {
+    left: 'text-left',
+    center: 'text-center',
+    right: 'text-right'
+  };
+
   return cx(
-    'border-b transition',
-    darkMode ? 'border-white/10 hover:bg-white/5' : 'border-gray-200 hover:bg-gray-50'
+    'border-b border-r px-[5px] py-[5px] align-middle last:border-r-0 transition-colors',
+    darkMode ? 'border-white/10 bg-[#10141b]' : 'border-[#dfe3e8] bg-white',
+    interactive && (darkMode ? 'group-hover:bg-[#1d242e]' : 'group-hover:bg-[#fbfcfd]'),
+    alignClasses[align] || alignClasses.left,
+    className
+  );
+}
+
+export function tableFooterCellClasses(darkMode, { align = 'left', tone = 'default', className = '' } = {}) {
+  const alignClasses = {
+    left: 'text-left',
+    center: 'text-center',
+    right: 'text-right'
+  };
+
+  const tones = {
+    default: darkMode ? 'bg-[#1d242e] text-[#d4d8df]' : 'bg-[#f8f9fb] text-[#374151]',
+    cost: totalCellClasses('amber', darkMode),
+    sale: totalCellClasses('green', darkMode)
+  };
+
+  return cx(
+    'border-r border-t px-[5px] py-[7px] align-middle text-[0.74rem] font-bold last:border-r-0',
+    darkMode ? 'border-white/10' : 'border-[#d0d7e2]',
+    alignClasses[align] || alignClasses.left,
+    tones[tone] || tones.default,
+    className
+  );
+}
+
+export function moneyCellClasses(darkMode, tone = 'muted', className = '') {
+  const tones = {
+    muted: darkMode ? 'text-[#9ca3af]' : 'text-[#596273]',
+    strong: darkMode ? 'font-bold text-[#f5f7fa]' : 'font-bold text-[#111827]',
+    sale: darkMode ? 'font-bold text-[#46d27f]' : 'font-bold text-[#0f8a45]',
+    costTotal: totalCellClasses('amberSoft', darkMode),
+    saleTotal: totalCellClasses('greenSoft', darkMode)
+  };
+
+  const isTotal = tone === 'costTotal' || tone === 'saleTotal';
+
+  return cx(
+    tableCellClasses(darkMode, { align: 'right', interactive: !isTotal }),
+    'whitespace-nowrap tabular-nums',
+    tones[tone] || tones.muted,
+    className
   );
 }
 
 export function softCellClasses(darkMode) {
-  return darkMode ? 'bg-white/10' : 'bg-gray-200';
+  return darkMode ? 'bg-[#1d242e]' : 'bg-[#f8f9fb]';
 }
 
 export function totalCellClasses(tone, darkMode) {
   const tones = {
-    amber: darkMode ? 'bg-amber-500/20 text-amber-200' : 'bg-amber-100 text-amber-800',
-    amberSoft: darkMode ? 'bg-amber-500/10 text-amber-300' : 'bg-amber-50 text-amber-700',
-    green: darkMode ? 'bg-green-500/20 text-green-200' : 'bg-green-100 text-green-800',
-    greenSoft: darkMode ? 'bg-green-500/10 text-green-300' : 'bg-green-50 text-green-700'
+    amber: darkMode ? 'bg-[#292419] text-[#f4c95f]' : 'bg-[#fff2bd] text-[#8a5a00]',
+    amberSoft: darkMode ? 'bg-[#292419] text-[#f4c95f]' : 'bg-[#fff2bd] text-[#8a5a00]',
+    green: darkMode ? 'bg-[#17261e] text-[#4bd486]' : 'bg-[#e9f7ef] text-[#0f8a45]',
+    greenSoft: darkMode ? 'bg-[#17261e] text-[#4bd486]' : 'bg-[#e9f7ef] text-[#0f8a45]'
   };
 
   return tones[tone];

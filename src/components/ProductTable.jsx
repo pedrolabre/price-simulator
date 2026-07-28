@@ -5,10 +5,13 @@ import Button from './ui/Button';
 import Card from './ui/Card';
 import {
   cx,
-  softCellClasses,
+  operationalCardClasses,
+  productTableClasses,
+  tableFooterCellClasses,
   tableHeaderClasses,
-  textClasses,
-  totalCellClasses
+  tableHeaderCellClasses,
+  tableWrapClasses,
+  textClasses
 } from './ui/themeClasses';
 
 export default function ProductTable({
@@ -26,68 +29,74 @@ export default function ProductTable({
   const text = textClasses(darkMode);
 
   return (
-    <Card darkMode={darkMode} className="p-4 sm:p-6">
-      <div className="flex flex-col gap-3 mb-5 min-[380px]:flex-row min-[380px]:items-center min-[380px]:justify-between">
-        <h2 className={cx('text-lg font-semibold', text.body)}>{t.processedProducts}</h2>
-        <Button
-          darkMode={darkMode}
-          variant="success"
-          size="sm"
-          onClick={onAddRow}
-          className="w-full min-[380px]:w-auto"
-        >
-          <Plus size={18} /> {t.addRow}
-        </Button>
-      </div>
+    <Card darkMode={darkMode} className={cx('overflow-hidden', operationalCardClasses(darkMode, { accent: 'top' }))}>
+      <div className="flex flex-col p-3 sm:p-[14px]">
+        <div className="mb-2 flex flex-col gap-2 min-[380px]:flex-row min-[380px]:items-center min-[380px]:justify-between">
+          <h2 className={cx('min-w-0 truncate text-sm font-bold leading-5', text.main)}>
+            {t.processedProducts}
+          </h2>
+          <Button
+            darkMode={darkMode}
+            variant="solidSuccess"
+            size="primaryCompact"
+            onClick={onAddRow}
+            className="w-full min-[380px]:w-auto"
+          >
+            <Plus size={15} className="flex-shrink-0" /> {t.addRow}
+          </Button>
+        </div>
 
-      <div className="w-full max-w-full overflow-x-auto rounded-xl">
-        <table className="min-w-[1120px] w-full text-sm table-fixed">
-          <thead className={tableHeaderClasses(darkMode)}>
-            <tr>
-              <th className="p-3 text-left font-semibold w-8">{t.colNum}</th>
-              <th className="p-3 text-left font-semibold w-16">{t.colQty}</th>
-              <th className="p-3 text-left font-semibold">{t.colDesc}</th>
-              <th className="p-3 text-left font-semibold w-28">{t.colSupplier}</th>
-              <th className="p-3 text-right font-semibold w-24">{t.colUnitPrice}</th>
-              <th className="p-3 text-right font-semibold w-20">{t.colIpi}</th>
-              <th className="p-3 text-right font-semibold w-20">{t.colFreight}</th>
-              <th className="p-3 text-right font-semibold w-24">{t.colRealCost}</th>
-              <th className="p-3 text-right font-semibold w-24">{t.colSalePrice}</th>
-              <th className="p-3 text-right font-semibold bg-amber-600/80 w-24">{t.colTotalCost}</th>
-              <th className="p-3 text-right font-semibold bg-green-600/80 w-24">{t.colTotalSale}</th>
-              <th className="p-3 text-left font-semibold w-36">{t.colObs}</th>
-              <th className="p-3 w-10"></th>
-            </tr>
-          </thead>
-          <tbody>
-            {products.map((product, index) => (
-              <TableRow
-                key={product.id}
-                product={product}
-                index={index}
-                calculations={calculations[product.id]}
-                onUpdate={onUpdateProduct}
-                onDelete={onDeleteProduct}
-                darkMode={darkMode}
-                t={t}
-              />
-            ))}
-          </tbody>
-          <tfoot className={cx(darkMode ? 'bg-white/5' : 'bg-gray-100', 'font-bold text-sm')}>
-            <tr>
-              <td colSpan="4" className={cx('p-3 text-right uppercase tracking-wide', text.main)}>{t.grandTotals}</td>
-              <td className={cx('p-3 text-right', softCellClasses(darkMode), text.main)}>R$ {totals.totalPrecoOriginal.toFixed(2)}</td>
-              <td className={cx('p-3 text-right', softCellClasses(darkMode), text.main)}>R$ {totals.totalIPI.toFixed(2)}</td>
-              <td className={cx('p-3 text-right', softCellClasses(darkMode), text.main)}>R$ {totals.totalFrete.toFixed(2)}</td>
-              <td className="p-3"></td>
-              <td className="p-3"></td>
-              <td className={cx('p-3 text-right', totalCellClasses('amber', darkMode))}>R$ {totals.totalCustoReal.toFixed(2)}</td>
-              <td className={cx('p-3 text-right', totalCellClasses('green', darkMode))}>R$ {totals.totalPrecoVista.toFixed(2)}</td>
-              <td className="p-3"></td>
-              <td></td>
-            </tr>
-          </tfoot>
-        </table>
+        <div className={cx(tableWrapClasses(darkMode), 'max-h-[62vh] lg:max-h-[calc(100vh-156px)]')}>
+          <table className={productTableClasses()}>
+            <thead className={tableHeaderClasses(darkMode)}>
+              <tr>
+                <th className={cx(tableHeaderCellClasses(darkMode), 'w-10 text-center')}>{t.colNum}</th>
+                <th className={cx(tableHeaderCellClasses(darkMode), 'w-[70px] text-center')}>{t.colQty}</th>
+                <th className={cx(tableHeaderCellClasses(darkMode), 'w-[250px]')}>{t.colDesc}</th>
+                <th className={cx(tableHeaderCellClasses(darkMode), 'w-[140px]')}>{t.colSupplier}</th>
+                <th className={cx(tableHeaderCellClasses(darkMode), 'w-[110px] text-right')}>{t.colUnitPrice}</th>
+                <th className={cx(tableHeaderCellClasses(darkMode), 'w-[92px] text-right')}>{t.colIpi}</th>
+                <th className={cx(tableHeaderCellClasses(darkMode), 'w-[92px] text-right')}>{t.colFreight}</th>
+                <th className={cx(tableHeaderCellClasses(darkMode), 'w-[110px] text-right')}>{t.colRealCost}</th>
+                <th className={cx(tableHeaderCellClasses(darkMode), 'w-[112px] text-right')}>{t.colSalePrice}</th>
+                <th className={cx(tableHeaderCellClasses(darkMode, 'cost'), 'w-[112px] text-right')}>{t.colTotalCost}</th>
+                <th className={cx(tableHeaderCellClasses(darkMode, 'sale'), 'w-[112px] text-right')}>{t.colTotalSale}</th>
+                <th className={cx(tableHeaderCellClasses(darkMode), 'w-[150px]')}>{t.colObs}</th>
+                <th className={cx(tableHeaderCellClasses(darkMode), 'w-10')} aria-label={t.delete || 'Remover'}></th>
+              </tr>
+            </thead>
+            <tbody>
+              {products.map((product, index) => (
+                <TableRow
+                  key={product.id}
+                  product={product}
+                  index={index}
+                  calculations={calculations[product.id]}
+                  onUpdate={onUpdateProduct}
+                  onDelete={onDeleteProduct}
+                  darkMode={darkMode}
+                  t={t}
+                />
+              ))}
+            </tbody>
+            <tfoot>
+              <tr>
+                <td colSpan="4" className={cx(tableFooterCellClasses(darkMode, { align: 'right' }), 'text-[0.66rem] uppercase')}>
+                  {t.grandTotals}
+                </td>
+                <td className={cx(tableFooterCellClasses(darkMode, { align: 'right' }), 'whitespace-nowrap tabular-nums')}>R$ {totals.totalPrecoOriginal.toFixed(2)}</td>
+                <td className={cx(tableFooterCellClasses(darkMode, { align: 'right' }), 'whitespace-nowrap tabular-nums')}>R$ {totals.totalIPI.toFixed(2)}</td>
+                <td className={cx(tableFooterCellClasses(darkMode, { align: 'right' }), 'whitespace-nowrap tabular-nums')}>R$ {totals.totalFrete.toFixed(2)}</td>
+                <td className={tableFooterCellClasses(darkMode)}></td>
+                <td className={tableFooterCellClasses(darkMode)}></td>
+                <td className={cx(tableFooterCellClasses(darkMode, { align: 'right', tone: 'cost' }), 'whitespace-nowrap tabular-nums')}>R$ {totals.totalCustoReal.toFixed(2)}</td>
+                <td className={cx(tableFooterCellClasses(darkMode, { align: 'right', tone: 'sale' }), 'whitespace-nowrap tabular-nums')}>R$ {totals.totalPrecoVista.toFixed(2)}</td>
+                <td className={tableFooterCellClasses(darkMode)}></td>
+                <td className={tableFooterCellClasses(darkMode)}></td>
+              </tr>
+            </tfoot>
+          </table>
+        </div>
       </div>
     </Card>
   );
