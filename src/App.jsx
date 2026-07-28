@@ -87,28 +87,30 @@ export default function App() {
           />
         )}
 
-        <ImportSection
-          textInput={textInput}
-          onTextChange={setTextInput}
-          onProcess={handleProcessText}
-          darkMode={darkMode}
-          t={t}
-        />
+        <div className="mb-6 grid w-full min-w-0 gap-4 lg:grid-cols-2 lg:items-stretch">
+          <ImportSection
+            textInput={textInput}
+            onTextChange={setTextInput}
+            onProcess={handleProcessText}
+            darkMode={darkMode}
+            t={t}
+          />
 
-        <ConfigPanel
-          ipi={ipi}
-          frete={frete}
-          margem={margem}
-          freteEmbutido={freteEmbutido}
-          fornecedorPadrao={fornecedorPadrao}
-          onIPIChange={setIpi}
-          onFreteChange={setFrete}
-          onMargemChange={setMargem}
-          onToggleFrete={() => setFreteEmbutido(!freteEmbutido)}
-          onFornecedorChange={setFornecedorPadrao}
-          darkMode={darkMode}
-          t={t}
-        />
+          <ConfigPanel
+            ipi={ipi}
+            frete={frete}
+            margem={margem}
+            freteEmbutido={freteEmbutido}
+            fornecedorPadrao={fornecedorPadrao}
+            onIPIChange={setIpi}
+            onFreteChange={setFrete}
+            onMargemChange={setMargem}
+            onToggleFrete={() => setFreteEmbutido(!freteEmbutido)}
+            onFornecedorChange={setFornecedorPadrao}
+            darkMode={darkMode}
+            t={t}
+          />
+        </div>
 
         <ProductTable
           products={products}

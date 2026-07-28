@@ -31,10 +31,10 @@ export function TextInput({ darkMode, size = 'md', focus = 'red', className = ''
   );
 }
 
-export function Textarea({ darkMode, focus = 'red', className = '', ...props }) {
+export function Textarea({ darkMode, size = 'textarea', focus = 'red', className = '', ...props }) {
   return (
     <textarea
-      className={inputClasses(darkMode, { size: 'textarea', focus, className })}
+      className={inputClasses(darkMode, { size, focus, className })}
       {...props}
     />
   );

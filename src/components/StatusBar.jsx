@@ -2,7 +2,7 @@ import React from 'react';
 import { Download, FileText, Eye, Trash2, Globe } from 'lucide-react';
 import Button from './ui/Button';
 import Card from './ui/Card';
-import { cx, textClasses } from './ui/themeClasses';
+import { cx, operationalCardClasses, textClasses } from './ui/themeClasses';
 
 export default function StatusBar({
   productCount,
@@ -23,36 +23,39 @@ export default function StatusBar({
   };
 
   return (
-    <Card darkMode={darkMode} className="p-4 mb-6 sm:p-5">
-      <div className="flex min-w-0 flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
-        <div className="flex min-w-0 items-center gap-4">
-          <div className="bg-gradient-to-br from-red-500 to-red-600 w-14 h-14 flex-shrink-0 rounded-xl flex items-center justify-center font-bold text-xl text-white shadow-lg">
+    <Card
+      darkMode={darkMode}
+      className={cx('mb-4 p-2.5 sm:p-3', operationalCardClasses(darkMode, { accent: 'left' }))}
+    >
+      <div className="flex min-w-0 flex-col gap-3 md:flex-row md:items-center md:justify-between">
+        <div className="flex min-w-0 items-center gap-3">
+          <div className="grid h-10 min-w-10 flex-shrink-0 place-items-center rounded bg-[#cf1026] px-2.5 text-sm font-bold text-white">
             {productCount}
           </div>
           <div className="min-w-0">
-            <div className={cx('text-xs uppercase tracking-wide', text.muted)}>
+            <div className={cx('text-[0.62rem] font-bold uppercase tracking-wider', text.muted)}>
               {t.totalProducts}
             </div>
-            <div className={cx('font-semibold', text.body)}>
+            <div className={cx('mt-0.5 truncate text-sm font-semibold', text.main)}>
               {t.itemsRegistered(productCount)}
             </div>
           </div>
         </div>
-        <div className="grid w-full grid-cols-2 gap-2 sm:flex sm:w-auto sm:flex-wrap sm:justify-end">
-          <Button darkMode={darkMode} variant="subtleOrange" size="action" onClick={handleClearClick}>
-            <Trash2 size={18} className="flex-shrink-0" /> {t.clear}
+        <div className="grid w-full grid-cols-2 gap-1.5 min-[520px]:grid-cols-3 md:flex md:w-auto md:flex-wrap md:justify-end">
+          <Button darkMode={darkMode} variant="actionClear" size="summaryAction" onClick={handleClearClick} className="w-full md:w-auto">
+            <Trash2 size={14} className="flex-shrink-0" /> {t.clear}
           </Button>
-          <Button darkMode={darkMode} variant="subtleBlue" size="action" onClick={onPreview}>
-            <Eye size={18} className="flex-shrink-0" /> {t.preview}
+          <Button darkMode={darkMode} variant="actionPreview" size="summaryAction" onClick={onPreview} className="w-full md:w-auto">
+            <Eye size={14} className="flex-shrink-0" /> {t.preview}
           </Button>
-          <Button darkMode={darkMode} variant="subtleGreen" size="action" onClick={onExportXLS}>
-            <Download size={18} className="flex-shrink-0" /> Excel
+          <Button darkMode={darkMode} variant="actionExcel" size="summaryAction" onClick={onExportXLS} className="w-full md:w-auto">
+            <Download size={14} className="flex-shrink-0" /> Excel
           </Button>
-          <Button darkMode={darkMode} variant="subtleTeal" size="action" onClick={onExportHTML}>
-            <Globe size={18} className="flex-shrink-0" /> HTML
+          <Button darkMode={darkMode} variant="actionHtml" size="summaryAction" onClick={onExportHTML} className="w-full md:w-auto">
+            <Globe size={14} className="flex-shrink-0" /> HTML
           </Button>
-          <Button darkMode={darkMode} variant="subtleRed" size="action" onClick={onExportPDF}>
-            <FileText size={18} className="flex-shrink-0" /> PDF
+          <Button darkMode={darkMode} variant="actionPdf" size="summaryAction" onClick={onExportPDF} className="w-full md:w-auto">
+            <FileText size={14} className="flex-shrink-0" /> PDF
           </Button>
         </div>
       </div>
