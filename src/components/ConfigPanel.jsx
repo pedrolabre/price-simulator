@@ -3,6 +3,7 @@ import { Building2, Percent, TrendingUp, Truck } from 'lucide-react';
 import Button from './ui/Button';
 import Card from './ui/Card';
 import Field, { TextInput } from './ui/Field';
+import { formatReverseMargin } from '../utils/formatters';
 import { cx, operationalCardClasses, operationalInputClasses, textClasses } from './ui/themeClasses';
 
 export default function ConfigPanel({
@@ -82,7 +83,7 @@ export default function ConfigPanel({
               <p className={cx('mt-1 min-h-[16px] text-[0.68rem] leading-4', text.muted)}>
                 <span className={darkMode ? 'text-green-400 font-semibold' : 'text-green-700 font-semibold'}>+{margem}%</span>
                 {' '}{t.marginHintAdd}{' \u2192 '}
-                <span className={darkMode ? 'text-red-400 font-semibold' : 'text-[#cf1026] font-semibold'}>-{(margem / (100 + margem) * 100).toFixed(2)}%</span>
+                <span className={darkMode ? 'text-red-400 font-semibold' : 'text-[#cf1026] font-semibold'}>-{formatReverseMargin(margem, { clampNonPositive: true })}%</span>
                 {' '}{t.marginHintRevert}
               </p>
             )}

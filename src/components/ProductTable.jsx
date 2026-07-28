@@ -3,6 +3,8 @@ import { Plus } from 'lucide-react';
 import TableRow from './TableRow';
 import Button from './ui/Button';
 import Card from './ui/Card';
+import { REPORT_COLUMNS, countTotalsLabelColumns, getColumnLabel } from '../constants/columns';
+import { formatMoney } from '../utils/formatters';
 import {
   cx,
   operationalCardClasses,
@@ -27,6 +29,7 @@ export default function ProductTable({
   if (products.length === 0) return null;
 
   const text = textClasses(darkMode);
+  const totalsLabelColSpan = countTotalsLabelColumns(REPORT_COLUMNS);
 
   return (
     <Card darkMode={darkMode} className={cx('overflow-hidden', operationalCardClasses(darkMode, { accent: 'top' }))}>
@@ -50,18 +53,14 @@ export default function ProductTable({
           <table className={productTableClasses()}>
             <thead className={tableHeaderClasses(darkMode)}>
               <tr>
-                <th className={cx(tableHeaderCellClasses(darkMode), 'w-10 text-center')}>{t.colNum}</th>
-                <th className={cx(tableHeaderCellClasses(darkMode), 'w-[70px] text-center')}>{t.colQty}</th>
-                <th className={cx(tableHeaderCellClasses(darkMode), 'w-[250px]')}>{t.colDesc}</th>
-                <th className={cx(tableHeaderCellClasses(darkMode), 'w-[140px]')}>{t.colSupplier}</th>
-                <th className={cx(tableHeaderCellClasses(darkMode), 'w-[110px] text-right')}>{t.colUnitPrice}</th>
-                <th className={cx(tableHeaderCellClasses(darkMode), 'w-[92px] text-right')}>{t.colIpi}</th>
-                <th className={cx(tableHeaderCellClasses(darkMode), 'w-[92px] text-right')}>{t.colFreight}</th>
-                <th className={cx(tableHeaderCellClasses(darkMode), 'w-[110px] text-right')}>{t.colRealCost}</th>
-                <th className={cx(tableHeaderCellClasses(darkMode), 'w-[112px] text-right')}>{t.colSalePrice}</th>
-                <th className={cx(tableHeaderCellClasses(darkMode, 'cost'), 'w-[112px] text-right')}>{t.colTotalCost}</th>
-                <th className={cx(tableHeaderCellClasses(darkMode, 'sale'), 'w-[112px] text-right')}>{t.colTotalSale}</th>
-                <th className={cx(tableHeaderCellClasses(darkMode), 'w-[150px]')}>{t.colObs}</th>
+                {REPORT_COLUMNS.map(column => (
+                  <th
+                    key={column.key}
+                    className={cx(tableHeaderCellClasses(darkMode, column.tableHeaderTone), column.tableHeaderClassName)}
+                  >
+                    {getColumnLabel(t, column, 'table')}
+                  </th>
+                ))}
                 <th className={cx(tableHeaderCellClasses(darkMode), 'w-10')} aria-label={t.delete || 'Remover'}></th>
               </tr>
             </thead>
@@ -81,16 +80,16 @@ export default function ProductTable({
             </tbody>
             <tfoot>
               <tr>
-                <td colSpan="4" className={cx(tableFooterCellClasses(darkMode, { align: 'right' }), 'text-[0.66rem] uppercase')}>
+                <td colSpan={totalsLabelColSpan} className={cx(tableFooterCellClasses(darkMode, { align: 'right' }), 'text-[0.66rem] uppercase')}>
                   {t.grandTotals}
                 </td>
-                <td className={cx(tableFooterCellClasses(darkMode, { align: 'right' }), 'whitespace-nowrap tabular-nums')}>R$ {totals.totalPrecoOriginal.toFixed(2)}</td>
-                <td className={cx(tableFooterCellClasses(darkMode, { align: 'right' }), 'whitespace-nowrap tabular-nums')}>R$ {totals.totalIPI.toFixed(2)}</td>
-                <td className={cx(tableFooterCellClasses(darkMode, { align: 'right' }), 'whitespace-nowrap tabular-nums')}>R$ {totals.totalFrete.toFixed(2)}</td>
+                <td className={cx(tableFooterCellClasses(darkMode, { align: 'right' }), 'whitespace-nowrap tabular-nums')}>{formatMoney(totals.totalPrecoOriginal)}</td>
+                <td className={cx(tableFooterCellClasses(darkMode, { align: 'right' }), 'whitespace-nowrap tabular-nums')}>{formatMoney(totals.totalIPI)}</td>
+                <td className={cx(tableFooterCellClasses(darkMode, { align: 'right' }), 'whitespace-nowrap tabular-nums')}>{formatMoney(totals.totalFrete)}</td>
                 <td className={tableFooterCellClasses(darkMode)}></td>
                 <td className={tableFooterCellClasses(darkMode)}></td>
-                <td className={cx(tableFooterCellClasses(darkMode, { align: 'right', tone: 'cost' }), 'whitespace-nowrap tabular-nums')}>R$ {totals.totalCustoReal.toFixed(2)}</td>
-                <td className={cx(tableFooterCellClasses(darkMode, { align: 'right', tone: 'sale' }), 'whitespace-nowrap tabular-nums')}>R$ {totals.totalPrecoVista.toFixed(2)}</td>
+                <td className={cx(tableFooterCellClasses(darkMode, { align: 'right', tone: 'cost' }), 'whitespace-nowrap tabular-nums')}>{formatMoney(totals.totalCustoReal)}</td>
+                <td className={cx(tableFooterCellClasses(darkMode, { align: 'right', tone: 'sale' }), 'whitespace-nowrap tabular-nums')}>{formatMoney(totals.totalPrecoVista)}</td>
                 <td className={tableFooterCellClasses(darkMode)}></td>
                 <td className={tableFooterCellClasses(darkMode)}></td>
               </tr>

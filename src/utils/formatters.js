@@ -1,14 +1,18 @@
-export function formatCurrency(value) {
-  return new Intl.NumberFormat('pt-BR', {
-    style: 'currency',
-    currency: 'BRL'
-  }).format(value);
+import { calculateReverseMargin } from './calculations';
+
+export function formatMoney(value, { decimalSeparator = '.' } = {}) {
+  const formatted = Number(value || 0).toFixed(2);
+  const normalized = decimalSeparator === ',' ? formatted.replace('.', ',') : formatted;
+
+  return `R$ ${normalized}`;
 }
 
-export function formatNumber(value, decimals = 2) {
-  return value.toFixed(decimals);
-}
+export function formatReverseMargin(margem, { clampNonPositive = false } = {}) {
+  const numericMargin = Number(margem || 0);
 
-export function formatDate(date = new Date()) {
-  return new Intl.DateTimeFormat('pt-BR').format(date);
+  if (clampNonPositive && numericMargin <= 0) {
+    return '0.00';
+  }
+
+  return calculateReverseMargin(numericMargin).toFixed(2);
 }

@@ -1,11 +1,10 @@
 import React from 'react';
 import Button from './ui/Button';
 import ModalShell from './ui/ModalShell';
+import { REPORT_COLUMNS, countTotalsLabelColumns, getColumnLabel } from '../constants/columns';
+import { getReportColumnValue, getReportTotalValue } from '../utils/exportRows';
+import { formatMoney, formatReverseMargin } from '../utils/formatters';
 import { cx, tableFooterCellClasses, textClasses } from './ui/themeClasses';
-
-function formatMoney(value) {
-  return `R$ ${Number(value || 0).toFixed(2)}`;
-}
 
 function previewHeaderCellClasses(darkMode, align = 'left') {
   const alignClasses = {
@@ -60,11 +59,36 @@ export default function PreviewModal({
   t
 }) {
   const text = textClasses(darkMode);
-  const marginReduction = config.margem > 0
-    ? (config.margem / (100 + config.margem) * 100).toFixed(2)
-    : '0.00';
+  const marginReduction = formatReverseMargin(config.margem, { clampNonPositive: true });
   const marginPrefix = config.margem >= 0 ? '+' : '';
   const subtitle = `${t.ipiLabel.replace(' (%)', '')}: ${config.ipi}% | ${t.freightLabel.replace(' (%)', '')}: ${config.frete}% | ${t.marginLabel.replace(' (%)', '')}: ${marginPrefix}${config.margem}% / -${marginReduction}%`;
+  const totalsLabelColSpan = countTotalsLabelColumns(REPORT_COLUMNS);
+
+  const previewCellConfig = {
+    numero: { align: 'center', tone: 'muted' },
+    quantidade: { align: 'center' },
+    descricao: { tone: 'strong', className: 'break-words font-semibold' },
+    fornecedor: { className: 'break-words' },
+    precoUnitario: { align: 'right', tone: 'muted' },
+    ipi: { align: 'right', tone: 'muted' },
+    frete: { align: 'right', tone: 'muted' },
+    custoRealUnitario: { align: 'right', tone: 'strong', strong: true },
+    precoVendaUnitario: { align: 'right', tone: 'sale', strong: true },
+    totalCusto: { align: 'right', tone: 'costTotal', strong: true },
+    totalVenda: { align: 'right', tone: 'saleTotal', strong: true },
+    observacoes: { className: 'break-words' }
+  };
+
+  const renderPreviewCell = (column, product, index) => {
+    const calc = calculations[product.id];
+    const { className, ...cellConfig } = previewCellConfig[column.key] || {};
+
+    return (
+      <td key={column.key} className={cx(previewCellClasses(darkMode, cellConfig), className)}>
+        {getReportColumnValue(column.key, product, calc, index, formatMoney)}
+      </td>
+    );
+  };
 
   return (
     <ModalShell
@@ -95,55 +119,44 @@ export default function PreviewModal({
         <table className="w-full min-w-[980px] table-fixed border-separate border-spacing-0 text-[0.74rem]">
           <thead>
             <tr>
-              <th className={cx(previewHeaderCellClasses(darkMode, 'center'), 'w-10')}>{t.colNum}</th>
-              <th className={cx(previewHeaderCellClasses(darkMode, 'center'), 'w-[70px]')}>{t.colQty}</th>
-              <th className={cx(previewHeaderCellClasses(darkMode), 'w-[250px]')}>{t.colDesc}</th>
-              <th className={cx(previewHeaderCellClasses(darkMode), 'w-[140px]')}>{t.colSupplier}</th>
-              <th className={cx(previewHeaderCellClasses(darkMode, 'right'), 'w-[110px]')}>{t.colUnitPrice}</th>
-              <th className={cx(previewHeaderCellClasses(darkMode, 'right'), 'w-[92px]')}>{t.colIpi}</th>
-              <th className={cx(previewHeaderCellClasses(darkMode, 'right'), 'w-[92px]')}>{t.colFreight}</th>
-              <th className={cx(previewHeaderCellClasses(darkMode, 'right'), 'w-[110px]')}>{t.colRealCost}</th>
-              <th className={cx(previewHeaderCellClasses(darkMode, 'right'), 'w-[112px]')}>{t.colSalePrice}</th>
-              <th className={cx(previewHeaderCellClasses(darkMode, 'right'), 'w-[112px]')}>{t.colTotalCost}</th>
-              <th className={cx(previewHeaderCellClasses(darkMode, 'right'), 'w-[112px]')}>{t.colTotalSale}</th>
-              <th className={cx(previewHeaderCellClasses(darkMode), 'w-[150px]')}>{t.colObs}</th>
+              {REPORT_COLUMNS.map(column => (
+                <th
+                  key={column.key}
+                  className={cx(previewHeaderCellClasses(darkMode, column.align), column.previewHeaderClassName)}
+                >
+                  {getColumnLabel(t, column, 'table')}
+                </th>
+              ))}
             </tr>
           </thead>
           <tbody>
-            {products.map((product, index) => {
-              const calc = calculations[product.id];
-
-              return (
-                <tr key={product.id}>
-                  <td className={previewCellClasses(darkMode, { align: 'center', tone: 'muted' })}>{index + 1}</td>
-                  <td className={previewCellClasses(darkMode, { align: 'center' })}>{product.quantidade}</td>
-                  <td className={cx(previewCellClasses(darkMode, { tone: 'strong' }), 'break-words font-semibold')}>{product.descricao}</td>
-                  <td className={cx(previewCellClasses(darkMode), 'break-words')}>{product.fornecedor || '-'}</td>
-                  <td className={previewCellClasses(darkMode, { align: 'right', tone: 'muted' })}>{formatMoney(product.preco)}</td>
-                  <td className={previewCellClasses(darkMode, { align: 'right', tone: 'muted' })}>{formatMoney(calc.ipiValue)}</td>
-                  <td className={previewCellClasses(darkMode, { align: 'right', tone: 'muted' })}>{formatMoney(calc.freteValue)}</td>
-                  <td className={previewCellClasses(darkMode, { align: 'right', tone: 'strong', strong: true })}>{formatMoney(calc.custoRealUnitario)}</td>
-                  <td className={previewCellClasses(darkMode, { align: 'right', tone: 'sale', strong: true })}>{formatMoney(calc.precoVistaUnitario)}</td>
-                  <td className={previewCellClasses(darkMode, { align: 'right', tone: 'costTotal', strong: true })}>{formatMoney(calc.totalCustoReal)}</td>
-                  <td className={previewCellClasses(darkMode, { align: 'right', tone: 'saleTotal', strong: true })}>{formatMoney(calc.totalPrecoVista)}</td>
-                  <td className={cx(previewCellClasses(darkMode), 'break-words')}>{product.observacoes || ''}</td>
-                </tr>
-              );
-            })}
+            {products.map((product, index) => (
+              <tr key={product.id}>
+                {REPORT_COLUMNS.map(column => renderPreviewCell(column, product, index))}
+              </tr>
+            ))}
           </tbody>
           <tfoot>
             <tr>
-              <td colSpan="4" className={cx(tableFooterCellClasses(darkMode, { align: 'right' }), 'text-[0.66rem] uppercase')}>
+              <td colSpan={totalsLabelColSpan} className={cx(tableFooterCellClasses(darkMode, { align: 'right' }), 'text-[0.66rem] uppercase')}>
                 {t.totals}
               </td>
-              <td className={cx(tableFooterCellClasses(darkMode, { align: 'right' }), 'whitespace-nowrap tabular-nums')}>{formatMoney(totals.totalPrecoOriginal)}</td>
-              <td className={cx(tableFooterCellClasses(darkMode, { align: 'right' }), 'whitespace-nowrap tabular-nums')}>{formatMoney(totals.totalIPI)}</td>
-              <td className={cx(tableFooterCellClasses(darkMode, { align: 'right' }), 'whitespace-nowrap tabular-nums')}>{formatMoney(totals.totalFrete)}</td>
-              <td className={tableFooterCellClasses(darkMode)}></td>
-              <td className={tableFooterCellClasses(darkMode)}></td>
-              <td className={cx(tableFooterCellClasses(darkMode, { align: 'right', tone: 'cost' }), 'whitespace-nowrap tabular-nums')}>{formatMoney(totals.totalCustoReal)}</td>
-              <td className={cx(tableFooterCellClasses(darkMode, { align: 'right', tone: 'sale' }), 'whitespace-nowrap tabular-nums')}>{formatMoney(totals.totalPrecoVista)}</td>
-              <td className={tableFooterCellClasses(darkMode)}></td>
+              {REPORT_COLUMNS.filter(column => !column.totalsLabelColumn).map(column => {
+                const totalValue = getReportTotalValue(column.key, totals, formatMoney);
+                const totalTone = column.key === 'totalCusto' ? 'cost' : column.key === 'totalVenda' ? 'sale' : 'default';
+
+                return (
+                  <td
+                    key={column.key}
+                    className={cx(
+                      tableFooterCellClasses(darkMode, { align: totalValue ? 'right' : 'left', tone: totalTone }),
+                      totalValue && 'whitespace-nowrap tabular-nums'
+                    )}
+                  >
+                    {totalValue}
+                  </td>
+                );
+              })}
             </tr>
           </tfoot>
         </table>

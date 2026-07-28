@@ -1,3 +1,24 @@
+import { countTotalsLabelColumns, getColumnLabel, getSelectedReportColumns } from '../constants/columns';
+import { getReportColumnValue, getReportTotalValue } from './exportRows';
+import { formatMoney, formatReverseMargin } from './formatters';
+
+function renderDataCell(column, value) {
+  if (column.key === 'numero') return `<td>${value}</td>`;
+  if (column.key === 'quantidade') return `<td>${value}</td>`;
+  if (column.key === 'descricao') return `<td>${value}</td>`;
+  if (column.key === 'fornecedor') return `<td>${value}</td>`;
+  if (column.key === 'precoUnitario') return `<td style="text-align:right">${value}</td>`;
+  if (column.key === 'ipi') return `<td style="text-align:right">${value}</td>`;
+  if (column.key === 'frete') return `<td style="text-align:right">${value}</td>`;
+  if (column.key === 'custoRealUnitario') return `<td style="text-align:right"><strong>${value}</strong></td>`;
+  if (column.key === 'precoVendaUnitario') return `<td style="text-align:right"><strong>${value}</strong></td>`;
+  if (column.key === 'totalCusto') return `<td style="background:#FFF8E7;text-align:right"><strong>${value}</strong></td>`;
+  if (column.key === 'totalVenda') return `<td style="background:#E8F5E9;text-align:right"><strong>${value}</strong></td>`;
+  if (column.key === 'observacoes') return `<td>${value}</td>`;
+
+  return '';
+}
+
 export function generatePDF(products, calculations, totals, config, selectedColumns = {}) {
   let printWindow;
 
@@ -13,79 +34,39 @@ export function generatePDF(products, calculations, totals, config, selectedColu
   }
   
   // Se nenhuma coluna foi selecionada, exporta todas
-  const hasSelection = Object.values(selectedColumns).some(v => v);
-  const cols = hasSelection ? selectedColumns : {
-    numero: true,
-    quantidade: true,
-    descricao: true,
-    fornecedor: true,
-    observacoes: true,
-    precoUnitario: true,
-    ipi: true,
-    frete: true,
-    custoRealUnitario: true,
-    precoVendaUnitario: true,
-    totalCusto: true,
-    totalVenda: true
-  };
+  const columns = getSelectedReportColumns(selectedColumns);
   
   // Cabeçalho da tabela com larguras fixas para table-layout: fixed
-  const cl = config.t ? config.t.xlsColLabels : null;
-  let tableHeader = '<tr>';
-  if (cols.numero) tableHeader += `<th style="width:3%">${cl ? cl.numero : '#'}</th>`;
-  if (cols.quantidade) tableHeader += `<th style="width:4%">${cl ? cl.quantidade : 'Qtd'}</th>`;
-  if (cols.descricao) tableHeader += `<th style="width:18%">${cl ? cl.descricao : 'Descri\u00e7\u00e3o'}</th>`;
-  if (cols.fornecedor) tableHeader += `<th style="width:12%">${cl ? cl.fornecedor : 'Fornecedor'}</th>`;
-  if (cols.precoUnitario) tableHeader += `<th style="width:8%;text-align:right">${cl ? cl.precoUnitario : 'Pre\u00e7o Unit.'}</th>`;
-  if (cols.ipi) tableHeader += `<th style="width:7%;text-align:right">${cl ? cl.ipi : 'IPI'}</th>`;
-  if (cols.frete) tableHeader += `<th style="width:7%;text-align:right">${cl ? cl.frete : 'Frete'}</th>`;
-  if (cols.custoRealUnitario) tableHeader += `<th style="width:9%;text-align:right">${cl ? cl.custoRealUnitario : 'Custo Real Unit.'}</th>`;
-  if (cols.precoVendaUnitario) tableHeader += `<th style="width:9%;text-align:right">${cl ? cl.precoVendaUnitario : 'Pre\u00e7o Venda Unit.'}</th>`;
-  if (cols.totalCusto) tableHeader += `<th style="width:9%;text-align:right">${cl ? cl.totalCusto : 'Total Custo'}</th>`;
-  if (cols.totalVenda) tableHeader += `<th style="width:9%;text-align:right">${cl ? cl.totalVenda : 'Total Venda'}</th>`;
-  if (cols.observacoes) tableHeader += `<th style="width:15%">${cl ? cl.observacoes : 'Observa\u00e7\u00f5es'}</th>`;
-  tableHeader += '</tr>';
+  const tableHeader = `<tr>${columns.map(column => {
+    const alignStyle = column.align === 'right' ? ';text-align:right' : '';
+    return `<th style="width:${column.pdfWidth}${alignStyle}">${getColumnLabel(config.t, column, 'export')}</th>`;
+  }).join('')}</tr>`;
 
   // Linhas de dados
   let tableRows = '';
   products.forEach((product, index) => {
     const calc = calculations[product.id];
-    tableRows += '<tr>';
-    if (cols.numero) tableRows += `<td>${index + 1}</td>`;
-    if (cols.quantidade) tableRows += `<td>${product.quantidade}</td>`;
-    if (cols.descricao) tableRows += `<td>${product.descricao}</td>`;
-    if (cols.fornecedor) tableRows += `<td>${product.fornecedor || '-'}</td>`;
-    if (cols.precoUnitario) tableRows += `<td style="text-align:right">R$ ${product.preco.toFixed(2)}</td>`;
-    if (cols.ipi) tableRows += `<td style="text-align:right">R$ ${calc.ipiValue.toFixed(2)}</td>`;
-    if (cols.frete) tableRows += `<td style="text-align:right">R$ ${calc.freteValue.toFixed(2)}</td>`;
-    if (cols.custoRealUnitario) tableRows += `<td style="text-align:right"><strong>R$ ${calc.custoRealUnitario.toFixed(2)}</strong></td>`;
-    if (cols.precoVendaUnitario) tableRows += `<td style="text-align:right"><strong>R$ ${calc.precoVistaUnitario.toFixed(2)}</strong></td>`;
-    if (cols.totalCusto) tableRows += `<td style="background:#FFF8E7;text-align:right"><strong>R$ ${calc.totalCustoReal.toFixed(2)}</strong></td>`;
-    if (cols.totalVenda) tableRows += `<td style="background:#E8F5E9;text-align:right"><strong>R$ ${calc.totalPrecoVista.toFixed(2)}</strong></td>`;
-    if (cols.observacoes) tableRows += `<td>${product.observacoes || ''}</td>`;
-    tableRows += '</tr>';
+    const cells = columns.map(column =>
+      renderDataCell(column, getReportColumnValue(column.key, product, calc, index, formatMoney))
+    );
+    tableRows += `<tr>${cells.join('')}</tr>`;
   });
 
   // Linha de totais
   let totalsRow = '<tr class="totals">';
-  let colspanCount = 0;
-  if (cols.numero) colspanCount++;
-  if (cols.quantidade) colspanCount++;
-  if (cols.descricao) colspanCount++;
-  if (cols.fornecedor) colspanCount++;
+  const colspanCount = countTotalsLabelColumns(columns);
   
   if (colspanCount > 0) {
     totalsRow += `<td colspan="${colspanCount}"><strong>${config.t ? config.t.grandTotalsLabel : 'TOTAIS GERAIS:'}</strong></td>`;
   }
   
-  if (cols.precoUnitario) totalsRow += `<td><strong>R$ ${totals.totalPrecoOriginal.toFixed(2)}</strong></td>`;
-  if (cols.ipi) totalsRow += `<td><strong>R$ ${totals.totalIPI.toFixed(2)}</strong></td>`;
-  if (cols.frete) totalsRow += `<td><strong>R$ ${totals.totalFrete.toFixed(2)}</strong></td>`;
-  if (cols.custoRealUnitario) totalsRow += `<td></td>`;
-  if (cols.precoVendaUnitario) totalsRow += `<td></td>`;
-  if (cols.totalCusto) totalsRow += `<td><strong>R$ ${totals.totalCustoReal.toFixed(2)}</strong></td>`;
-  if (cols.totalVenda) totalsRow += `<td><strong>R$ ${totals.totalPrecoVista.toFixed(2)}</strong></td>`;
-  if (cols.observacoes) totalsRow += `<td></td>`;
+  totalsRow += columns
+    .filter(column => !column.totalsLabelColumn)
+    .map(column => {
+      const totalValue = getReportTotalValue(column.key, totals, formatMoney);
+      return totalValue ? `<td><strong>${totalValue}</strong></td>` : '<td></td>';
+    })
+    .join('');
   totalsRow += '</tr>';
 
   printWindow.document.write(`
@@ -279,7 +260,7 @@ export function generatePDF(products, calculations, totals, config, selectedColu
           <div class="info-block">
             <div class="info-left">
               <strong>${config.t ? config.t.configLabel : 'Configura\u00e7\u00f5es:'}</strong>
-              IPI: ${config.ipi}% | Frete: ${config.frete}% ${config.freteEmbutido ? (config.t ? config.t.embedded_short : '(Embutido)') : (config.t ? config.t.notEmbedded_short : '(N\u00e3o Embutido)')} | ${config.t ? config.t.marginLabel.replace(' (%)', '') : 'Margem'}: +${config.margem}% / -${(config.margem / (100 + config.margem) * 100).toFixed(2)}%
+              IPI: ${config.ipi}% | Frete: ${config.frete}% ${config.freteEmbutido ? (config.t ? config.t.embedded_short : '(Embutido)') : (config.t ? config.t.notEmbedded_short : '(N\u00e3o Embutido)')} | ${config.t ? config.t.marginLabel.replace(' (%)', '') : 'Margem'}: +${config.margem}% / -${formatReverseMargin(config.margem)}%
             </div>
             <div class="info-badge">
               ${config.empresa ? `<div style="font-size:15px;margin-bottom:3px;">${config.empresa}</div>` : ''}

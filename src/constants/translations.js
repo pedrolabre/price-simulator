@@ -1,3 +1,5 @@
+const exportTypeLabel = (type) => type === 'xls' ? 'Excel (.xls)' : type === 'html' ? 'HTML' : 'PDF';
+
 export const translations = {
   pt: {
     // Header
@@ -65,12 +67,12 @@ export const translations = {
     // ExportModal
     selectColumns: 'Selecionar Colunas',
     chooseColumns: (type) =>
-      `Escolha quais colunas exportar para ${type === 'csv' ? 'Excel (.xls)' : type === 'html' ? 'HTML' : 'PDF'}`,
+      `Escolha quais colunas exportar para ${exportTypeLabel(type)}`,
     selectAll: 'Selecionar Tudo',
     deselectAll: 'Desmarcar Tudo',
     colsSelected: (n, total) => `${n} de ${total} colunas selecionadas`,
     cancel: 'Cancelar',
-    exportBtn: (type) => `Exportar ${type === 'csv' ? 'Excel (.xls)' : type === 'html' ? 'HTML' : 'PDF'}`,
+    exportBtn: (type) => `Exportar ${exportTypeLabel(type)}`,
 
     // Columns list
     columnLabels: {
@@ -188,12 +190,12 @@ export const translations = {
     // ExportModal
     selectColumns: 'Select Columns',
     chooseColumns: (type) =>
-      `Choose which columns to export to ${type === 'csv' ? 'Excel (.xls)' : type === 'html' ? 'HTML' : 'PDF'}`,
+      `Choose which columns to export to ${exportTypeLabel(type)}`,
     selectAll: 'Select All',
     deselectAll: 'Deselect All',
     colsSelected: (n, total) => `${n} of ${total} columns selected`,
     cancel: 'Cancel',
-    exportBtn: (type) => `Export ${type === 'csv' ? 'Excel (.xls)' : type === 'html' ? 'HTML' : 'PDF'}`,
+    exportBtn: (type) => `Export ${exportTypeLabel(type)}`,
 
     // Columns list
     columnLabels: {

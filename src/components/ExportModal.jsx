@@ -2,31 +2,8 @@ import React, { useState } from 'react';
 import { Check } from 'lucide-react';
 import Button from './ui/Button';
 import ModalShell from './ui/ModalShell';
+import { REPORT_COLUMNS, createColumnSelection, getColumnLabel } from '../constants/columns';
 import { cx, textClasses } from './ui/themeClasses';
-
-const columns = [
-  { key: 'numero' },
-  { key: 'quantidade' },
-  { key: 'descricao' },
-  { key: 'fornecedor' },
-  { key: 'precoUnitario' },
-  { key: 'ipi' },
-  { key: 'frete' },
-  { key: 'custoRealUnitario' },
-  { key: 'precoVendaUnitario' },
-  { key: 'totalCusto' },
-  { key: 'totalVenda' },
-  { key: 'observacoes' }
-];
-
-const defaultSelectedColumns = columns.reduce((acc, column) => {
-  acc[column.key] = true;
-  return acc;
-}, {});
-
-function getTranslationType(exportType) {
-  return exportType === 'xls' ? 'csv' : exportType;
-}
 
 export default function ExportModal({
   isOpen,
@@ -36,25 +13,21 @@ export default function ExportModal({
   darkMode,
   t
 }) {
-  const [selectedColumns, setSelectedColumns] = useState(defaultSelectedColumns);
+  const [selectedColumns, setSelectedColumns] = useState(createColumnSelection);
   const selectedCount = Object.values(selectedColumns).filter(Boolean).length;
   const noColumnsSelected = selectedCount === 0;
   const text = textClasses(darkMode);
-  const translationType = getTranslationType(exportType);
 
   const toggleColumn = (key) => {
     setSelectedColumns(prev => ({ ...prev, [key]: !prev[key] }));
   };
 
   const selectAll = () => {
-    setSelectedColumns(defaultSelectedColumns);
+    setSelectedColumns(createColumnSelection());
   };
 
   const deselectAll = () => {
-    setSelectedColumns(columns.reduce((acc, column) => {
-      acc[column.key] = false;
-      return acc;
-    }, {}));
+    setSelectedColumns(createColumnSelection(false));
   };
 
   const handleExport = () => {
@@ -75,7 +48,7 @@ export default function ExportModal({
       onClose={onClose}
       darkMode={darkMode}
       title={t.selectColumns}
-      subtitle={t.chooseColumns(translationType)}
+      subtitle={t.chooseColumns(exportType)}
       closeLabel={t.cancel}
       footer={(
         <>
@@ -90,7 +63,7 @@ export default function ExportModal({
             disabled={noColumnsSelected}
             className="w-full sm:w-auto"
           >
-            {t.exportBtn(translationType)}
+            {t.exportBtn(exportType)}
           </Button>
         </>
       )}
@@ -105,7 +78,7 @@ export default function ExportModal({
       </div>
 
       <div className="mt-4 grid grid-cols-1 gap-2 sm:grid-cols-2 sm:gap-3">
-        {columns.map(column => {
+        {REPORT_COLUMNS.map(column => {
           const checked = selectedColumns[column.key];
 
           return (
@@ -142,7 +115,7 @@ export default function ExportModal({
                 <Check size={14} />
               </span>
               <span className={cx('min-w-0 text-sm font-semibold leading-snug', checked ? text.main : text.body)}>
-                {t.columnLabels[column.key]}
+                {getColumnLabel(t, column, 'selection')}
               </span>
             </label>
           );
@@ -150,7 +123,7 @@ export default function ExportModal({
       </div>
 
       <div className={cx('mt-4 rounded-md border px-3 py-2 text-center text-sm', darkMode ? 'border-white/10 bg-[#202631]' : 'border-[#e2e6ec] bg-[#f8f9fb]', noColumnsSelected ? 'text-[#cf1026]' : text.softMuted)}>
-        {t.colsSelected(selectedCount, columns.length)}
+        {t.colsSelected(selectedCount, REPORT_COLUMNS.length)}
       </div>
     </ModalShell>
   );
