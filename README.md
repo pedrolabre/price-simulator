@@ -19,7 +19,7 @@
 [![React](https://img.shields.io/badge/React-18-20232A?style=for-the-badge&logo=react&logoColor=61DAFB)](#-tecnologias-utilizadas)
 [![Vite](https://img.shields.io/badge/Vite-7-646CFF?style=for-the-badge&logo=vite&logoColor=white)](#-tecnologias-utilizadas)
 [![Tailwind CSS](https://img.shields.io/badge/Tailwind_CSS-3-38B2AC?style=for-the-badge&logo=tailwindcss&logoColor=white)](#-tecnologias-utilizadas)
-[![Documentation](https://img.shields.io/badge/Docs-HTML-E31837?style=for-the-badge&logo=html5&logoColor=white)](./docs/PriceSim-Documentation-v1.html)
+[![Documentation](https://img.shields.io/badge/Docs-HTML-E31837?style=for-the-badge&logo=html5&logoColor=white)](./docs/PriceSim-Documentation-v2.html)
 [![License: MIT](https://img.shields.io/badge/License-MIT-E31837?style=for-the-badge)](#-licença)
 
 </div>
@@ -130,7 +130,7 @@ Para demonstrar a interface v02, com layout responsivo inspirado em fluxos SAP, 
 
 <br/>
 
-> 📑 **Documentação completa:** Acesse a documentação técnica interativa em [docs/PriceSim-Documentation-v1.html](docs/PriceSim-Documentation-v1.html)
+> 📑 **Documentação completa:** Acesse a documentação técnica interativa em [docs/PriceSim-Documentation-v2.html](docs/PriceSim-Documentation-v2.html)
 
 ---
 
@@ -167,7 +167,7 @@ npm install
 npm run dev
 ```
 
-Acesse a aplicação através do endereço `http://localhost:5173`.
+Acesse a aplicação através do endereço `http://localhost:3000`.
 
 ---
 

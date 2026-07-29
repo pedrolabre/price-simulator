@@ -19,7 +19,7 @@
 [![React](https://img.shields.io/badge/React-18-20232A?style=for-the-badge&logo=react&logoColor=61DAFB)](#-technologies-used)
 [![Vite](https://img.shields.io/badge/Vite-7-646CFF?style=for-the-badge&logo=vite&logoColor=white)](#-technologies-used)
 [![Tailwind CSS](https://img.shields.io/badge/Tailwind_CSS-3-38B2AC?style=for-the-badge&logo=tailwindcss&logoColor=white)](#-technologies-used)
-[![Documentation](https://img.shields.io/badge/Docs-HTML-E31837?style=for-the-badge&logo=html5&logoColor=white)](./docs/PriceSim-Documentation-v1.html)
+[![Documentation](https://img.shields.io/badge/Docs-HTML-E31837?style=for-the-badge&logo=html5&logoColor=white)](./docs/PriceSim-Documentation-v2.html)
 [![License: MIT](https://img.shields.io/badge/License-MIT-E31837?style=for-the-badge)](#-license)
 
 </div>
@@ -130,7 +130,7 @@ Expand the sections below to see the v02 interface, with a responsive layout ins
 
 <br/>
 
-> 📑 **Full documentation:** Access the interactive technical documentation at [docs/PriceSim-Documentation-v1.html](docs/PriceSim-Documentation-v1.html)
+> 📑 **Full documentation:** Access the interactive technical documentation at [docs/PriceSim-Documentation-v2.html](docs/PriceSim-Documentation-v2.html)
 
 ---
 
@@ -167,7 +167,7 @@ npm install
 npm run dev
 ```
 
-Open `http://localhost:5173` in your browser.
+Open `http://localhost:3000` in your browser.
 
 ---
 
