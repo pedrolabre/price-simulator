@@ -19,14 +19,14 @@
 [![React](https://img.shields.io/badge/React-18-20232A?style=for-the-badge&logo=react&logoColor=61DAFB)](#-technologies-used)
 [![Vite](https://img.shields.io/badge/Vite-7-646CFF?style=for-the-badge&logo=vite&logoColor=white)](#-technologies-used)
 [![Tailwind CSS](https://img.shields.io/badge/Tailwind_CSS-3-38B2AC?style=for-the-badge&logo=tailwindcss&logoColor=white)](#-technologies-used)
-[![Documentation](https://img.shields.io/badge/Docs-HTML-E31837?style=for-the-badge&logo=html5&logoColor=white)](./docs/PriceSim-Documentation-v1.html)
+[![Documentation](https://img.shields.io/badge/Docs-HTML-E31837?style=for-the-badge&logo=html5&logoColor=white)](./docs/PriceSim-Documentation-v2.html)
 [![License: MIT](https://img.shields.io/badge/License-MIT-E31837?style=for-the-badge)](#-license)
 
 </div>
 
 ---
 
-React SPA built for **product price simulation**. The application dynamically calculates taxes (IPI), freight rates (standard or built into cost), and profit margins (markup). It also features flexible free-text product list import and multi-format report exports (XLS, standalone HTML, and PDF).
+React SPA built for **product price simulation**. The application dynamically calculates taxes (IPI), freight rates (standard or built into cost), and profit margins (markup). It also features flexible free-text product list import and multi-format report exports (Excel/XLS, standalone HTML, and PDF).
 
 <div align="center">
 
@@ -68,7 +68,7 @@ React SPA built for **product price simulation**. The application dynamically ca
 - **Smart Import**: Imports products from free text (CSV, spreadsheet pastes, manual lists).
 - **Automatic Calculations**: Dynamically computes **IPI**, **freight** (standard or integrated), **real cost**, and **selling price** based on your target profit margin.
 - **Dynamic Table**: Renders an interactive table where all values are recalculated in real time as you edit.
-- **Flexible Exporting**: Exports your simulation data into **XLS** sheets, standalone **HTML** documents, or **PDF** files.
+- **Flexible Exporting**: Exports your simulation data into **Excel (.xls)** sheets, standalone **HTML** documents, or **PDF** files.
 - **Custom Columns**: Allows selecting which columns to include in or exclude from the generated reports.
 - **Print Preview**: Built-in preview modal to check your report layout before exporting.
 - **Native Support**: Full support for **light/dark mode** and translations (**PT-BR / EN**).
@@ -77,41 +77,35 @@ React SPA built for **product price simulation**. The application dynamically ca
 
 ## 📸 Screenshots
 
-Expand the sections below to see the modern and fully responsive design:
+Expand the sections below to see the v02 interface, with a responsive layout inspired by SAP-style workflows:
 
 <details>
 <summary>🖥️ Desktop Layout (Click to expand)</summary>
 <br/>
 
 <p align="center">
-  <b>Home Screen (Light Mode vs. Dark Mode)</b>
+  <b>Initial Panel & Products with Non-Embedded Freight</b>
 </p>
 <p align="center">
-  <img src="assets/screenshots/home-light-en.png" width="49%" alt="PriceSimulator — light mode home" />
-  <img src="assets/screenshots/home-dark-en.png" width="49%" alt="PriceSimulator — dark mode home" />
-</p>
-
-<p align="center">
-  <b>Products Table & Action Bar</b>
-</p>
-<p align="center">
-  <img src="assets/screenshots/products-table-en.png" width="49%" alt="PriceSimulator — products table" />
-  <img src="assets/screenshots/dashboard-actions-en.png" width="49%" alt="PriceSimulator — action bar" />
+  <img src="assets/screenshots/v02/EN-US/desktop-home-empty.png" width="49%" alt="PriceSimulator — initial panel without processed products" />
+  <img src="assets/screenshots/v02/EN-US/desktop-products-freight-not-embedded.png" width="49%" alt="PriceSimulator — processed products with non-embedded freight" />
 </p>
 
 <p align="center">
-  <b>Preview Modal & Column Selection</b>
+  <b>Embedded Freight & Manual Row Entry</b>
 </p>
 <p align="center">
-  <img src="assets/screenshots/preview-modal-en.png" width="49%" alt="PriceSimulator — preview modal" />
-  <img src="assets/screenshots/export-columns-modal-en.png" width="49%" alt="PriceSimulator — column selection" />
+  <img src="assets/screenshots/v02/EN-US/desktop-products-freight-embedded.png" width="49%" alt="PriceSimulator — processed products with embedded freight" />
+  <img src="assets/screenshots/v02/EN-US/desktop-add-product-row.png" width="49%" alt="PriceSimulator — manual row entry in the products table" />
 </p>
 
 <p align="center">
-  <b>Generated PDF Report</b>
+  <b>Preview, Column Selection & Confirmation</b>
 </p>
 <p align="center">
-  <img src="assets/screenshots/pdf-export-en.png" width="60%" alt="PriceSimulator — generated PDF" />
+  <img src="assets/screenshots/v02/EN-US/desktop-preview-modal.png" width="32%" alt="PriceSimulator — simulation preview modal" />
+  <img src="assets/screenshots/v02/EN-US/desktop-column-selection-modal.png" width="32%" alt="PriceSimulator — column selection modal" />
+  <img src="assets/screenshots/v02/EN-US/desktop-clear-confirmation-modal.png" width="32%" alt="PriceSimulator — clear simulation confirmation modal" />
 </p>
 
 </details>
@@ -122,14 +116,13 @@ Expand the sections below to see the modern and fully responsive design:
 
 <div align="center">
 
-| ☀️ Light Mode | 🌙 Dark Mode |
+| Initial Panel | Processed Products | Embedded Freight |
+| :---: | :---: | :---: |
+| <img src="assets/screenshots/v02/EN-US/mobile-home-empty.png" width="200" alt="Mobile — initial panel without products" /> | <img src="assets/screenshots/v02/EN-US/mobile-products-table.png" width="200" alt="Mobile — processed products table" /> | <img src="assets/screenshots/v02/EN-US/mobile-products-embedded-freight.png" width="200" alt="Mobile — products with embedded freight" /> |
+
+| Column Selection | Clear Confirmation |
 | :---: | :---: |
-| **Home Screen** | **Home Screen** |
-| <img src="assets/screenshots/mobile-home-light-en.png" width="220" alt="Mobile Home Light" /> | <img src="assets/screenshots/mobile-home-dark-en.png" width="220" alt="Mobile Home Dark" /> |
-| **Products Table** | **Products Table** |
-| <img src="assets/screenshots/mobile-products-table-light-en.png" width="220" alt="Mobile Table Light" /> | <img src="assets/screenshots/mobile-products-table-dark-en.png" width="220" alt="Mobile Table Dark" /> |
-| **Column Selection** | **Column Selection** |
-| <img src="assets/screenshots/mobile-export-columns-modal-light-en.png" width="220" alt="Mobile Export Light" /> | <img src="assets/screenshots/mobile-export-columns-modal-dark-en.png" width="220" alt="Mobile Export Dark" /> |
+| <img src="assets/screenshots/v02/EN-US/mobile-column-selection-modal.png" width="220" alt="Mobile — column selection modal" /> | <img src="assets/screenshots/v02/EN-US/mobile-clear-confirmation-modal.png" width="220" alt="Mobile — clear simulation confirmation" /> |
 
 </div>
 
@@ -137,7 +130,7 @@ Expand the sections below to see the modern and fully responsive design:
 
 <br/>
 
-> 📑 **Full documentation:** Access the interactive technical documentation at [docs/PriceSim-Documentation-v1.html](docs/PriceSim-Documentation-v1.html)
+> 📑 **Full documentation:** Access the interactive technical documentation at [docs/PriceSim-Documentation-v2.html](docs/PriceSim-Documentation-v2.html)
 
 ---
 
@@ -150,7 +143,7 @@ The project was built using the following technologies:
 - **Tailwind CSS** — Utility-first CSS framework for modern, responsive layouts
 - **Lucide React** — SVG icons collection optimized for React applications
 - **HTML5 / CSS3** — Core structure and basic web styling
-- **Vanilla JS (Generators)** — Custom native logic for XLS, HTML, and PDF conversion (free of large external dependencies)
+- **Vanilla JS (Generators)** — Custom native logic for Excel/XLS, HTML, and PDF conversion (free of large external dependencies)
 
 ---
 
@@ -174,7 +167,7 @@ npm install
 npm run dev
 ```
 
-Open `http://localhost:5173` in your browser.
+Open `http://localhost:3000` in your browser.
 
 ---
 
@@ -210,8 +203,8 @@ Adjust the global calculation standards in the header bar:
 | **Margin** | `100%` | Target markup/profit margin calculated over the real cost. |
 
 ### 📤 Export Simulation Reports
-1. In the top action bar, select your format: **XLS**, **HTML**, or **PDF**.
-2. In the column selection pop-up, choose which columns should appear in the report.
+1. In the top action bar, select your format: **Excel**, **HTML**, or **PDF**.
+2. In the column selection modal, choose which columns should appear in the report.
 3. Check the layout in the preview modal and click export/print.
 
 ---

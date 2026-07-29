@@ -1,92 +1,57 @@
-function sumTotals(products, calculations) {
-  return products.reduce((acc, product) => {
-    const calc = calculations[product.id];
-    return {
-      totalPreco: acc.totalPreco + (product.preco * product.quantidade),
-      totalIPI:   acc.totalIPI   + (calc.ipiValue * product.quantidade),
-      totalFrete: acc.totalFrete + (calc.freteValue * product.quantidade),
-      totalCusto: acc.totalCusto + calc.totalCustoReal,
-      totalVenda: acc.totalVenda + calc.totalPrecoVista
-    };
-  }, { totalPreco: 0, totalIPI: 0, totalFrete: 0, totalCusto: 0, totalVenda: 0 });
+import { countTotalsLabelColumns, getColumnLabel, getSelectedReportColumns } from '../constants/columns';
+import { calculateTotals } from './calculations';
+import { getReportColumnValue, getReportTotalValue } from './exportRows';
+import { formatMoney, formatReverseMargin } from './formatters';
+
+function renderDataCell(column, value) {
+  if (column.key === 'numero') return `<td style="text-align:center;color:#6b7280;font-weight:500">${value}</td>`;
+  if (column.key === 'quantidade') return `<td style="text-align:center">${value}</td>`;
+  if (column.key === 'descricao') return `<td style="font-weight:500;color:#111827">${value}</td>`;
+  if (column.key === 'fornecedor') return `<td style="color:#374151">${value}</td>`;
+  if (column.key === 'precoUnitario') return `<td style="text-align:right">${value}</td>`;
+  if (column.key === 'ipi') return `<td style="text-align:right;color:#6b7280">${value}</td>`;
+  if (column.key === 'frete') return `<td style="text-align:right;color:#6b7280">${value}</td>`;
+  if (column.key === 'custoRealUnitario') return `<td style="text-align:right;font-weight:600">${value}</td>`;
+  if (column.key === 'precoVendaUnitario') return `<td style="text-align:right;font-weight:600;color:#16a34a">${value}</td>`;
+  if (column.key === 'totalCusto') return `<td style="text-align:right;font-weight:700;background:#fffbeb;color:#92400e">${value}</td>`;
+  if (column.key === 'totalVenda') return `<td style="text-align:right;font-weight:700;background:#f0fdf4;color:#166534">${value}</td>`;
+  if (column.key === 'observacoes') return `<td style="color:#6b7280;font-style:italic">${value}</td>`;
+
+  return '';
 }
 
 export function generateHTML(products, calculations, config, selectedColumns = {}) {
-  const allColumns = {
-    numero: '#',
-    quantidade: 'Qtd',
-    descricao: 'Descrição',
-    fornecedor: 'Fornecedor',
-    precoUnitario: 'Preço Unit.',
-    ipi: 'IPI',
-    frete: 'Frete',
-    custoRealUnitario: 'Custo Real Unit.',
-    precoVendaUnitario: 'Preço Venda Unit.',
-    totalCusto: 'Total Custo',
-    totalVenda: 'Total Venda',
-    observacoes: 'Observações'
-  };
-
-  const hasSelection = Object.values(selectedColumns).some(v => v);
-  const cols = hasSelection ? selectedColumns : Object.keys(allColumns).reduce((acc, key) => ({ ...acc, [key]: true }), {});
-  const cl = config.t ? config.t.xlsColLabels : allColumns;
-
+  const columns = getSelectedReportColumns(selectedColumns);
   const date = new Date().toLocaleDateString('pt-BR', { day: '2-digit', month: '2-digit', year: 'numeric', hour: '2-digit', minute: '2-digit' });
+  const totalsCalc = calculateTotals(products, calculations);
 
-  const totalsCalc = sumTotals(products, calculations);
+  const headerCells = columns.map(column => {
+    const alignStyle = column.align === 'right' ? ';text-align:right' : '';
+    return `<th style="width:${column.htmlWidth}${alignStyle}">${getColumnLabel(config.t, column, 'export')}</th>`;
+  }).join('');
 
-  let headerCells = '';
-  if (cols.numero) headerCells += `<th style="width:3%">${cl.numero}</th>`;
-  if (cols.quantidade) headerCells += `<th style="width:4%">${cl.quantidade}</th>`;
-  if (cols.descricao) headerCells += `<th style="width:18%">${cl.descricao}</th>`;
-  if (cols.fornecedor) headerCells += `<th style="width:11%">${cl.fornecedor}</th>`;
-  if (cols.precoUnitario) headerCells += `<th style="width:8%;text-align:right">${cl.precoUnitario}</th>`;
-  if (cols.ipi) headerCells += `<th style="width:7%;text-align:right">${cl.ipi}</th>`;
-  if (cols.frete) headerCells += `<th style="width:7%;text-align:right">${cl.frete}</th>`;
-  if (cols.custoRealUnitario) headerCells += `<th style="width:9%;text-align:right">${cl.custoRealUnitario}</th>`;
-  if (cols.precoVendaUnitario) headerCells += `<th style="width:9%;text-align:right">${cl.precoVendaUnitario}</th>`;
-  if (cols.totalCusto) headerCells += `<th style="width:9%;text-align:right">${cl.totalCusto}</th>`;
-  if (cols.totalVenda) headerCells += `<th style="width:9%;text-align:right">${cl.totalVenda}</th>`;
-  if (cols.observacoes) headerCells += `<th style="width:15%">${cl.observacoes}</th>`;
-
-  // Montar linhas de dados
   let dataRows = '';
   products.forEach((product, index) => {
     const calc = calculations[product.id];
     const rowBg = index % 2 === 0 ? '#ffffff' : '#f9fafb';
-    dataRows += `<tr style="background:${rowBg}">`;
-    if (cols.numero) dataRows += `<td style="text-align:center;color:#6b7280;font-weight:500">${index + 1}</td>`;
-    if (cols.quantidade) dataRows += `<td style="text-align:center">${product.quantidade}</td>`;
-    if (cols.descricao) dataRows += `<td style="font-weight:500;color:#111827">${product.descricao}</td>`;
-    if (cols.fornecedor) dataRows += `<td style="color:#374151">${product.fornecedor || '-'}</td>`;
-    if (cols.precoUnitario) dataRows += `<td style="text-align:right">R$ ${product.preco.toFixed(2)}</td>`;
-    if (cols.ipi) dataRows += `<td style="text-align:right;color:#6b7280">R$ ${calc.ipiValue.toFixed(2)}</td>`;
-    if (cols.frete) dataRows += `<td style="text-align:right;color:#6b7280">R$ ${calc.freteValue.toFixed(2)}</td>`;
-    if (cols.custoRealUnitario) dataRows += `<td style="text-align:right;font-weight:600">R$ ${calc.custoRealUnitario.toFixed(2)}</td>`;
-    if (cols.precoVendaUnitario) dataRows += `<td style="text-align:right;font-weight:600;color:#16a34a">R$ ${calc.precoVistaUnitario.toFixed(2)}</td>`;
-    if (cols.totalCusto) dataRows += `<td style="text-align:right;font-weight:700;background:#fffbeb;color:#92400e">R$ ${calc.totalCustoReal.toFixed(2)}</td>`;
-    if (cols.totalVenda) dataRows += `<td style="text-align:right;font-weight:700;background:#f0fdf4;color:#166534">R$ ${calc.totalPrecoVista.toFixed(2)}</td>`;
-    if (cols.observacoes) dataRows += `<td style="color:#6b7280;font-style:italic">${product.observacoes || ''}</td>`;
-    dataRows += `</tr>`;
+    const rowCells = columns
+      .map(column => renderDataCell(column, getReportColumnValue(column.key, product, calc, index, formatMoney)))
+      .join('');
+
+    dataRows += `<tr style="background:${rowBg}">${rowCells}</tr>`;
   });
 
-  // Montar linha de totais
-  let colspanCount = 0;
-  if (cols.numero) colspanCount++;
-  if (cols.quantidade) colspanCount++;
-  if (cols.descricao) colspanCount++;
-  if (cols.fornecedor) colspanCount++;
-
+  const colspanCount = countTotalsLabelColumns(columns);
   let totalsRow = '<tr style="background:linear-gradient(135deg,#FDB913,#FFCA3A);font-weight:700;font-size:14px;color:#78350f">';
   if (colspanCount > 0) totalsRow += `<td colspan="${colspanCount}" style="text-align:right;padding:14px 10px;letter-spacing:0.5px">${config.t ? config.t.grandTotalsLabel : 'TOTAIS GERAIS:'}</td>`;
-  if (cols.precoUnitario) totalsRow += `<td style="text-align:right;padding:14px 10px">R$ ${totalsCalc.totalPreco.toFixed(2)}</td>`;
-  if (cols.ipi) totalsRow += `<td style="text-align:right;padding:14px 10px">R$ ${totalsCalc.totalIPI.toFixed(2)}</td>`;
-  if (cols.frete) totalsRow += `<td style="text-align:right;padding:14px 10px">R$ ${totalsCalc.totalFrete.toFixed(2)}</td>`;
-  if (cols.custoRealUnitario) totalsRow += `<td style="padding:14px 10px"></td>`;
-  if (cols.precoVendaUnitario) totalsRow += `<td style="padding:14px 10px"></td>`;
-  if (cols.totalCusto) totalsRow += `<td style="text-align:right;padding:14px 10px">R$ ${totalsCalc.totalCusto.toFixed(2)}</td>`;
-  if (cols.totalVenda) totalsRow += `<td style="text-align:right;padding:14px 10px">R$ ${totalsCalc.totalVenda.toFixed(2)}</td>`;
-  if (cols.observacoes) totalsRow += `<td style="padding:14px 10px"></td>`;
+  totalsRow += columns
+    .filter(column => !column.totalsLabelColumn)
+    .map(column => {
+      const totalValue = getReportTotalValue(column.key, totalsCalc, formatMoney);
+      const totalStyle = totalValue ? 'text-align:right;padding:14px 10px' : 'padding:14px 10px';
+      return `<td style="${totalStyle}">${totalValue}</td>`;
+    })
+    .join('');
   totalsRow += '</tr>';
 
   return `<!DOCTYPE html>
@@ -128,7 +93,7 @@ export function generateHTML(products, calculations, config, selectedColumns = {
       <div class="info-block">
         <div class="info-text">
           <strong>${config.t ? config.t.configLabel : 'Configurações:'}</strong>
-          IPI: ${config.ipi}% &nbsp;|&nbsp; Frete: ${config.frete}% ${config.freteEmbutido ? (config.t ? config.t.embedded_short : '(Embutido)') : (config.t ? config.t.notEmbedded_short : '(Não Embutido)')} &nbsp;|&nbsp; ${config.t ? config.t.marginLabel.replace(' (%)', '') : 'Margem'}: +${config.margem}% / -${(config.margem / (100 + config.margem) * 100).toFixed(2)}%
+          IPI: ${config.ipi}% &nbsp;|&nbsp; Frete: ${config.frete}% ${config.freteEmbutido ? (config.t ? config.t.embedded_short : '(Embutido)') : (config.t ? config.t.notEmbedded_short : '(Não Embutido)')} &nbsp;|&nbsp; ${config.t ? config.t.marginLabel.replace(' (%)', '') : 'Margem'}: +${config.margem}% / -${formatReverseMargin(config.margem)}%
         </div>
         <div class="badge">${config.t ? config.t.products_badge(products.length) : `${products.length} ${products.length === 1 ? 'produto' : 'produtos'}`}</div>
       </div>

@@ -1,0 +1,1899 @@
+<!DOCTYPE html>
+<html lang="pt-BR" data-lang="pt" data-theme="light">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="color-scheme" content="light dark" />
+  <title>PriceSimulator - Documentacao Tecnica v2</title>
+  <link rel="icon" type="image/svg+xml" href="../assets/icons/icon.svg" />
+  <style>
+    :root {
+      --bg: #f6f7f9;
+      --surface: #ffffff;
+      --surface-muted: #f8f9fb;
+      --surface-strong: #f1f3f6;
+      --text: #111827;
+      --text-body: #374151;
+      --text-muted: #6b7280;
+      --border: #d8dee7;
+      --border-soft: #e2e6ec;
+      --red: #cf1026;
+      --red-dark: #ad0b1d;
+      --green: #0f8a45;
+      --green-bg: #e9f7ef;
+      --amber: #8a5a00;
+      --amber-bg: #fff2bd;
+      --blue: #275ad8;
+      --blue-bg: #edf3ff;
+      --shadow: none;
+      --radius: 3px;
+      --container: 1360px;
+      --sidebar: 258px;
+    }
+
+    html[data-theme="dark"] {
+      --bg: #111318;
+      --surface: #171b22;
+      --surface-muted: #202631;
+      --surface-strong: #252b34;
+      --text: #f5f7fa;
+      --text-body: #d4d8df;
+      --text-muted: #9ca3af;
+      --border: rgba(255,255,255,.10);
+      --border-soft: rgba(255,255,255,.08);
+      --red: #e62d43;
+      --red-dark: #cf1026;
+      --green: #46d27f;
+      --green-bg: #17261e;
+      --amber: #f4c95f;
+      --amber-bg: #292419;
+      --blue: #8fb0ff;
+      --blue-bg: #17284d;
+    }
+
+    * { box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+    body {
+      margin: 0;
+      min-height: 100vh;
+      overflow-x: hidden;
+      background: var(--bg);
+      color: var(--text);
+      font-family: Inter, ui-sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      line-height: 1.45;
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+    }
+
+    a { color: inherit; }
+    code, pre { font-family: Consolas, "Courier New", monospace; }
+    img { max-width: 100%; display: block; }
+
+    .layout {
+      display: grid;
+      grid-template-columns: var(--sidebar) minmax(0, 1fr);
+      gap: 14px;
+      width: min(var(--container), calc(100% - 28px));
+      margin: 0 auto;
+      padding: 14px 0 56px;
+    }
+
+    .sidebar {
+      position: sticky;
+      top: 14px;
+      display: flex;
+      flex-direction: column;
+      height: calc(100vh - 28px);
+      min-height: 0;
+      overflow: hidden;
+      border: 1px solid var(--border);
+      border-left: 3px solid var(--red);
+      background: var(--surface);
+      box-shadow: var(--shadow);
+      scrollbar-width: none;
+      -ms-overflow-style: none;
+    }
+
+    .sidebar::-webkit-scrollbar { display: none; }
+
+    .brand {
+      padding: 11px 14px 9px;
+      border-bottom: 1px solid var(--border-soft);
+      flex: 0 0 auto;
+    }
+
+    .brand-row {
+      display: flex;
+      align-items: center;
+      min-width: 0;
+    }
+
+    .brand-title {
+      min-width: 0;
+      font-size: 15px;
+      font-weight: 820;
+      line-height: 1.1;
+      letter-spacing: 0;
+    }
+
+    .brand-title span { color: var(--red); }
+    .brand-sub {
+      margin-top: 2px;
+      font-size: 10px;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      letter-spacing: .08em;
+    }
+
+    .version-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 4px;
+      margin-top: 8px;
+      font-size: 11px;
+      color: var(--text-body);
+    }
+
+    .pill {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: fit-content;
+      min-height: 21px;
+      border: 1px solid var(--border);
+      background: var(--surface-muted);
+      padding: 2px 7px;
+      color: var(--text-body);
+      font-size: 10px;
+      font-weight: 700;
+      white-space: nowrap;
+    }
+
+    .pill.red {
+      border-color: color-mix(in srgb, var(--red) 45%, var(--border));
+      color: var(--red);
+      background: color-mix(in srgb, var(--red) 8%, var(--surface));
+    }
+
+    .nav {
+      display: flex;
+      flex: 1 1 auto;
+      flex-direction: column;
+      justify-content: space-between;
+      min-height: 0;
+      padding: 8px 0 10px;
+    }
+    .nav-group-label {
+      padding: 8px 16px 4px;
+      color: var(--text-muted);
+      font-size: 9px;
+      font-weight: 800;
+      letter-spacing: .12em;
+      text-transform: uppercase;
+    }
+
+    .nav a {
+      display: flex;
+      align-items: center;
+      min-height: 29px;
+      padding: 4px 16px;
+      border-right: 2px solid transparent;
+      color: var(--text-body);
+      text-decoration: none;
+      font-size: 12px;
+      font-weight: 650;
+    }
+
+    .nav a:hover,
+    .nav a.active {
+      background: var(--surface-muted);
+      border-right-color: var(--red);
+      color: var(--text);
+    }
+
+    .menu-toggle {
+      display: none;
+      align-items: center;
+      justify-content: center;
+      width: 34px;
+      height: 32px;
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      background: var(--surface-muted);
+      color: var(--text);
+      cursor: pointer;
+      flex: 0 0 auto;
+    }
+
+    .menu-toggle svg {
+      width: 18px;
+      height: 18px;
+      stroke: currentColor;
+      stroke-width: 2;
+      stroke-linecap: round;
+    }
+
+    .main {
+      min-width: 0;
+    }
+
+    .topbar {
+      position: sticky;
+      top: 0;
+      z-index: 20;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      min-height: 52px;
+      margin-bottom: 10px;
+      border: 1px solid var(--border);
+      border-left: 3px solid var(--red);
+      background: color-mix(in srgb, var(--surface) 92%, transparent);
+      backdrop-filter: blur(12px);
+      padding: 7px 10px;
+    }
+
+    .breadcrumb {
+      display: flex;
+      align-items: center;
+      gap: 7px;
+      min-width: 0;
+      color: var(--text-muted);
+      font-size: 12px;
+      font-weight: 650;
+    }
+
+    .breadcrumb-current {
+      min-width: 0;
+      overflow: hidden;
+      color: var(--text);
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    .actions {
+      display: flex;
+      flex-shrink: 0;
+      gap: 6px;
+    }
+
+    .control-button {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      width: 38px;
+      height: 34px;
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      background: var(--surface);
+      color: var(--text);
+      font-size: 12px;
+      font-weight: 800;
+      cursor: pointer;
+    }
+
+    .control-button:hover { background: var(--surface-muted); }
+
+    .theme-icon {
+      width: 17px;
+      height: 17px;
+      stroke: currentColor;
+      stroke-width: 2;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+      fill: none;
+    }
+
+    .theme-icon.sun-icon { display: none; }
+    html[data-theme="dark"] .theme-icon.moon-icon { display: none; }
+    html[data-theme="dark"] .theme-icon.sun-icon { display: block; }
+
+    .doc-version-button {
+      width: auto;
+      min-width: 74px;
+      padding: 0 10px;
+      text-decoration: none;
+      white-space: nowrap;
+    }
+
+    .doc-header {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 18px;
+      min-height: 58px;
+      margin-bottom: 12px;
+    }
+
+    .title-block { min-width: 0; }
+    h1 {
+      margin: 0;
+      font-size: 30px;
+      font-weight: 820;
+      line-height: 34px;
+      letter-spacing: 0;
+    }
+
+    .subtitle {
+      margin: 4px 0 0;
+      color: var(--text-muted);
+      font-size: 13.44px;
+      line-height: 18px;
+    }
+
+    .header-tags {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: flex-end;
+      gap: 6px;
+      max-width: 520px;
+    }
+
+    .status-card {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 8px;
+      margin-bottom: 10px;
+    }
+
+    .metric {
+      min-width: 0;
+      border: 1px solid var(--border);
+      background: var(--surface);
+      padding: 10px;
+    }
+
+    .metric-label {
+      color: var(--text-muted);
+      font-size: 10px;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: .08em;
+    }
+
+    .metric-value {
+      margin-top: 5px;
+      color: var(--text);
+      font-size: 18px;
+      font-weight: 820;
+      line-height: 1.15;
+    }
+
+    .metric-sub {
+      margin-top: 3px;
+      color: var(--text-muted);
+      font-size: 11px;
+    }
+
+    .section {
+      margin-top: 10px;
+      scroll-margin-top: 64px;
+    }
+
+    .section-head {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      min-height: 44px;
+      border: 1px solid var(--border);
+      border-top: 2px solid var(--red);
+      background: var(--surface);
+      padding: 10px 12px;
+    }
+
+    .section-head h2 {
+      margin: 0;
+      font-size: 16px;
+      line-height: 20px;
+      font-weight: 820;
+    }
+
+    .section-head p {
+      margin: 2px 0 0;
+      color: var(--text-muted);
+      font-size: 12px;
+    }
+
+    .section-body {
+      border: 1px solid var(--border);
+      border-top: 0;
+      background: var(--surface);
+      padding: 12px;
+    }
+
+    .grid-2,
+    .grid-3 {
+      display: grid;
+      gap: 10px;
+    }
+
+    .grid-2 { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    .grid-3 { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+
+    .card {
+      min-width: 0;
+      border: 1px solid var(--border);
+      background: var(--surface-muted);
+      padding: 12px;
+    }
+
+    .card h3,
+    .compact-title {
+      margin: 0 0 8px;
+      color: var(--text);
+      font-size: 13px;
+      font-weight: 820;
+      line-height: 17px;
+    }
+
+    .card p,
+    .section-body p,
+    li {
+      color: var(--text-body);
+      font-size: 13px;
+      line-height: 1.7;
+    }
+
+    .section-body p { margin: 0 0 10px; }
+    .card p:last-child,
+    .section-body p:last-child { margin-bottom: 0; }
+
+    .list {
+      margin: 0;
+      padding-left: 18px;
+    }
+
+    .list li { margin: 4px 0; }
+
+    .note {
+      border: 1px solid var(--border);
+      border-left: 3px solid var(--red);
+      background: var(--surface-muted);
+      padding: 10px 12px;
+      color: var(--text-body);
+      font-size: 13px;
+      line-height: 1.65;
+    }
+
+    .note.green { border-left-color: var(--green); background: var(--green-bg); }
+    .note.amber { border-left-color: var(--amber); background: var(--amber-bg); }
+    .note.blue { border-left-color: var(--blue); background: var(--blue-bg); }
+
+    .table-wrap {
+      width: 100%;
+      max-width: 100%;
+      overflow: auto;
+      border: 1px solid var(--border);
+      background: var(--surface);
+    }
+
+    table {
+      width: 100%;
+      min-width: 760px;
+      border-collapse: collapse;
+      font-size: 12px;
+    }
+
+    th {
+      background: var(--red);
+      color: #fff;
+      padding: 8px 9px;
+      border-right: 1px solid rgba(255,255,255,.22);
+      text-align: left;
+      font-size: 10px;
+      font-weight: 800;
+      line-height: 14px;
+      text-transform: uppercase;
+      letter-spacing: .04em;
+      white-space: nowrap;
+    }
+
+    td {
+      padding: 8px 9px;
+      border-right: 1px solid var(--border-soft);
+      border-bottom: 1px solid var(--border-soft);
+      color: var(--text-body);
+      vertical-align: top;
+    }
+
+    th:last-child,
+    td:last-child { border-right: 0; }
+
+    tr:nth-child(even) td { background: color-mix(in srgb, var(--surface-muted) 65%, transparent); }
+    .num { text-align: right; font-variant-numeric: tabular-nums; white-space: nowrap; }
+    .good { color: var(--green); font-weight: 800; }
+    .warn { color: var(--amber); font-weight: 800; }
+    .strong { color: var(--text); font-weight: 800; }
+
+    pre {
+      margin: 10px 0 0;
+      overflow: auto;
+      border: 1px solid var(--border);
+      background: #10141b;
+      color: #f5f7fa;
+      padding: 12px;
+      font-size: 12px;
+      line-height: 1.65;
+    }
+
+    code.inline {
+      border: 1px solid color-mix(in srgb, var(--red) 25%, var(--border));
+      background: color-mix(in srgb, var(--red) 8%, var(--surface));
+      color: var(--red);
+      padding: 1px 5px;
+      font-size: 12px;
+      white-space: nowrap;
+    }
+
+    .flow {
+      display: grid;
+      grid-template-columns: repeat(5, minmax(118px, 1fr));
+      gap: 8px;
+    }
+
+    .flow-step {
+      border: 1px solid var(--border);
+      background: var(--surface-muted);
+      padding: 10px;
+      min-height: 88px;
+    }
+
+    .step-num {
+      display: grid;
+      place-items: center;
+      width: 24px;
+      height: 24px;
+      margin-bottom: 7px;
+      background: var(--red);
+      color: #fff;
+      font-size: 11px;
+      font-weight: 820;
+    }
+
+    .diagram {
+      display: grid;
+      grid-template-columns: 1fr 1fr 1fr;
+      gap: 8px;
+    }
+
+    .diagram-col {
+      border: 1px solid var(--border);
+      background: var(--surface-muted);
+      padding: 10px;
+    }
+
+    .diagram-col h3 {
+      margin: 0 0 8px;
+      font-size: 12px;
+      color: var(--text);
+      text-transform: uppercase;
+      letter-spacing: .06em;
+    }
+
+    .file-list {
+      display: grid;
+      gap: 6px;
+      margin: 0;
+      padding: 0;
+      list-style: none;
+    }
+
+    .file-list li {
+      border: 1px solid var(--border);
+      background: var(--surface);
+      padding: 7px 8px;
+      font-size: 12px;
+      line-height: 1.45;
+    }
+
+    .screens {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 10px;
+    }
+
+    .screen {
+      border: 1px solid var(--border);
+      background: var(--surface-muted);
+      padding: 8px;
+    }
+
+    .screen img {
+      width: 100%;
+      border: 1px solid var(--border);
+      background: var(--surface);
+    }
+
+    .screen figcaption {
+      margin-top: 7px;
+      color: var(--text-muted);
+      font-size: 11px;
+      font-weight: 700;
+    }
+
+    .mobile-strip {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 10px;
+    }
+
+    .mobile-strip .screen img {
+      max-height: 520px;
+      object-fit: contain;
+      background: #0f1218;
+    }
+
+    .lang-en { display: none !important; }
+    html[data-lang="en"] .lang-pt { display: none !important; }
+    html[data-lang="en"] .lang-en { display: revert !important; }
+
+    @media (max-width: 980px) {
+      .layout {
+        display: block;
+        width: min(100%, calc(100% - 16px));
+        padding-top: 8px;
+      }
+
+      .sidebar {
+        position: sticky;
+        top: 8px;
+        z-index: 40;
+        height: auto;
+        max-height: calc(100vh - 16px);
+        margin-bottom: 8px;
+      }
+
+      .brand {
+        padding: 8px 10px;
+        border-bottom: 0;
+      }
+
+      .brand-row {
+        justify-content: space-between;
+        gap: 10px;
+      }
+
+      .brand-sub { font-size: 9px; }
+      .version-row { display: none; }
+      .menu-toggle { display: inline-flex; }
+
+      .nav {
+        display: none;
+        border-top: 1px solid var(--border-soft);
+        max-height: calc(100vh - 70px);
+        overflow: auto;
+        padding: 6px 8px 10px;
+        scrollbar-width: none;
+        -ms-overflow-style: none;
+      }
+
+      .nav::-webkit-scrollbar { display: none; }
+
+      .sidebar.is-open .nav {
+        display: grid;
+        gap: 2px;
+      }
+
+      .nav-group-label { padding: 7px 10px 3px; }
+      .nav a {
+        min-height: 32px;
+        padding: 6px 10px;
+      }
+
+      .topbar {
+        top: 58px;
+        z-index: 30;
+      }
+
+      .section { scroll-margin-top: 124px; }
+      .doc-header { flex-direction: column; }
+      .header-tags { justify-content: flex-start; }
+      .status-card { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+      .grid-2,
+      .grid-3,
+      .diagram,
+      .screens,
+      .mobile-strip { grid-template-columns: 1fr; }
+      .flow { grid-template-columns: 1fr; }
+      table { min-width: 680px; }
+    }
+
+    @media (max-width: 560px) {
+      h1 { font-size: 25px; line-height: 30px; }
+      .topbar { align-items: flex-start; }
+      .status-card { grid-template-columns: 1fr; }
+      .breadcrumb { font-size: 11px; }
+      .pill { white-space: normal; text-align: center; }
+    }
+
+    @media print {
+      .sidebar,
+      .topbar,
+      .actions { display: none; }
+      .layout { display: block; width: 100%; padding: 0; }
+      .section { break-inside: avoid; }
+      body { background: #fff; }
+    }
+  </style>
+</head>
+<body>
+  <div class="layout">
+    <aside class="sidebar" aria-label="Navegacao da documentacao">
+      <div class="brand">
+        <div class="brand-row">
+          <div>
+            <div class="brand-title"><span>Price</span>Simulator</div>
+            <div class="brand-sub lang-pt">Documentacao tecnica</div>
+            <div class="brand-sub lang-en">Technical documentation</div>
+          </div>
+          <button class="menu-toggle" id="navToggle" type="button" aria-controls="nav" aria-expanded="false" title="Abrir menu">
+            <svg viewBox="0 0 24 24" aria-hidden="true">
+              <path d="M4 7h16"></path>
+              <path d="M4 12h16"></path>
+              <path d="M4 17h16"></path>
+            </svg>
+          </button>
+        </div>
+        <div class="version-row">
+          <span class="pill red">Docs v2.0</span>
+          <span class="pill">App package 1.0.0</span>
+          <span class="pill">Atualizado em 29 jul 2026</span>
+        </div>
+      </div>
+
+      <nav class="nav" id="nav">
+        <div>
+          <div class="nav-group-label lang-pt">Produto</div>
+          <div class="nav-group-label lang-en">Product</div>
+          <a href="#intro" class="active" data-label-pt="Introducao" data-label-en="Introduction"><span class="lang-pt">Introducao</span><span class="lang-en">Introduction</span></a>
+          <a href="#changes" data-label-pt="Mudancas v2" data-label-en="v2 changes"><span class="lang-pt">Mudancas v2</span><span class="lang-en">v2 changes</span></a>
+          <a href="#overview" data-label-pt="Visao geral" data-label-en="Overview"><span class="lang-pt">Visao geral</span><span class="lang-en">Overview</span></a>
+          <a href="#features" data-label-pt="Funcionalidades" data-label-en="Features"><span class="lang-pt">Funcionalidades</span><span class="lang-en">Features</span></a>
+        </div>
+        <div>
+          <div class="nav-group-label lang-pt">Operacao</div>
+          <div class="nav-group-label lang-en">Operation</div>
+          <a href="#quickstart" data-label-pt="Quick start" data-label-en="Quick start">Quick start</a>
+          <a href="#usage" data-label-pt="Como usar" data-label-en="How to use"><span class="lang-pt">Como usar</span><span class="lang-en">How to use</span></a>
+          <a href="#flows" data-label-pt="Fluxos" data-label-en="Flows"><span class="lang-pt">Fluxos</span><span class="lang-en">Flows</span></a>
+          <a href="#exports" data-label-pt="Exports" data-label-en="Exports">Exports</a>
+        </div>
+        <div>
+          <div class="nav-group-label lang-pt">Tecnico</div>
+          <div class="nav-group-label lang-en">Technical</div>
+          <a href="#calculations" data-label-pt="Calculos" data-label-en="Calculations"><span class="lang-pt">Calculos</span><span class="lang-en">Calculations</span></a>
+          <a href="#requirements" data-label-pt="Requisitos" data-label-en="Requirements"><span class="lang-pt">Requisitos</span><span class="lang-en">Requirements</span></a>
+          <a href="#architecture" data-label-pt="Arquitetura" data-label-en="Architecture"><span class="lang-pt">Arquitetura</span><span class="lang-en">Architecture</span></a>
+          <a href="#dev" data-label-pt="Desenvolvimento" data-label-en="Development"><span class="lang-pt">Desenvolvimento</span><span class="lang-en">Development</span></a>
+        </div>
+        <div>
+          <div class="nav-group-label lang-pt">Evidencias</div>
+          <div class="nav-group-label lang-en">Evidence</div>
+          <a href="#screenshots" data-label-pt="Screenshots" data-label-en="Screenshots">Screenshots</a>
+        </div>
+      </nav>
+    </aside>
+
+    <main class="main">
+      <div class="topbar">
+        <div class="breadcrumb">
+          <span>PriceSimulator</span>
+          <span>/</span>
+          <span class="breadcrumb-current" id="currentSection">Introducao</span>
+        </div>
+        <div class="actions" aria-label="Acoes da documentacao">
+          <a class="control-button doc-version-button" href="./PriceSim-Documentation-v1.html" title="Abrir documentacao v1.0">Docs v1.0</a>
+          <button class="control-button" id="langToggle" type="button" title="Alternar idioma">EN</button>
+          <button class="control-button" id="themeToggle" type="button" title="Ativar modo escuro" aria-label="Ativar modo escuro">
+            <svg class="theme-icon moon-icon" viewBox="0 0 24 24" aria-hidden="true">
+              <path d="M21 12.8A8.5 8.5 0 1 1 11.2 3a6.5 6.5 0 0 0 9.8 9.8Z"></path>
+            </svg>
+            <svg class="theme-icon sun-icon" viewBox="0 0 24 24" aria-hidden="true">
+              <circle cx="12" cy="12" r="4"></circle>
+              <path d="M12 2v2"></path>
+              <path d="M12 20v2"></path>
+              <path d="m4.93 4.93 1.41 1.41"></path>
+              <path d="m17.66 17.66 1.41 1.41"></path>
+              <path d="M2 12h2"></path>
+              <path d="M20 12h2"></path>
+              <path d="m6.34 17.66-1.41 1.41"></path>
+              <path d="m19.07 4.93-1.41 1.41"></path>
+            </svg>
+          </button>
+        </div>
+      </div>
+
+      <header class="doc-header">
+        <div class="title-block">
+          <h1 class="lang-pt">Simulador de Precos</h1>
+          <h1 class="lang-en">Price Simulator</h1>
+          <p class="subtitle lang-pt">Documentacao tecnica v2 alinhada a interface operacional atual, aos contratos de calculo e aos exportadores reais do codigo.</p>
+          <p class="subtitle lang-en">Technical documentation v2 aligned with the current operational interface, calculation contracts, and real export code.</p>
+        </div>
+        <div class="header-tags">
+          <span class="pill red">React 18</span>
+          <span class="pill">Vite 7.3.1</span>
+          <span class="pill">Tailwind CSS 3</span>
+          <span class="pill">PT-BR / EN-US</span>
+          <span class="pill">XLS / HTML / PDF</span>
+        </div>
+      </header>
+
+      <div class="status-card">
+        <div class="metric">
+          <div class="metric-label lang-pt">Tipo</div>
+          <div class="metric-label lang-en">Type</div>
+          <div class="metric-value">SPA</div>
+          <div class="metric-sub lang-pt">Aplicacao React client-side</div>
+          <div class="metric-sub lang-en">Client-side React app</div>
+        </div>
+        <div class="metric">
+          <div class="metric-label lang-pt">Servidor</div>
+          <div class="metric-label lang-en">Server</div>
+          <div class="metric-value">0 API</div>
+          <div class="metric-sub lang-pt">Sem backend ou banco</div>
+          <div class="metric-sub lang-en">No backend or database</div>
+        </div>
+        <div class="metric">
+          <div class="metric-label lang-pt">Porta dev</div>
+          <div class="metric-label lang-en">Dev port</div>
+          <div class="metric-value">3000</div>
+          <div class="metric-sub">vite.config.js</div>
+        </div>
+        <div class="metric">
+          <div class="metric-label lang-pt">Motor Node</div>
+          <div class="metric-label lang-en">Node engine</div>
+          <div class="metric-value">20.19+</div>
+          <div class="metric-sub lang-pt">Ou 22.12+, conforme Vite</div>
+          <div class="metric-sub lang-en">Or 22.12+, per Vite</div>
+        </div>
+      </div>
+
+      <section class="section" id="intro">
+        <div class="section-head">
+          <div>
+            <h2 class="lang-pt">Introducao</h2>
+            <h2 class="lang-en">Introduction</h2>
+            <p class="lang-pt">Proposito, publico e escopo atual do produto.</p>
+            <p class="lang-en">Purpose, audience, and current product scope.</p>
+          </div>
+          <span class="pill red">Contexto</span>
+        </div>
+        <div class="section-body">
+          <div class="lang-pt">
+            <p>O <strong>PriceSimulator</strong> e uma SPA em React criada para simular precos de venda a partir de listas de produtos, impostos, frete e margem. A versao 2 documentada aqui reflete a interface operacional atual: layout compacto, cards quadrados, tabela editavel por inputs diretos, modais consistentes e exportacao por selecao de colunas.</p>
+            <div class="grid-2">
+              <div class="card">
+                <h3>Proposito</h3>
+                <p>Reduzir planilhas manuais e padronizar simulacoes comerciais, mantendo todo o processamento no navegador do usuario.</p>
+              </div>
+              <div class="card">
+                <h3>Publico-alvo</h3>
+                <p>Compradores, analistas comerciais, equipes de vendas e gestores que precisam revisar custo real, preco de venda e totais antes de enviar uma cotacao.</p>
+              </div>
+            </div>
+            <div class="note amber" style="margin-top:10px"><strong>Limite importante:</strong> o app nao persiste produtos, configuracoes ou historico em servidor. Ao recarregar a pagina, a sessao volta ao estado inicial.</div>
+          </div>
+          <div class="lang-en">
+            <p><strong>PriceSimulator</strong> is a React SPA built to simulate selling prices from product lists, taxes, freight, and margin. Version 2 documented here reflects the current operational interface: compact layout, square cards, direct input editing in the table, consistent modals, and export by column selection.</p>
+            <div class="grid-2">
+              <div class="card">
+                <h3>Purpose</h3>
+                <p>Reduce manual spreadsheets and standardize commercial simulations while keeping all processing inside the user's browser.</p>
+              </div>
+              <div class="card">
+                <h3>Audience</h3>
+                <p>Buyers, commercial analysts, sales teams, and managers who need to review real cost, selling price, and totals before sending a quote.</p>
+              </div>
+            </div>
+            <div class="note amber" style="margin-top:10px"><strong>Important limit:</strong> the app does not persist products, settings, or history on a server. Reloading the page resets the session to its initial state.</div>
+          </div>
+        </div>
+      </section>
+
+      <section class="section" id="changes">
+        <div class="section-head">
+          <div>
+            <h2 class="lang-pt">Mudancas da branch de design</h2>
+            <h2 class="lang-en">Design branch changes</h2>
+            <p class="lang-pt">Comparacao real entre <code class="inline">main</code> e <code class="inline">design/interface-v2</code>.</p>
+            <p class="lang-en">Real comparison between <code class="inline">main</code> and <code class="inline">design/interface-v2</code>.</p>
+          </div>
+          <span class="pill red">main -> design/interface-v2</span>
+        </div>
+        <div class="section-body">
+          <div class="note blue" style="margin-bottom:10px">
+            <span class="lang-pt">Base tecnica desta revisao: <code class="inline">git diff main...design/interface-v2</code>, saindo de <code class="inline">main@7c3b7a3</code> para <code class="inline">design/interface-v2@e0e8224</code>. A tabela abaixo separa alteracoes funcionais, refatoracoes e ajustes visuais.</span>
+            <span class="lang-en">Technical baseline for this review: <code class="inline">git diff main...design/interface-v2</code>, from <code class="inline">main@7c3b7a3</code> to <code class="inline">design/interface-v2@e0e8224</code>. The table below separates functional changes, refactors, and visual updates.</span>
+          </div>
+          <div class="table-wrap">
+            <table>
+              <thead>
+                <tr>
+                  <th class="lang-pt">Area</th>
+                  <th class="lang-en">Area</th>
+                  <th class="lang-pt">Na branch main</th>
+                  <th class="lang-en">On main</th>
+                  <th class="lang-pt">Na branch design/interface-v2</th>
+                  <th class="lang-en">On design/interface-v2</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td class="strong">Shell / layout</td>
+                  <td><span class="lang-pt">App em pilha vertical, cards grandes com gradientes, blur e bordas arredondadas.</span><span class="lang-en">Vertical stacked app, large gradient cards, blur, and rounded borders.</span></td>
+                  <td><span class="lang-pt">Shell operacional compacto, largura maxima controlada, grid desktop em duas colunas e tabela ocupando a area principal quando ha produtos.</span><span class="lang-en">Compact operational shell, controlled max width, two-column desktop grid, and the table occupying the main area when products exist.</span></td>
+                </tr>
+                <tr>
+                  <td class="strong"><span class="lang-pt">Primitivas visuais</span><span class="lang-en">Visual primitives</span></td>
+                  <td><span class="lang-pt">Classes Tailwind repetidas dentro dos componentes.</span><span class="lang-en">Repeated Tailwind classes inside components.</span></td>
+                  <td><span class="lang-pt">Novos componentes e helpers: <code class="inline">Button</code>, <code class="inline">Card</code>, <code class="inline">Field</code>, <code class="inline">ModalShell</code> e <code class="inline">themeClasses.js</code>.</span><span class="lang-en">New components and helpers: <code class="inline">Button</code>, <code class="inline">Card</code>, <code class="inline">Field</code>, <code class="inline">ModalShell</code>, and <code class="inline">themeClasses.js</code>.</span></td>
+                </tr>
+                <tr>
+                  <td class="strong"><span class="lang-pt">Colunas</span><span class="lang-en">Columns</span></td>
+                  <td><span class="lang-pt">Ordem, labels e larguras ficavam duplicados em tabela, preview, modal e geradores.</span><span class="lang-en">Order, labels, and widths were duplicated across table, preview, modal, and generators.</span></td>
+                  <td><span class="lang-pt"><code class="inline">REPORT_COLUMNS</code> centraliza o contrato; <code class="inline">exportRows.js</code> centraliza valores por coluna e totais.</span><span class="lang-en"><code class="inline">REPORT_COLUMNS</code> centralizes the contract; <code class="inline">exportRows.js</code> centralizes per-column values and totals.</span></td>
+                </tr>
+                <tr>
+                  <td class="strong"><span class="lang-pt">Formatacao e parsing</span><span class="lang-en">Formatting and parsing</span></td>
+                  <td><span class="lang-pt">Edicoes numericas usavam <code class="inline">parseFloat</code> direto; moeda era renderizada com <code class="inline">toFixed</code> em varios pontos.</span><span class="lang-en">Numeric edits used direct <code class="inline">parseFloat</code>; money was rendered with <code class="inline">toFixed</code> in several places.</span></td>
+                  <td><span class="lang-pt">Entraram <code class="inline">parseNumberInput</code>, <code class="inline">parsePriceValue</code>, <code class="inline">formatMoney</code>, <code class="inline">formatNumberInput</code> e <code class="inline">formatReverseMargin</code>.</span><span class="lang-en">Added <code class="inline">parseNumberInput</code>, <code class="inline">parsePriceValue</code>, <code class="inline">formatMoney</code>, <code class="inline">formatNumberInput</code>, and <code class="inline">formatReverseMargin</code>.</span></td>
+                </tr>
+                <tr>
+                  <td class="strong">Frete</td>
+                  <td><span class="lang-pt">Contrato de calculo com dois modos: frete sobre preco unitario no modo embutido, ou sobre preco unitario + IPI no modo nao embutido.</span><span class="lang-en">Calculation contract with two modes: freight on unit price in embedded mode, or on unit price + tax in non-embedded mode.</span></td>
+                  <td><span class="lang-pt">Sem alteracao funcional no calculo. O <code class="inline">ConfigPanel</code> recebeu controle compacto, tooltip e classes visuais novas.</span><span class="lang-en">No functional calculation change. <code class="inline">ConfigPanel</code> received a compact control, tooltip, and new visual classes.</span></td>
+                </tr>
+                <tr>
+                  <td class="strong"><span class="lang-pt">Limpar simulacao</span><span class="lang-en">Clear simulation</span></td>
+                  <td><span class="lang-pt"><code class="inline">StatusBar</code> chamava <code class="inline">window.confirm</code> antes de limpar.</span><span class="lang-en"><code class="inline">StatusBar</code> called <code class="inline">window.confirm</code> before clearing.</span></td>
+                  <td><span class="lang-pt">Novo <code class="inline">ConfirmModal</code> controlado pelo <code class="inline">App</code>, preservando configuracoes e removendo apenas produtos.</span><span class="lang-en">New <code class="inline">ConfirmModal</code> controlled by <code class="inline">App</code>, preserving settings and removing only products.</span></td>
+                </tr>
+                <tr>
+                  <td class="strong">Exports</td>
+                  <td><span class="lang-pt">XLS, HTML e PDF montavam colunas, celulas e totais com logica propria e repetida.</span><span class="lang-en">XLS, HTML, and PDF built columns, cells, and totals with their own repeated logic.</span></td>
+                  <td><span class="lang-pt">Geradores usam <code class="inline">getSelectedReportColumns</code>, <code class="inline">getReportColumnValue</code>, <code class="inline">getReportTotalValue</code> e visual atualizado.</span><span class="lang-en">Generators use <code class="inline">getSelectedReportColumns</code>, <code class="inline">getReportColumnValue</code>, <code class="inline">getReportTotalValue</code>, plus refreshed visuals.</span></td>
+                </tr>
+                <tr>
+                  <td class="strong"><span class="lang-pt">Evidencias visuais</span><span class="lang-en">Visual evidence</span></td>
+                  <td><span class="lang-pt">Screenshots estavam no nivel raiz de <code class="inline">assets/screenshots</code> e representavam a interface anterior.</span><span class="lang-en">Screenshots lived at the root of <code class="inline">assets/screenshots</code> and represented the previous interface.</span></td>
+                  <td><span class="lang-pt">Screenshots antigos foram movidos para <code class="inline">v01</code> e novas capturas <code class="inline">v02/PT-BR</code> e <code class="inline">v02/EN-US</code> foram adicionadas.</span><span class="lang-en">Old screenshots moved to <code class="inline">v01</code>; new <code class="inline">v02/PT-BR</code> and <code class="inline">v02/EN-US</code> captures were added.</span></td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </section>
+
+      <section class="section" id="overview">
+        <div class="section-head">
+          <div>
+            <h2 class="lang-pt">Visao geral</h2>
+            <h2 class="lang-en">Overview</h2>
+            <p class="lang-pt">Fluxo macro do sistema e principais entradas e saidas.</p>
+            <p class="lang-en">High-level system flow plus main inputs and outputs.</p>
+          </div>
+          <span class="pill">SPA React</span>
+        </div>
+        <div class="section-body">
+          <div class="flow">
+            <div class="flow-step">
+              <div class="step-num">1</div>
+              <h3 class="compact-title lang-pt">Importar</h3>
+              <h3 class="compact-title lang-en">Import</h3>
+              <p class="lang-pt">Colar produtos em formatos aceitos pelo parser.</p>
+              <p class="lang-en">Paste products in parser-supported formats.</p>
+            </div>
+            <div class="flow-step">
+              <div class="step-num">2</div>
+              <h3 class="compact-title lang-pt">Configurar</h3>
+              <h3 class="compact-title lang-en">Configure</h3>
+              <p class="lang-pt">Informar empresa, fornecedor padrao, IPI, frete e margem.</p>
+              <p class="lang-en">Set company, default supplier, tax, freight, and margin.</p>
+            </div>
+            <div class="flow-step">
+              <div class="step-num">3</div>
+              <h3 class="compact-title lang-pt">Calcular</h3>
+              <h3 class="compact-title lang-en">Calculate</h3>
+              <p class="lang-pt">Hooks recalculam custo real, venda e totais.</p>
+              <p class="lang-en">Hooks recalculate real cost, sale price, and totals.</p>
+            </div>
+            <div class="flow-step">
+              <div class="step-num">4</div>
+              <h3 class="compact-title lang-pt">Revisar</h3>
+              <h3 class="compact-title lang-en">Review</h3>
+              <p class="lang-pt">Editar linhas, adicionar produtos e observacoes.</p>
+              <p class="lang-en">Edit rows, add products, and add notes.</p>
+            </div>
+            <div class="flow-step">
+              <div class="step-num">5</div>
+              <h3 class="compact-title lang-pt">Exportar</h3>
+              <h3 class="compact-title lang-en">Export</h3>
+              <p class="lang-pt">Selecionar colunas e gerar XLS, HTML ou PDF.</p>
+              <p class="lang-en">Select columns and generate XLS, HTML, or PDF.</p>
+            </div>
+          </div>
+          <div class="grid-2" style="margin-top:10px">
+            <div class="card">
+              <h3 class="lang-pt">Entradas</h3>
+              <h3 class="lang-en">Inputs</h3>
+              <ul class="list">
+                <li><span class="lang-pt">Texto de produtos importado no <code class="inline">ImportSection</code>.</span><span class="lang-en">Product text imported through <code class="inline">ImportSection</code>.</span></li>
+                <li><span class="lang-pt">Campos globais: empresa, fornecedor padrao, IPI, frete, margem e modo do frete.</span><span class="lang-en">Global fields: company, default supplier, tax, freight, margin, and freight mode.</span></li>
+                <li><span class="lang-pt">Edicoes diretas na tabela depois do processamento.</span><span class="lang-en">Direct table edits after processing.</span></li>
+              </ul>
+            </div>
+            <div class="card">
+              <h3 class="lang-pt">Saidas</h3>
+              <h3 class="lang-en">Outputs</h3>
+              <ul class="list">
+                <li><span class="lang-pt">Tabela calculada com 12 colunas e totais gerais.</span><span class="lang-en">Calculated table with 12 columns and grand totals.</span></li>
+                <li><span class="lang-pt">Preview em modal para revisao visual.</span><span class="lang-en">Modal preview for visual review.</span></li>
+                <li><span class="lang-pt">Arquivos <code class="inline">.xls</code>, <code class="inline">.html</code> e janela de impressao/PDF.</span><span class="lang-en"><code class="inline">.xls</code> and <code class="inline">.html</code> files plus a print/PDF window.</span></li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section class="section" id="features">
+        <div class="section-head">
+          <div>
+            <h2 class="lang-pt">Funcionalidades v2</h2>
+            <h2 class="lang-en">v2 Features</h2>
+            <p class="lang-pt">Mapa funcional do app atual e dos arquivos responsaveis.</p>
+            <p class="lang-en">Functional map of the current app and responsible files.</p>
+          </div>
+          <span class="pill">Feature map</span>
+        </div>
+        <div class="section-body">
+          <div class="table-wrap">
+            <table>
+              <thead>
+                <tr>
+                  <th class="lang-pt">Funcionalidade</th>
+                  <th class="lang-en">Feature</th>
+                  <th class="lang-pt">Comportamento documentado</th>
+                  <th class="lang-en">Documented behavior</th>
+                  <th class="lang-pt">Arquivos principais</th>
+                  <th class="lang-en">Main files</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td class="strong"><span class="lang-pt">Importacao de produtos</span><span class="lang-en">Product import</span></td>
+                  <td><span class="lang-pt">Processa texto livre, aplica fornecedor padrao, aceita multiplos formatos e limpa o campo apos processar.</span><span class="lang-en">Processes free text, applies the default supplier, accepts multiple formats, and clears the field after processing.</span></td>
+                  <td><code class="inline">ImportSection.jsx</code>, <code class="inline">useParser.js</code>, <code class="inline">parsers.js</code>, <code class="inline">useProducts.js</code></td>
+                </tr>
+                <tr>
+                  <td class="strong"><span class="lang-pt">Configuracoes globais</span><span class="lang-en">Global settings</span></td>
+                  <td><span class="lang-pt">Controla empresa, fornecedor padrao, IPI, frete, margem e modo de frete em estado local da sessao.</span><span class="lang-en">Controls company, default supplier, tax, freight, margin, and freight mode in local session state.</span></td>
+                  <td><code class="inline">Header.jsx</code>, <code class="inline">ConfigPanel.jsx</code>, <code class="inline">defaults.js</code></td>
+                </tr>
+                <tr>
+                  <td class="strong"><span class="lang-pt">Tabela editavel</span><span class="lang-en">Editable table</span></td>
+                  <td><span class="lang-pt">Exibe 12 colunas, inputs diretos, adicao/remocao de linhas e totais calculados.</span><span class="lang-en">Shows 12 columns, direct inputs, row add/delete actions, and calculated totals.</span></td>
+                  <td><code class="inline">ProductTable.jsx</code>, <code class="inline">TableRow.jsx</code>, <code class="inline">columns.js</code></td>
+                </tr>
+                <tr>
+                  <td class="strong">Preview</td>
+                  <td><span class="lang-pt">Abre modal com empresa, quantidade de produtos, colunas de relatorio e totais da simulacao.</span><span class="lang-en">Opens a modal with company, product count, report columns, and simulation totals.</span></td>
+                  <td><code class="inline">PreviewModal.jsx</code>, <code class="inline">ModalShell.jsx</code></td>
+                </tr>
+                <tr>
+                  <td class="strong"><span class="lang-pt">Exportacao</span><span class="lang-en">Export</span></td>
+                  <td><span class="lang-pt">Gera XLS, HTML e PDF usando selecao de colunas e valores compartilhados por contrato.</span><span class="lang-en">Generates XLS, HTML, and PDF using column selection and shared contract values.</span></td>
+                  <td><code class="inline">ExportModal.jsx</code>, <code class="inline">useExport.js</code>, <code class="inline">xlsGenerator.js</code>, <code class="inline">htmlGenerator.js</code>, <code class="inline">pdfGenerator.js</code></td>
+                </tr>
+                <tr>
+                  <td class="strong">Interface</td>
+                  <td><span class="lang-pt">Mantem tema claro/escuro, PT-BR/EN-US e layout responsivo operacional.</span><span class="lang-en">Keeps light/dark theme, PT-BR/EN-US, and responsive operational layout.</span></td>
+                  <td><code class="inline">App.jsx</code>, <code class="inline">Header.jsx</code>, <code class="inline">themeClasses.js</code>, <code class="inline">translations.js</code></td>
+                </tr>
+                <tr>
+                  <td class="strong"><span class="lang-pt">Limpeza da simulacao</span><span class="lang-en">Simulation clearing</span></td>
+                  <td><span class="lang-pt">Solicita confirmacao em modal, remove produtos e preserva configuracoes globais.</span><span class="lang-en">Requests confirmation in a modal, removes products, and preserves global settings.</span></td>
+                  <td><code class="inline">StatusBar.jsx</code>, <code class="inline">ConfirmModal.jsx</code>, <code class="inline">useProducts.js</code></td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+          <div class="note blue" style="margin-top:10px">
+            <span class="lang-pt">Esta matriz cobre o comportamento implementado na branch <code class="inline">design/interface-v2</code>, nao um roadmap.</span>
+            <span class="lang-en">This matrix covers the behavior implemented on <code class="inline">design/interface-v2</code>, not a roadmap.</span>
+          </div>
+        </div>
+      </section>
+
+      <section class="section" id="quickstart">
+        <div class="section-head">
+          <div>
+            <h2>Quick start</h2>
+            <p class="lang-pt">Como instalar, executar e gerar build local.</p>
+            <p class="lang-en">How to install, run, and build locally.</p>
+          </div>
+          <span class="pill">npm</span>
+        </div>
+        <div class="section-body">
+          <div class="grid-3">
+            <div class="card">
+              <h3>1. Requisitos</h3>
+              <p class="lang-pt">Use Node <strong>^20.19.0</strong> ou <strong>&gt;=22.12.0</strong>, conforme o engine do Vite 7.3.1 no lockfile.</p>
+              <p class="lang-en">Use Node <strong>^20.19.0</strong> or <strong>&gt;=22.12.0</strong>, matching Vite 7.3.1's lockfile engine.</p>
+              <pre><code>node -v
+npm -v</code></pre>
+            </div>
+            <div class="card">
+              <h3>2. Instalar</h3>
+              <p class="lang-pt">Execute na raiz do repositorio.</p>
+              <p class="lang-en">Run from the repository root.</p>
+              <pre><code>npm install</code></pre>
+            </div>
+            <div class="card">
+              <h3>3. Rodar</h3>
+              <p class="lang-pt">O Vite esta configurado para abrir na porta 3000.</p>
+              <p class="lang-en">Vite is configured to open on port 3000.</p>
+              <pre><code>npm run dev
+
+http://localhost:3000/</code></pre>
+            </div>
+          </div>
+          <div class="note blue" style="margin-top:10px">
+            <span class="lang-pt">Scripts disponiveis hoje em <code class="inline">package.json</code>: <code class="inline">dev</code>, <code class="inline">build</code> e <code class="inline">preview</code>. Nao ha scripts de lint ou teste declarados no package atual.</span>
+            <span class="lang-en">Scripts currently available in <code class="inline">package.json</code>: <code class="inline">dev</code>, <code class="inline">build</code>, and <code class="inline">preview</code>. There are no lint or test scripts declared in the current package.</span>
+          </div>
+        </div>
+      </section>
+
+      <section class="section" id="usage">
+        <div class="section-head">
+          <div>
+            <h2 class="lang-pt">Como usar</h2>
+            <h2 class="lang-en">How to use</h2>
+            <p class="lang-pt">Fluxos operacionais atuais da interface v2.</p>
+            <p class="lang-en">Current operational flows in the v2 interface.</p>
+          </div>
+          <span class="pill">UI v2</span>
+        </div>
+        <div class="section-body">
+          <div class="grid-2">
+            <div class="card">
+              <h3 class="lang-pt">Formatos aceitos pelo parser atual</h3>
+              <h3 class="lang-en">Formats accepted by the current parser</h3>
+              <pre><code>Produto A, 2, R$ 149,90
+Produto B, 1, 249.06
+5x Cabo USB R$ 29,90
+Monitor R$ 1.299,00
+Produto C | 3 | 10,50
+Produto D - 4 - $ 19.99
+Teclado; 2; 89,90</code></pre>
+              <p class="lang-pt">O parser tambem ignora cabecalho CSV quando a primeira linha contem produto e qtde, quantidade ou descricao.</p>
+              <p class="lang-en">The parser also skips a CSV header when the first line contains product and qty, quantity, or description.</p>
+            </div>
+            <div class="card">
+              <h3 class="lang-pt">Edicao apos processar</h3>
+              <h3 class="lang-en">Editing after processing</h3>
+              <ul class="list">
+                <li><span class="lang-pt">Adicionar linha manual usa o fornecedor padrao atual.</span><span class="lang-en">Adding a manual row uses the current default supplier.</span></li>
+                <li><span class="lang-pt">Quantidade e preco passam por <code class="inline">parseNumberInput</code>.</span><span class="lang-en">Quantity and price go through <code class="inline">parseNumberInput</code>.</span></li>
+                <li><span class="lang-pt">Descricao, fornecedor e observacoes sao tratados como texto.</span><span class="lang-en">Description, supplier, and notes are treated as text.</span></li>
+                <li><span class="lang-pt">O botao de lixeira remove apenas a linha correspondente.</span><span class="lang-en">The trash button removes only the matching row.</span></li>
+                <li><span class="lang-pt">Limpar simulacao exige confirmacao e preserva as configuracoes globais.</span><span class="lang-en">Clear simulation requires confirmation and preserves global settings.</span></li>
+              </ul>
+            </div>
+          </div>
+          <div class="grid-3" style="margin-top:10px">
+            <div class="card">
+              <h3>Empresa</h3>
+              <p class="lang-pt">Campo do header usado na previa e nos relatorios; quando vazio, a previa mostra "Nao informada".</p>
+              <p class="lang-en">Header field used in preview and reports; when empty, preview shows "Not informed".</p>
+            </div>
+            <div class="card">
+              <h3 class="lang-pt">Fornecedor padrao</h3>
+              <h3 class="lang-en">Default supplier</h3>
+              <p class="lang-pt">Aplicado aos produtos importados e a novas linhas manuais; cada linha ainda pode ser sobrescrita.</p>
+              <p class="lang-en">Applied to imported products and new manual rows; each row can still be overwritten.</p>
+            </div>
+            <div class="card">
+              <h3 class="lang-pt">Tema e idioma</h3>
+              <h3 class="lang-en">Theme and language</h3>
+              <p class="lang-pt">Alternancia em estado React local: tema claro/escuro e PT-BR/EN-US sem persistencia apos reload.</p>
+              <p class="lang-en">Local React state toggles: light/dark theme and PT-BR/EN-US without persistence after reload.</p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section class="section" id="flows">
+        <div class="section-head">
+          <div>
+            <h2 class="lang-pt">Fluxos operacionais</h2>
+            <h2 class="lang-en">Operational flows</h2>
+            <p class="lang-pt">Casos de uso principais que substituem os diagramas extensos da v1.</p>
+            <p class="lang-en">Main use cases replacing the long v1 diagrams.</p>
+          </div>
+          <span class="pill">Use cases</span>
+        </div>
+        <div class="section-body">
+          <div class="grid-3">
+            <div class="card">
+              <h3>UC01</h3>
+              <p class="strong lang-pt">Simular precos</p>
+              <p class="strong lang-en">Simulate prices</p>
+              <p class="lang-pt">Usuario importa produtos, ajusta configuracoes e processa a lista; a tabela exibe custos, venda e totais.</p>
+              <p class="lang-en">The user imports products, adjusts settings, and processes the list; the table shows costs, sales, and totals.</p>
+            </div>
+            <div class="card">
+              <h3>UC02</h3>
+              <p class="strong lang-pt">Ajustar itens</p>
+              <p class="strong lang-en">Adjust items</p>
+              <p class="lang-pt">Usuario edita quantidade, descricao, fornecedor, preco ou observacoes; os calculos reagem ao estado atual.</p>
+              <p class="lang-en">The user edits quantity, description, supplier, price, or notes; calculations react to the current state.</p>
+            </div>
+            <div class="card">
+              <h3>UC03</h3>
+              <p class="strong lang-pt">Revisar resultado</p>
+              <p class="strong lang-en">Review result</p>
+              <p class="lang-pt">Usuario abre o preview e confere empresa, produtos, colunas de relatorio e totais antes de exportar.</p>
+              <p class="lang-en">The user opens preview and checks company, products, report columns, and totals before exporting.</p>
+            </div>
+            <div class="card">
+              <h3>UC04</h3>
+              <p class="strong lang-pt">Exportar relatorio</p>
+              <p class="strong lang-en">Export report</p>
+              <p class="lang-pt">Usuario escolhe XLS, HTML ou PDF, seleciona colunas quando aplicavel e gera a saida com os dados em memoria.</p>
+              <p class="lang-en">The user chooses XLS, HTML, or PDF, selects columns when applicable, and generates output from in-memory data.</p>
+            </div>
+            <div class="card">
+              <h3>UC05</h3>
+              <p class="strong lang-pt">Limpar simulacao</p>
+              <p class="strong lang-en">Clear simulation</p>
+              <p class="lang-pt">Usuario aciona limpar, confirma no modal e remove produtos sem redefinir empresa, fornecedor ou percentuais.</p>
+              <p class="lang-en">The user triggers clear, confirms in the modal, and removes products without resetting company, supplier, or percentages.</p>
+            </div>
+            <div class="card">
+              <h3>UC06</h3>
+              <p class="strong lang-pt">Alternar contexto</p>
+              <p class="strong lang-en">Switch context</p>
+              <p class="lang-pt">Usuario alterna PT-BR/EN-US e tema claro/escuro; labels e estilo mudam apenas na sessao atual.</p>
+              <p class="lang-en">The user switches PT-BR/EN-US and light/dark theme; labels and styling change only for the current session.</p>
+            </div>
+          </div>
+          <div class="note amber" style="margin-top:10px">
+            <span class="lang-pt">Restricoes conhecidas do fluxo: PDF depende de pop-up permitido; nao ha persistencia apos reload; exports refletem os dados atuais em memoria.</span>
+            <span class="lang-en">Known flow constraints: PDF depends on popup permission; there is no persistence after reload; exports reflect current in-memory data.</span>
+          </div>
+        </div>
+      </section>
+
+      <section class="section" id="exports">
+        <div class="section-head">
+          <div>
+            <h2>Exports</h2>
+            <p class="lang-pt">Como XLS, HTML, PDF e preview usam os dados calculados.</p>
+            <p class="lang-en">How XLS, HTML, PDF, and preview consume calculated data.</p>
+          </div>
+          <span class="pill">REPORT_COLUMNS</span>
+        </div>
+        <div class="section-body">
+          <div class="table-wrap">
+            <table>
+              <thead>
+                <tr>
+                  <th>Formato</th>
+                  <th class="lang-pt">Comportamento atual</th>
+                  <th class="lang-en">Current behavior</th>
+                  <th class="lang-pt">Arquivo/fonte</th>
+                  <th class="lang-en">File/source</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td class="strong">Preview</td>
+                  <td><span class="lang-pt">Abre modal com todas as colunas de <code class="inline">REPORT_COLUMNS</code>, empresa, total de produtos e totais gerais.</span><span class="lang-en">Opens a modal with every <code class="inline">REPORT_COLUMNS</code> column, company, product count, and grand totals.</span></td>
+                  <td><code class="inline">src/components/PreviewModal.jsx</code></td>
+                </tr>
+                <tr>
+                  <td class="strong">XLS</td>
+                  <td><span class="lang-pt">Baixa <code class="inline">simulacao_precos_YYYY-MM-DD.xls</code> usando tabela HTML compativel com Excel e BOM UTF-8.</span><span class="lang-en">Downloads <code class="inline">simulacao_precos_YYYY-MM-DD.xls</code> using an Excel-compatible HTML table and UTF-8 BOM.</span></td>
+                  <td><code class="inline">src/utils/xlsGenerator.js</code></td>
+                </tr>
+                <tr>
+                  <td class="strong">HTML</td>
+                  <td><span class="lang-pt">Baixa um documento standalone com cabecalho, configuracoes, empresa, tabela e rodape.</span><span class="lang-en">Downloads a standalone document with header, settings, company, table, and footer.</span></td>
+                  <td><code class="inline">src/utils/htmlGenerator.js</code></td>
+                </tr>
+                <tr>
+                  <td class="strong">PDF</td>
+                  <td><span class="lang-pt">Abre uma nova janela e usa <code class="inline">window.print()</code>; requer permissao de pop-ups se o navegador bloquear a janela.</span><span class="lang-en">Opens a new window and uses <code class="inline">window.print()</code>; requires popup permission if the browser blocks the window.</span></td>
+                  <td><code class="inline">src/utils/pdfGenerator.js</code></td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+          <div class="grid-2" style="margin-top:10px">
+            <div class="card">
+              <h3 class="lang-pt">Selecao de colunas</h3>
+              <h3 class="lang-en">Column selection</h3>
+              <p class="lang-pt">O modal de exportacao inicia com todas as colunas selecionadas, permite selecionar tudo/desmarcar tudo e bloqueia exportacao quando nenhuma coluna esta ativa.</p>
+              <p class="lang-en">The export modal starts with all columns selected, supports select all/deselect all, and blocks export when no column is active.</p>
+            </div>
+            <div class="card">
+              <h3 class="lang-pt">Colunas disponiveis</h3>
+              <h3 class="lang-en">Available columns</h3>
+              <p><code class="inline">#</code> <code class="inline">Qtd</code> <code class="inline">Descricao</code> <code class="inline">Fornecedor</code> <code class="inline">Preco Unit.</code> <code class="inline">IPI</code> <code class="inline">Frete</code> <code class="inline">Custo Real</code> <code class="inline">Preco Venda</code> <code class="inline">Total Custo</code> <code class="inline">Total Venda</code> <code class="inline">Observacoes</code></p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section class="section" id="calculations">
+        <div class="section-head">
+          <div>
+            <h2 class="lang-pt">Calculos</h2>
+            <h2 class="lang-en">Calculations</h2>
+            <p class="lang-pt">Contratos matematicos implementados em <code class="inline">src/utils/calculations.js</code>.</p>
+            <p class="lang-en">Math contracts implemented in <code class="inline">src/utils/calculations.js</code>.</p>
+          </div>
+          <span class="pill">Formula</span>
+        </div>
+        <div class="section-body">
+          <div class="grid-2">
+            <div class="card">
+              <h3 class="lang-pt">Produto individual</h3>
+              <h3 class="lang-en">Single product</h3>
+              <pre><code>precoUnitario = product.preco
+ipiValue = precoUnitario * (ipi / 100)
+
+baseParaFrete = freteEmbutido
+  ? precoUnitario
+  : precoUnitario + ipiValue
+
+freteValue = baseParaFrete * (frete / 100)
+custoRealUnitario = precoUnitario + ipiValue + freteValue
+precoVendaUnitario = custoRealUnitario * (1 + margem / 100)
+
+totalCustoReal = custoRealUnitario * quantidade
+totalPrecoVista = precoVendaUnitario * quantidade</code></pre>
+            </div>
+            <div class="card">
+              <h3 class="lang-pt">Totais e margem reversa</h3>
+              <h3 class="lang-en">Totals and reverse margin</h3>
+              <ul class="list">
+                <li><code class="inline">totalPrecoOriginal</code>: <span class="lang-pt">soma de preco base multiplicado por quantidade.</span><span class="lang-en">sum of base price multiplied by quantity.</span></li>
+                <li><code class="inline">totalIPI</code>: <span class="lang-pt">soma do IPI unitario multiplicado por quantidade.</span><span class="lang-en">sum of unit tax multiplied by quantity.</span></li>
+                <li><code class="inline">totalFrete</code>: <span class="lang-pt">soma do frete unitario multiplicado por quantidade.</span><span class="lang-en">sum of unit freight multiplied by quantity.</span></li>
+                <li><code class="inline">totalCustoReal</code>: <span class="lang-pt">soma dos custos reais totais.</span><span class="lang-en">sum of total real costs.</span></li>
+                <li><code class="inline">totalPrecoVista</code>: <span class="lang-pt">soma dos precos de venda totais.</span><span class="lang-en">sum of total selling prices.</span></li>
+              </ul>
+              <pre><code>margemReversa = margem / (100 + margem) * 100</code></pre>
+            </div>
+          </div>
+          <div class="note green" style="margin-top:10px">
+            <span class="lang-pt">No comparativo entre branches, esta formula nao teve alteracao funcional. A branch de design altera a apresentacao do controle de frete e mantem o contrato de negocio.</span>
+            <span class="lang-en">In the branch comparison, this formula has no functional change. The design branch changes the freight control presentation while keeping the business contract.</span>
+          </div>
+        </div>
+      </section>
+
+      <section class="section" id="requirements">
+        <div class="section-head">
+          <div>
+            <h2 class="lang-pt">Requisitos</h2>
+            <h2 class="lang-en">Requirements</h2>
+            <p class="lang-pt">Requisitos funcionais e nao funcionais atualizados para a v2.</p>
+            <p class="lang-en">Functional and non-functional requirements updated for v2.</p>
+          </div>
+          <span class="pill">RF / RNF</span>
+        </div>
+        <div class="section-body">
+          <div class="grid-2">
+            <div class="card">
+              <h3 class="lang-pt">Funcionais</h3>
+              <h3 class="lang-en">Functional</h3>
+              <ul class="list lang-pt">
+                <li>Importar multiplas linhas de produtos via texto livre.</li>
+                <li>Adicionar linha manual vazia com fornecedor padrao.</li>
+                <li>Editar quantidade, descricao, fornecedor, preco e observacoes na tabela.</li>
+                <li>Calcular IPI, frete, custo real, preco de venda e totais em tempo real.</li>
+                <li>Alternar frete embutido quando ha percentual de frete informado.</li>
+                <li>Exibir preview da simulacao em modal.</li>
+                <li>Exportar XLS, HTML e PDF com selecao de colunas.</li>
+                <li>Alternar idioma PT-BR/EN-US e tema claro/escuro.</li>
+                <li>Limpar produtos com confirmacao sem zerar configuracoes globais.</li>
+              </ul>
+              <ul class="list lang-en">
+                <li>Import multiple product rows from free text.</li>
+                <li>Add an empty manual row with the default supplier.</li>
+                <li>Edit quantity, description, supplier, price, and notes in the table.</li>
+                <li>Calculate tax, freight, real cost, selling price, and totals in real time.</li>
+                <li>Toggle embedded freight when a freight percentage is set.</li>
+                <li>Show the simulation preview in a modal.</li>
+                <li>Export XLS, HTML, and PDF with column selection.</li>
+                <li>Switch PT-BR/EN-US language and light/dark theme.</li>
+                <li>Clear products with confirmation without resetting global settings.</li>
+              </ul>
+            </div>
+            <div class="card">
+              <h3 class="lang-pt">Nao funcionais</h3>
+              <h3 class="lang-en">Non-functional</h3>
+              <ul class="list lang-pt">
+                <li>Execucao 100% client-side, sem API propria.</li>
+                <li>Layout responsivo para desktop e mobile.</li>
+                <li>Sem dependencia pesada para gerar arquivos: exports usam APIs nativas do browser e HTML.</li>
+                <li>Dados sensiveis ficam no estado local da pagina e nao sao enviados a terceiros pelo app.</li>
+                <li>Modais respondem a Escape, backdrop e foco inicial no botao de fechar quando aplicavel.</li>
+                <li>Build estatico gerado por Vite para deploy em hospedagem web comum.</li>
+              </ul>
+              <ul class="list lang-en">
+                <li>100% client-side execution, with no project API.</li>
+                <li>Responsive layout for desktop and mobile.</li>
+                <li>No heavy file-generation dependency: exports use native browser APIs and HTML.</li>
+                <li>Sensitive data stays in page-local state and is not sent to third parties by the app.</li>
+                <li>Modals respond to Escape, backdrop click, and initial close-button focus when applicable.</li>
+                <li>Static build generated by Vite for common web hosting deployment.</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section class="section" id="architecture">
+        <div class="section-head">
+          <div>
+            <h2 class="lang-pt">Arquitetura</h2>
+            <h2 class="lang-en">Architecture</h2>
+            <p class="lang-pt">Organizacao real do codigo e responsabilidades por camada.</p>
+            <p class="lang-en">Actual code organization and responsibilities by layer.</p>
+          </div>
+          <span class="pill">src/</span>
+        </div>
+        <div class="section-body">
+          <div class="diagram">
+            <div class="diagram-col">
+              <h3>UI Components</h3>
+              <ul class="file-list">
+                <li><code>Header.jsx</code>: <span class="lang-pt">titulo, empresa, idioma e tema.</span><span class="lang-en">title, company, language, and theme.</span></li>
+                <li><code>StatusBar.jsx</code>: <span class="lang-pt">contador, limpar, preview e exports.</span><span class="lang-en">counter, clear, preview, and exports.</span></li>
+                <li><code>ImportSection.jsx</code>: <span class="lang-pt">textarea, exemplo e processamento.</span><span class="lang-en">textarea, example, and processing.</span></li>
+                <li><code>ConfigPanel.jsx</code>: <span class="lang-pt">IPI, frete, margem e fornecedor padrao.</span><span class="lang-en">tax, freight, margin, and default supplier.</span></li>
+                <li><code>ProductTable.jsx</code> / <code>TableRow.jsx</code>: <span class="lang-pt">tabela editavel.</span><span class="lang-en">editable table.</span></li>
+                <li><code>PreviewModal.jsx</code>, <code>ExportModal.jsx</code>, <code>ConfirmModal.jsx</code>: <span class="lang-pt">modais.</span><span class="lang-en">modals.</span></li>
+              </ul>
+            </div>
+            <div class="diagram-col">
+              <h3>Hooks</h3>
+              <ul class="file-list">
+                <li><code>useProducts.js</code>: <span class="lang-pt">array de produtos, inclusao, edicao, remocao e limpeza.</span><span class="lang-en">product array, add, edit, delete, and clear actions.</span></li>
+                <li><code>useCalculations.js</code>: <span class="lang-pt">memoizacao de calculos por produto e totais.</span><span class="lang-en">memoized per-product calculations and totals.</span></li>
+                <li><code>useParser.js</code>: <span class="lang-pt">fachada para parsing de texto.</span><span class="lang-en">facade for text parsing.</span></li>
+                <li><code>useExport.js</code>: <span class="lang-pt">orquestracao de XLS, HTML e PDF.</span><span class="lang-en">orchestration for XLS, HTML, and PDF.</span></li>
+              </ul>
+            </div>
+            <div class="diagram-col">
+              <h3>Utils / Constants</h3>
+              <ul class="file-list">
+                <li><code>calculations.js</code>: <span class="lang-pt">formulas de preco.</span><span class="lang-en">pricing formulas.</span></li>
+                <li><code>parsers.js</code>: <span class="lang-pt">regex de importacao.</span><span class="lang-en">import regex patterns.</span></li>
+                <li><code>formatters.js</code>: <span class="lang-pt">numero, moeda e margem reversa.</span><span class="lang-en">number, money, and reverse-margin formatting.</span></li>
+                <li><code>columns.js</code>: <span class="lang-pt">contrato de colunas compartilhado.</span><span class="lang-en">shared column contract.</span></li>
+                <li><code>exportRows.js</code>: <span class="lang-pt">valores por coluna e totais.</span><span class="lang-en">per-column values and totals.</span></li>
+                <li><code>htmlGenerator.js</code>, <code>xlsGenerator.js</code>, <code>pdfGenerator.js</code>: <span class="lang-pt">relatorios.</span><span class="lang-en">reports.</span></li>
+              </ul>
+            </div>
+          </div>
+          <div class="note blue" style="margin-top:10px">
+            <span class="lang-pt">O <code class="inline">App.jsx</code> e o ponto de composicao: mantem estados globais da sessao, monta o objeto <code class="inline">config</code>, chama hooks e injeta callbacks nos componentes.</span>
+            <span class="lang-en"><code class="inline">App.jsx</code> is the composition point: it keeps global session state, builds the <code class="inline">config</code> object, calls hooks, and passes callbacks to components.</span>
+          </div>
+        </div>
+      </section>
+
+      <section class="section" id="dev">
+        <div class="section-head">
+          <div>
+            <h2 class="lang-pt">Desenvolvimento</h2>
+            <h2 class="lang-en">Development</h2>
+            <p class="lang-pt">Pontos de extensao mais provaveis.</p>
+            <p class="lang-en">Most likely extension points.</p>
+          </div>
+          <span class="pill">Guia</span>
+        </div>
+        <div class="section-body">
+          <div class="grid-3">
+            <div class="card">
+              <h3 class="lang-pt">Novo formato de importacao</h3>
+              <h3 class="lang-en">New import format</h3>
+              <p class="lang-pt">Editar <code class="inline">src/utils/parsers.js</code>, adicionando um bloco regex antes do push final. Preserve os campos <code class="inline">quantidade</code>, <code class="inline">descricao</code>, <code class="inline">fornecedor</code>, <code class="inline">preco</code> e <code class="inline">observacoes</code>.</p>
+              <p class="lang-en">Edit <code class="inline">src/utils/parsers.js</code>, adding a regex block before the final push. Preserve <code class="inline">quantidade</code>, <code class="inline">descricao</code>, <code class="inline">fornecedor</code>, <code class="inline">preco</code>, and <code class="inline">observacoes</code>.</p>
+            </div>
+            <div class="card">
+              <h3 class="lang-pt">Nova coluna</h3>
+              <h3 class="lang-en">New column</h3>
+              <p class="lang-pt">Comece por <code class="inline">src/constants/columns.js</code>. Depois atualize <code class="inline">exportRows.js</code> e, se necessario, o calculo ou a linha da tabela.</p>
+              <p class="lang-en">Start in <code class="inline">src/constants/columns.js</code>. Then update <code class="inline">exportRows.js</code> and, if needed, the calculation or table row.</p>
+            </div>
+            <div class="card">
+              <h3 class="lang-pt">Novo idioma</h3>
+              <h3 class="lang-en">New language</h3>
+              <p class="lang-pt">A fonte atual e <code class="inline">src/constants/translations.js</code>. O toggle em <code class="inline">Header.jsx</code> hoje alterna apenas entre <code class="inline">pt</code> e <code class="inline">en</code>.</p>
+              <p class="lang-en">The current source is <code class="inline">src/constants/translations.js</code>. The toggle in <code class="inline">Header.jsx</code> currently switches only between <code class="inline">pt</code> and <code class="inline">en</code>.</p>
+            </div>
+          </div>
+          <div class="grid-2" style="margin-top:10px">
+            <div class="card">
+              <h3 class="lang-pt">Stack atual</h3>
+              <h3 class="lang-en">Current stack</h3>
+              <div class="table-wrap">
+                <table>
+                  <thead>
+                    <tr>
+                      <th><span class="lang-pt">Pacote</span><span class="lang-en">Package</span></th>
+                      <th><span class="lang-pt">Versao</span><span class="lang-en">Version</span></th>
+                      <th><span class="lang-pt">Uso</span><span class="lang-en">Use</span></th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr><td>react</td><td>18.2.0</td><td><span class="lang-pt">Componentes e hooks</span><span class="lang-en">Components and hooks</span></td></tr>
+                    <tr><td>react-dom</td><td>18.2.0</td><td><span class="lang-pt">Renderizacao da SPA</span><span class="lang-en">SPA rendering</span></td></tr>
+                    <tr><td>vite</td><td>7.3.1</td><td><span class="lang-pt">Dev server e build</span><span class="lang-en">Dev server and build</span></td></tr>
+                    <tr><td>tailwindcss</td><td>3.3.3</td><td><span class="lang-pt">Classes utilitarias</span><span class="lang-en">Utility classes</span></td></tr>
+                    <tr><td>lucide-react</td><td>0.263.1</td><td><span class="lang-pt">Icones da interface</span><span class="lang-en">Interface icons</span></td></tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+            <div class="card">
+              <h3 class="lang-pt">Checklist antes de publicar</h3>
+              <h3 class="lang-en">Checklist before publishing</h3>
+              <ul class="list lang-pt">
+                <li>Rodar <code class="inline">npm run build</code>.</li>
+                <li>Validar tema claro e escuro.</li>
+                <li>Validar PT-BR e EN-US.</li>
+                <li>Importar, editar, adicionar e remover produtos.</li>
+                <li>Testar preview, modal de colunas, XLS, HTML e PDF.</li>
+                <li>Verificar mobile e desktop sem overflow incoerente.</li>
+              </ul>
+              <ul class="list lang-en">
+                <li>Run <code class="inline">npm run build</code>.</li>
+                <li>Validate light and dark themes.</li>
+                <li>Validate PT-BR and EN-US.</li>
+                <li>Import, edit, add, and remove products.</li>
+                <li>Test preview, column modal, XLS, HTML, and PDF.</li>
+                <li>Check mobile and desktop without incoherent overflow.</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section class="section" id="screenshots">
+        <div class="section-head">
+          <div>
+            <h2>Screenshots</h2>
+            <p class="lang-pt">Capturas v02 usadas como evidencia visual desta documentacao.</p>
+            <p class="lang-en">v02 captures used as visual evidence for this documentation.</p>
+          </div>
+          <span class="pill">assets/screenshots/v02</span>
+        </div>
+        <div class="section-body">
+          <div class="screens">
+            <figure class="screen">
+              <img class="localized-shot" src="../assets/screenshots/v02/PT-BR/desktop-home-empty.png" data-src-pt="assets/screenshots/v02/PT-BR/desktop-home-empty.png" data-src-en="assets/screenshots/v02/EN-US/desktop-home-empty.png" alt="Tela inicial desktop sem produtos processados" data-alt-pt="Tela inicial desktop sem produtos processados" data-alt-en="Desktop initial screen without processed products" loading="lazy" />
+              <figcaption><span class="lang-pt">Desktop PT-BR - estado inicial</span><span class="lang-en">Desktop EN-US - initial state</span></figcaption>
+            </figure>
+            <figure class="screen">
+              <img class="localized-shot" src="../assets/screenshots/v02/PT-BR/desktop-products-freight-not-embedded.png" data-src-pt="assets/screenshots/v02/PT-BR/desktop-products-freight-not-embedded.png" data-src-en="assets/screenshots/v02/EN-US/desktop-products-freight-not-embedded.png" alt="Desktop com produtos e frete nao embutido" data-alt-pt="Desktop com produtos e frete nao embutido" data-alt-en="Desktop with products and non-embedded freight" loading="lazy" />
+              <figcaption><span class="lang-pt">Desktop PT-BR - produtos com frete nao embutido</span><span class="lang-en">Desktop EN-US - products with non-embedded freight</span></figcaption>
+            </figure>
+            <figure class="screen">
+              <img class="localized-shot" src="../assets/screenshots/v02/PT-BR/desktop-products-freight-embedded.png" data-src-pt="assets/screenshots/v02/PT-BR/desktop-products-freight-embedded.png" data-src-en="assets/screenshots/v02/EN-US/desktop-products-freight-embedded.png" alt="Desktop com produtos e frete embutido" data-alt-pt="Desktop com produtos e frete embutido" data-alt-en="Desktop with products and embedded freight" loading="lazy" />
+              <figcaption><span class="lang-pt">Desktop PT-BR - produtos com frete embutido</span><span class="lang-en">Desktop EN-US - products with embedded freight</span></figcaption>
+            </figure>
+            <figure class="screen">
+              <img class="localized-shot" src="../assets/screenshots/v02/PT-BR/desktop-column-selection-modal.png" data-src-pt="assets/screenshots/v02/PT-BR/desktop-column-selection-modal.png" data-src-en="assets/screenshots/v02/EN-US/desktop-column-selection-modal.png" alt="Modal desktop de selecao de colunas" data-alt-pt="Modal desktop de selecao de colunas" data-alt-en="Desktop column selection modal" loading="lazy" />
+              <figcaption><span class="lang-pt">Desktop PT-BR - selecao de colunas</span><span class="lang-en">Desktop EN-US - column selection</span></figcaption>
+            </figure>
+          </div>
+          <div class="mobile-strip" style="margin-top:10px">
+            <figure class="screen">
+              <img class="localized-shot" src="../assets/screenshots/v02/PT-BR/mobile-home-empty.png" data-src-pt="assets/screenshots/v02/PT-BR/mobile-home-empty.png" data-src-en="assets/screenshots/v02/EN-US/mobile-home-empty.png" alt="Mobile sem produtos" data-alt-pt="Mobile sem produtos" data-alt-en="Mobile without products" loading="lazy" />
+              <figcaption><span class="lang-pt">Mobile PT-BR - inicio</span><span class="lang-en">Mobile EN-US - start</span></figcaption>
+            </figure>
+            <figure class="screen">
+              <img class="localized-shot" src="../assets/screenshots/v02/PT-BR/mobile-products-table.png" data-src-pt="assets/screenshots/v02/PT-BR/mobile-products-table.png" data-src-en="assets/screenshots/v02/EN-US/mobile-products-table.png" alt="Mobile com tabela de produtos" data-alt-pt="Mobile com tabela de produtos" data-alt-en="Mobile with product table" loading="lazy" />
+              <figcaption><span class="lang-pt">Mobile PT-BR - tabela</span><span class="lang-en">Mobile EN-US - table</span></figcaption>
+            </figure>
+            <figure class="screen">
+              <img class="localized-shot" src="../assets/screenshots/v02/PT-BR/mobile-column-selection-modal.png" data-src-pt="assets/screenshots/v02/PT-BR/mobile-column-selection-modal.png" data-src-en="assets/screenshots/v02/EN-US/mobile-column-selection-modal.png" alt="Mobile com modal de colunas" data-alt-pt="Mobile com modal de colunas" data-alt-en="Mobile with column modal" loading="lazy" />
+              <figcaption><span class="lang-pt">Mobile PT-BR - colunas</span><span class="lang-en">Mobile EN-US - columns</span></figcaption>
+            </figure>
+            <figure class="screen">
+              <img class="localized-shot" src="../assets/screenshots/v02/PT-BR/mobile-clear-confirmation-modal.png" data-src-pt="assets/screenshots/v02/PT-BR/mobile-clear-confirmation-modal.png" data-src-en="assets/screenshots/v02/EN-US/mobile-clear-confirmation-modal.png" alt="Mobile com modal de confirmacao para limpar" data-alt-pt="Mobile com modal de confirmacao para limpar" data-alt-en="Mobile with clear confirmation modal" loading="lazy" />
+              <figcaption><span class="lang-pt">Mobile PT-BR - confirmar limpeza</span><span class="lang-en">Mobile EN-US - clear confirmation</span></figcaption>
+            </figure>
+          </div>
+        </div>
+      </section>
+    </main>
+  </div>
+
+  <script>
+    const root = document.documentElement;
+    const sidebar = document.querySelector('.sidebar');
+    const topbar = document.querySelector('.topbar');
+    const langToggle = document.getElementById('langToggle');
+    const themeToggle = document.getElementById('themeToggle');
+    const navToggle = document.getElementById('navToggle');
+    const currentSection = document.getElementById('currentSection');
+    const navLinks = Array.from(document.querySelectorAll('#nav a'));
+    const sections = navLinks
+      .map(link => document.querySelector(link.getAttribute('href')))
+      .filter(Boolean);
+    const localizedShots = Array.from(document.querySelectorAll('.localized-shot'));
+    const githubRawBases = [
+      'https://raw.githubusercontent.com/pedrolabre/price-simulator/design/interface-v2/',
+      'https://raw.githubusercontent.com/pedrolabre/price-simulator/main/'
+    ];
+    const mobileQuery = window.matchMedia('(max-width: 980px)');
+    const stableLayoutSelectors = [
+      '.doc-header',
+      '.status-card',
+      '.metric',
+      '.section-head',
+      '.section-body',
+      '.card',
+      '.flow-step',
+      '.diagram-col',
+      '.note',
+      '.screen figcaption'
+    ];
+    let stableLayoutTimer;
+
+    function updateCurrentSectionLabel() {
+      const active = document.querySelector('#nav a.active') || navLinks[0];
+      const lang = root.dataset.lang;
+      currentSection.textContent = active.dataset[lang === 'pt' ? 'labelPt' : 'labelEn'] || active.textContent.trim();
+    }
+
+    function syncLangControl() {
+      const lang = root.dataset.lang;
+      langToggle.textContent = lang === 'pt' ? 'EN' : 'PT';
+      updateLocalizedScreenshots(lang);
+      updateCurrentSectionLabel();
+      syncNavToggleLabel();
+    }
+
+    function updateLocalizedScreenshots(lang) {
+      localizedShots.forEach(image => {
+        const repoPath = image.dataset[lang === 'pt' ? 'srcPt' : 'srcEn'];
+        const alt = image.dataset[lang === 'pt' ? 'altPt' : 'altEn'];
+        const source = resolveRepoAssetPath(repoPath);
+
+        if (repoPath) {
+          image.dataset.fallbackIndex = '0';
+          image.dataset.repoPath = repoPath;
+        }
+
+        if (source && image.getAttribute('src') !== source) {
+          image.setAttribute('src', source);
+        }
+
+        if (alt) {
+          image.setAttribute('alt', alt);
+        }
+      });
+    }
+
+    function resolveRepoAssetPath(repoPath) {
+      if (!repoPath) return '';
+
+      const isLocalFile = window.location.protocol === 'file:';
+      const isInsideDocsPath = window.location.pathname.includes('/docs/');
+
+      return isLocalFile || isInsideDocsPath ? `../${repoPath}` : repoPath;
+    }
+
+    function useNextGithubScreenshotFallback(image) {
+      const repoPath = image.dataset.repoPath;
+      if (!repoPath) return;
+
+      const index = Number(image.dataset.fallbackIndex || 0);
+      const fallback = githubRawBases[index];
+      if (!fallback) return;
+
+      image.dataset.fallbackIndex = String(index + 1);
+      image.setAttribute('src', `${fallback}${repoPath}`);
+    }
+
+    function syncThemeControl() {
+      const theme = root.dataset.theme;
+      const label = theme === 'dark' ? 'Ativar modo claro' : 'Ativar modo escuro';
+      themeToggle.title = label;
+      themeToggle.setAttribute('aria-label', label);
+    }
+
+    function syncNavToggleLabel() {
+      if (!navToggle || !sidebar) return;
+
+      const isOpen = sidebar.classList.contains('is-open');
+      const isPt = root.dataset.lang !== 'en';
+      const label = isPt
+        ? (isOpen ? 'Fechar menu' : 'Abrir menu')
+        : (isOpen ? 'Close menu' : 'Open menu');
+
+      navToggle.title = label;
+      navToggle.setAttribute('aria-label', label);
+      navToggle.setAttribute('aria-expanded', String(isOpen));
+    }
+
+    function setNavOpen(open) {
+      if (!sidebar) return;
+
+      sidebar.classList.toggle('is-open', open);
+      syncNavToggleLabel();
+    }
+
+    function getStableLayoutBlocks() {
+      return Array.from(document.querySelectorAll(stableLayoutSelectors.join(',')))
+        .filter(element => !element.closest('.sidebar') && !element.closest('.topbar'));
+    }
+
+    function applyLang(lang) {
+      root.dataset.lang = lang;
+      root.lang = lang === 'pt' ? 'pt-BR' : 'en';
+      syncLangControl();
+    }
+
+    function applyTheme(theme) {
+      root.dataset.theme = theme;
+      syncThemeControl();
+    }
+
+    function setActiveLink(link) {
+      navLinks.forEach(item => item.classList.remove('active'));
+      link.classList.add('active');
+      updateCurrentSectionLabel();
+    }
+
+    function refreshStableLayout() {
+      const blocks = getStableLayoutBlocks();
+      const activeLang = root.dataset.lang || 'pt';
+      const activeTheme = root.dataset.theme || 'light';
+      const scrollX = window.scrollX;
+      const scrollY = window.scrollY;
+      const heights = new Map(blocks.map(block => [block, 0]));
+
+      blocks.forEach(block => {
+        block.style.minHeight = '';
+      });
+
+      ['pt', 'en'].forEach(lang => {
+        root.dataset.lang = lang;
+        root.lang = lang === 'pt' ? 'pt-BR' : 'en';
+
+        ['light', 'dark'].forEach(theme => {
+          root.dataset.theme = theme;
+          document.body.offsetHeight;
+
+          blocks.forEach(block => {
+            heights.set(block, Math.max(heights.get(block), Math.ceil(block.getBoundingClientRect().height)));
+          });
+        });
+      });
+
+      root.dataset.lang = activeLang;
+      root.lang = activeLang === 'pt' ? 'pt-BR' : 'en';
+      root.dataset.theme = activeTheme;
+      syncLangControl();
+      syncThemeControl();
+
+      blocks.forEach(block => {
+        const height = heights.get(block);
+        if (height > 0) block.style.minHeight = `${height}px`;
+      });
+
+      window.scrollTo(scrollX, scrollY);
+    }
+
+    function scheduleStableLayoutRefresh() {
+      window.clearTimeout(stableLayoutTimer);
+      stableLayoutTimer = window.setTimeout(refreshStableLayout, 80);
+    }
+
+    function getStickyOffset() {
+      const topbarHeight = topbar?.offsetHeight || 0;
+      const baseOffset = topbarHeight + 8;
+
+      if (!mobileQuery.matches) return baseOffset;
+
+      const compactSidebarHeight = sidebar?.querySelector('.brand')?.offsetHeight || sidebar?.offsetHeight || 0;
+      return compactSidebarHeight + baseOffset + 8;
+    }
+
+    function scrollToSection(target, updateHash = true) {
+      const targetTop = target.getBoundingClientRect().top + window.scrollY;
+      const offset = getStickyOffset();
+
+      window.scrollTo({
+        top: Math.max(0, targetTop - offset),
+        behavior: 'smooth'
+      });
+
+      if (updateHash) {
+        history.pushState(null, '', `#${target.id}`);
+      }
+    }
+
+    langToggle.addEventListener('click', () => {
+      applyLang(root.dataset.lang === 'pt' ? 'en' : 'pt');
+    });
+
+    themeToggle.addEventListener('click', () => {
+      applyTheme(root.dataset.theme === 'dark' ? 'light' : 'dark');
+    });
+
+    if (navToggle) {
+      navToggle.addEventListener('click', () => {
+        setNavOpen(!sidebar.classList.contains('is-open'));
+      });
+    }
+
+    navLinks.forEach(link => {
+      link.addEventListener('click', (event) => {
+        const target = document.querySelector(link.getAttribute('href'));
+        if (!target) return;
+
+        event.preventDefault();
+        setActiveLink(link);
+        setNavOpen(false);
+        window.requestAnimationFrame(() => scrollToSection(target));
+      });
+    });
+
+    localizedShots.forEach(image => {
+      image.addEventListener('error', () => useNextGithubScreenshotFallback(image));
+    });
+
+    const observer = new IntersectionObserver(entries => {
+      const visible = entries
+        .filter(entry => entry.isIntersecting)
+        .sort((a, b) => b.intersectionRatio - a.intersectionRatio)[0];
+
+      if (!visible) return;
+
+      const link = navLinks.find(item => item.getAttribute('href') === `#${visible.target.id}`);
+      if (!link) return;
+
+      setActiveLink(link);
+    }, { rootMargin: '-12% 0px -72% 0px', threshold: [0.1, 0.35, 0.7] });
+
+    sections.forEach(section => observer.observe(section));
+    applyLang('pt');
+    applyTheme('light');
+    refreshStableLayout();
+    if (window.location.hash) {
+      const target = document.querySelector(window.location.hash);
+      const link = navLinks.find(item => item.getAttribute('href') === window.location.hash);
+
+      if (target) {
+        window.requestAnimationFrame(() => {
+          if (link) setActiveLink(link);
+          scrollToSection(target, false);
+        });
+      }
+    }
+
+    window.addEventListener('resize', () => {
+      if (!mobileQuery.matches) setNavOpen(false);
+      scheduleStableLayoutRefresh();
+    });
+
+    window.addEventListener('load', refreshStableLayout);
+  </script>
+</body>
+</html>
+

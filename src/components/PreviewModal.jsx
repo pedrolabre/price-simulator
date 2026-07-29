@@ -1,99 +1,167 @@
 import React from 'react';
-import { X, FileText, Table } from 'lucide-react';
+import ModalShell from './ui/ModalShell';
+import { REPORT_COLUMNS, countTotalsLabelColumns, getColumnLabel } from '../constants/columns';
+import { getReportColumnValue, getReportTotalValue } from '../utils/exportRows';
+import { formatMoney } from '../utils/formatters';
+import { cx, tableFooterCellClasses, textClasses } from './ui/themeClasses';
 
-export default function PreviewModal({ 
-  isOpen, 
-  onClose, 
-  products, 
+function previewHeaderCellClasses(darkMode, align = 'left') {
+  const alignClasses = {
+    left: 'text-left',
+    center: 'text-center',
+    right: 'text-right'
+  };
+
+  return cx(
+    'sticky top-0 z-10 whitespace-nowrap border-b border-r px-[7px] py-[7px] align-middle text-[0.62rem] font-bold leading-tight last:border-r-0',
+    darkMode
+      ? 'border-white/10 bg-[#252b34] text-[#f5f7fa]'
+      : 'border-[#d8dee7] bg-[#f1f3f6] text-[#111827]',
+    alignClasses[align] || alignClasses.left
+  );
+}
+
+function previewCellClasses(darkMode, { align = 'left', tone = 'default', strong = false } = {}) {
+  const alignClasses = {
+    left: 'text-left',
+    center: 'text-center',
+    right: 'text-right'
+  };
+
+  const tones = {
+    default: darkMode ? 'bg-[#171b22] text-[#d4d8df]' : 'bg-white text-[#374151]',
+    muted: darkMode ? 'bg-[#171b22] text-[#9ca3af]' : 'bg-white text-[#596273]',
+    strong: darkMode ? 'bg-[#171b22] text-[#f5f7fa]' : 'bg-white text-[#111827]',
+    sale: darkMode ? 'bg-[#171b22] text-[#46d27f]' : 'bg-white text-[#0f8a45]',
+    costTotal: darkMode ? 'bg-[#292419] text-[#f4c95f]' : 'bg-[#fff2bd] text-[#8a5a00]',
+    saleTotal: darkMode ? 'bg-[#17261e] text-[#4bd486]' : 'bg-[#e9f7ef] text-[#0f8a45]'
+  };
+
+  return cx(
+    'border-b border-r px-[7px] py-[7px] align-top text-[0.72rem] last:border-r-0',
+    darkMode ? 'border-white/10' : 'border-[#dfe3e8]',
+    alignClasses[align] || alignClasses.left,
+    tones[tone] || tones.default,
+    strong && 'font-bold',
+    align === 'right' && 'whitespace-nowrap tabular-nums'
+  );
+}
+
+function formatPercentValue(value) {
+  const numeric = Number(value || 0);
+  return Number.isInteger(numeric)
+    ? String(numeric)
+    : String(numeric).replace('.', ',');
+}
+
+export default function PreviewModal({
+  isOpen,
+  onClose,
+  products,
   calculations,
   totals,
   config,
   darkMode,
   t
 }) {
-  if (!isOpen) return null;
+  const text = textClasses(darkMode);
+  const previewTableDarkMode = false;
+  const marginPrefix = config.margem >= 0 ? '+' : '';
+  const subtitle = `${t.ipiLabel.replace(' (%)', '')}: ${formatPercentValue(config.ipi)}% | ${t.freightLabel.replace(' (%)', '')}: ${formatPercentValue(config.frete)}% | ${t.marginLabel}: ${marginPrefix}${formatPercentValue(config.margem)}%`;
+  const totalsLabelColSpan = countTotalsLabelColumns(REPORT_COLUMNS);
 
-  const overlayBg = darkMode ? 'bg-black/70' : 'bg-black/50';
+  const previewCellConfig = {
+    numero: { align: 'center', tone: 'muted' },
+    quantidade: { align: 'center' },
+    descricao: { tone: 'strong', className: 'break-words font-semibold' },
+    fornecedor: { className: 'break-words' },
+    precoUnitario: { align: 'right', tone: 'muted' },
+    ipi: { align: 'right', tone: 'muted' },
+    frete: { align: 'right', tone: 'muted' },
+    custoRealUnitario: { align: 'right', tone: 'strong', strong: true },
+    precoVendaUnitario: { align: 'right', tone: 'sale', strong: true },
+    totalCusto: { align: 'right', tone: 'costTotal', strong: true },
+    totalVenda: { align: 'right', tone: 'saleTotal', strong: true },
+    observacoes: { className: 'break-words' }
+  };
+
+  const renderPreviewCell = (column, product, index) => {
+    const calc = calculations[product.id];
+    const { className, ...cellConfig } = previewCellConfig[column.key] || {};
+
+    return (
+      <td key={column.key} className={cx(previewCellClasses(previewTableDarkMode, cellConfig), className)}>
+        {getReportColumnValue(column.key, product, calc, index, formatMoney)}
+      </td>
+    );
+  };
 
   return (
-    <div className={`fixed inset-0 ${overlayBg} backdrop-blur-sm z-50 flex items-center justify-center p-4`}>
-      <div className="bg-white border border-gray-200 text-gray-900 rounded-2xl shadow-2xl max-w-6xl w-full max-h-[90vh] overflow-auto">
-        <div className="sticky top-0 bg-gradient-to-r from-red-600 to-red-700 text-white p-4 flex flex-col gap-4 rounded-t-2xl sm:flex-row sm:items-center sm:justify-between sm:p-6">
-          <div className="min-w-0">
-            <div className="flex items-baseline gap-3 flex-wrap">
-              <h2 className="text-2xl font-bold">{t.previewTitle}</h2>
-              {config.empresa && (
-                <span className="text-lg font-semibold text-red-100 border-l border-red-400 pl-3">
-                  {config.empresa}
-                </span>
-              )}
-            </div>
-            <p className="text-sm text-red-100 mt-1">
-              {t.ipiLabel.replace(' (%)', '')}: {config.ipi}% | {t.freightLabel.replace(' (%)', '')}: {config.frete}% | {t.marginLabel.replace(' (%)', '')}: +{config.margem}% / -{(config.margem / (100 + config.margem) * 100).toFixed(2)}%
-            </p>
-          </div>
-          <button onClick={onClose} className="hover:bg-white/20 p-2 rounded-lg transition">
-            <X size={24} />
-          </button>
-        </div>
-
-        <div className="p-4 sm:p-6">
-          <div className="w-full max-w-full overflow-x-auto rounded-xl">
-            <table className="min-w-[980px] w-full text-sm border-collapse table-fixed">
-              <thead className="bg-gray-100">
-                <tr>
-                  <th className="p-2 text-left border w-8">{t.colNum}</th>
-                  <th className="p-2 text-left border w-10">{t.colQty}</th>
-                  <th className="p-2 text-left border">{t.colDesc}</th>
-                  <th className="p-2 text-left border w-28">{t.colSupplier}</th>
-                  <th className="p-2 text-right border w-20">{t.colUnitPrice}</th>
-                  <th className="p-2 text-right border w-16">{t.colIpi}</th>
-                  <th className="p-2 text-right border w-16">{t.colFreight}</th>
-                  <th className="p-2 text-right border w-24">{t.colRealCost}</th>
-                  <th className="p-2 text-right border w-24">{t.colSalePrice}</th>
-                  <th className="p-2 text-right border bg-amber-100 w-24">{t.colTotalCost}</th>
-                  <th className="p-2 text-right border bg-green-100 w-24">{t.colTotalSale}</th>
-                  <th className="p-2 text-left border w-32">{t.colObs}</th>
-                </tr>
-              </thead>
-              <tbody>
-                {products.map((p, i) => {
-                  const calc = calculations[p.id];
-                  return (
-                    <tr key={p.id} className="border-b">
-                      <td className="p-2 border">{i + 1}</td>
-                      <td className="p-2 border">{p.quantidade}</td>
-                      <td className="p-2 border break-words">{p.descricao}</td>
-                      <td className="p-2 border break-words">{p.fornecedor || '-'}</td>
-                      <td className="p-2 text-right border">R$ {p.preco.toFixed(2)}</td>
-                      <td className="p-2 text-right border">R$ {calc.ipiValue.toFixed(2)}</td>
-                      <td className="p-2 text-right border">R$ {calc.freteValue.toFixed(2)}</td>
-                      <td className="p-2 text-right border font-bold">R$ {calc.custoRealUnitario.toFixed(2)}</td>
-                      <td className="p-2 text-right border font-bold text-green-600">R$ {calc.precoVistaUnitario.toFixed(2)}</td>
-                      <td className="p-2 text-right border bg-amber-50 font-bold">R$ {calc.totalCustoReal.toFixed(2)}</td>
-                      <td className="p-2 text-right border bg-green-50 font-bold">R$ {calc.totalPrecoVista.toFixed(2)}</td>
-                      <td className="p-2 border break-words">{p.observacoes || ''}</td>
-                    </tr>
-                  );
-                })}
-              </tbody>
-              <tfoot className="font-bold bg-gray-200">
-                <tr>
-                  <td colSpan="4" className="p-3 text-right border">{t.totals}</td>
-                  <td className="p-3 text-right border">R$ {totals.totalPrecoOriginal.toFixed(2)}</td>
-                  <td className="p-3 text-right border">R$ {totals.totalIPI.toFixed(2)}</td>
-                  <td className="p-3 text-right border">R$ {totals.totalFrete.toFixed(2)}</td>
-                  <td className="p-3 border"></td>
-                  <td className="p-3 border"></td>
-                  <td className="p-3 text-right border bg-amber-100">R$ {totals.totalCustoReal.toFixed(2)}</td>
-                  <td className="p-3 text-right border bg-green-100">R$ {totals.totalPrecoVista.toFixed(2)}</td>
-                  <td className="p-3 border"></td>
-                </tr>
-              </tfoot>
-            </table>
-          </div>
-        </div>
+    <ModalShell
+      isOpen={isOpen}
+      onClose={onClose}
+      darkMode={darkMode}
+      title={t.previewTitle}
+      subtitle={subtitle}
+      maxWidth="max-w-[1240px]"
+      maxHeight="max-h-[calc(100vh-2rem)]"
+      closeLabel={t.previewClose}
+    >
+      <div className={cx('mb-4 flex flex-wrap gap-2 text-xs', text.muted)}>
+        <span className={cx('rounded-none border px-2.5 py-1.5', darkMode ? 'border-white/10 bg-[#202631]' : 'border-[#e2e6ec] bg-[#f8f9fb]')}>
+          <strong className={text.body}>{t.companyLabel}:</strong> {config.empresa || t.notInformed || '-'}
+        </span>
+        <span className={cx('rounded-none border px-2.5 py-1.5', darkMode ? 'border-white/10 bg-[#202631]' : 'border-[#e2e6ec] bg-[#f8f9fb]')}>
+          <strong className={text.body}>{t.totalProducts}:</strong> {products.length}
+        </span>
       </div>
-    </div>
+
+      <div className="preview-table-wrap w-full max-w-full overflow-auto rounded-none border border-[#d8dee7] bg-white">
+        <table className="w-full min-w-[1184px] table-fixed border-separate border-spacing-0 text-[0.72rem] text-[#111827]">
+          <thead>
+            <tr>
+              {REPORT_COLUMNS.map(column => (
+                <th
+                  key={column.key}
+                  className={cx(previewHeaderCellClasses(previewTableDarkMode, column.align), column.previewHeaderClassName)}
+                >
+                  {getColumnLabel(t, column, 'table')}
+                </th>
+              ))}
+            </tr>
+          </thead>
+          <tbody>
+            {products.map((product, index) => (
+              <tr key={product.id}>
+                {REPORT_COLUMNS.map(column => renderPreviewCell(column, product, index))}
+              </tr>
+            ))}
+          </tbody>
+          <tfoot>
+            <tr>
+              <td colSpan={totalsLabelColSpan} className={cx(tableFooterCellClasses(previewTableDarkMode, { align: 'right' }), 'text-[0.66rem] uppercase')}>
+                {t.totals}
+              </td>
+              {REPORT_COLUMNS.filter(column => !column.totalsLabelColumn).map(column => {
+                const totalValue = getReportTotalValue(column.key, totals, formatMoney);
+                const totalTone = column.key === 'totalCusto' ? 'cost' : column.key === 'totalVenda' ? 'sale' : 'default';
+
+                return (
+                  <td
+                    key={column.key}
+                    className={cx(
+                      tableFooterCellClasses(previewTableDarkMode, { align: totalValue ? 'right' : 'left', tone: totalTone }),
+                      totalValue && 'whitespace-nowrap tabular-nums'
+                    )}
+                  >
+                    {totalValue}
+                  </td>
+                );
+              })}
+            </tr>
+          </tfoot>
+        </table>
+      </div>
+    </ModalShell>
   );
 }

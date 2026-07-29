@@ -6,15 +6,16 @@ import ConfigPanel from './components/ConfigPanel';
 import ProductTable from './components/ProductTable';
 import PreviewModal from './components/PreviewModal';
 import ExportModal from './components/ExportModal';
+import ConfirmModal from './components/ConfirmModal';
 import { useProducts } from './hooks/useProducts';
 import { useCalculations } from './hooks/useCalculations';
 import { useParser } from './hooks/useParser';
 import { useExport } from './hooks/useExport';
 import { DEFAULT_CONFIG } from './constants/defaults';
 import { translations } from './constants/translations';
+import { appContentClasses, appShellClasses, cx } from './components/ui/themeClasses';
 
 export default function App() {
-  // Estados principais
   const [darkMode, setDarkMode] = useState(false);
   const [lang, setLang] = useState('pt');
   const t = translations[lang];
@@ -26,23 +27,26 @@ export default function App() {
   const [fornecedorPadrao, setFornecedorPadrao] = useState('');
   const [showPreview, setShowPreview] = useState(false);
   const [showExportModal, setShowExportModal] = useState(false);
-  const [exportType, setExportType] = useState(null); // 'csv' ou 'pdf'
+  const [showClearConfirm, setShowClearConfirm] = useState(false);
+  const [exportType, setExportType] = useState(null);
   const [empresa, setEmpresa] = useState('');
 
-  // Hooks customizados
   const { products, addProducts, updateProduct, deleteProduct, addEmptyRow, clearProducts } = useProducts();
   const { parse } = useParser();
   const { exportXLS, exportHTML, exportPDF } = useExport();
 
-  // Configurações para cálculos
   const config = { ipi, frete, margem, freteEmbutido, empresa, t };
   const { calculations, totals } = useCalculations(products, config);
+  const hasProducts = products.length > 0;
 
-  // Handlers
   const handleProcessText = () => {
     const parsedProducts = parse(textInput, fornecedorPadrao);
     addProducts(parsedProducts);
     setTextInput('');
+  };
+
+  const handleUseExample = () => {
+    setTextInput('PRODUTO,1,R$ 99.999.99');
   };
 
   const handleOpenExportModal = (type) => {
@@ -64,16 +68,15 @@ export default function App() {
     addEmptyRow(fornecedorPadrao);
   };
 
-  // Estilos do background
-  const bgMain = darkMode 
-    ? 'bg-gradient-to-br from-gray-900 via-gray-800 to-gray-900' 
-    : 'bg-gradient-to-br from-gray-100 via-slate-100 to-gray-200';
+  const handleConfirmClear = () => {
+    clearProducts();
+  };
 
   return (
-    <div className={`min-h-screen ${bgMain} overflow-x-hidden px-4 py-6 sm:p-6 lg:p-8 transition-all duration-500`}>
-      <div className="w-full max-w-[1440px] min-w-0 mx-auto">
-        <Header 
-          darkMode={darkMode} 
+    <div className={appShellClasses(darkMode, hasProducts)}>
+      <main className={appContentClasses(hasProducts)}>
+        <Header
+          darkMode={darkMode}
           onToggleDarkMode={() => setDarkMode(!darkMode)}
           lang={lang}
           onToggleLang={() => setLang(l => l === 'pt' ? 'en' : 'pt')}
@@ -82,7 +85,14 @@ export default function App() {
           t={t}
         />
 
-        {products.length > 0 && (
+        <div
+          className={cx(
+            'grid min-w-0 gap-[10px] min-[981px]:grid-cols-2',
+            hasProducts
+              ? 'min-[981px]:min-h-0 min-[981px]:flex-1 min-[981px]:grid-rows-[52px_auto_minmax(0,1fr)] min-[981px]:overflow-hidden'
+              : 'min-[981px]:grid-rows-[52px_auto]'
+          )}
+        >
           <StatusBar
             productCount={products.length}
             darkMode={darkMode}
@@ -90,44 +100,52 @@ export default function App() {
             onExportHTML={() => handleOpenExportModal('html')}
             onExportPDF={() => handleOpenExportModal('pdf')}
             onPreview={() => setShowPreview(true)}
-            onClear={clearProducts}
+            onClear={() => setShowClearConfirm(true)}
             t={t}
+            isEmpty={!hasProducts}
+            className="min-[981px]:col-span-2"
           />
-        )}
 
-        <ImportSection
-          textInput={textInput}
-          onTextChange={setTextInput}
-          onProcess={handleProcessText}
-          darkMode={darkMode}
-          t={t}
-        />
+          <ImportSection
+            textInput={textInput}
+            onTextChange={setTextInput}
+            onProcess={handleProcessText}
+            onUseExample={handleUseExample}
+            darkMode={darkMode}
+            t={t}
+            compact
+          />
 
-        <ConfigPanel
-          ipi={ipi}
-          frete={frete}
-          margem={margem}
-          freteEmbutido={freteEmbutido}
-          fornecedorPadrao={fornecedorPadrao}
-          onIPIChange={setIpi}
-          onFreteChange={setFrete}
-          onMargemChange={setMargem}
-          onToggleFrete={() => setFreteEmbutido(!freteEmbutido)}
-          onFornecedorChange={setFornecedorPadrao}
-          darkMode={darkMode}
-          t={t}
-        />
+          <ConfigPanel
+            ipi={ipi}
+            frete={frete}
+            margem={margem}
+            freteEmbutido={freteEmbutido}
+            fornecedorPadrao={fornecedorPadrao}
+            onIPIChange={setIpi}
+            onFreteChange={setFrete}
+            onMargemChange={setMargem}
+            onToggleFrete={() => setFreteEmbutido(!freteEmbutido)}
+            onFornecedorChange={setFornecedorPadrao}
+            darkMode={darkMode}
+            t={t}
+            compact
+          />
 
-        <ProductTable
-          products={products}
-          calculations={calculations}
-          totals={totals}
-          onAddRow={handleAddRow}
-          onUpdateProduct={updateProduct}
-          onDeleteProduct={deleteProduct}
-          darkMode={darkMode}
-          t={t}
-        />
+          {hasProducts && (
+            <ProductTable
+              products={products}
+              calculations={calculations}
+              totals={totals}
+              onAddRow={handleAddRow}
+              onUpdateProduct={updateProduct}
+              onDeleteProduct={deleteProduct}
+              darkMode={darkMode}
+              t={t}
+              className="min-[981px]:col-span-2 min-[981px]:min-h-0"
+            />
+          )}
+        </div>
 
         <PreviewModal
           isOpen={showPreview}
@@ -147,7 +165,15 @@ export default function App() {
           darkMode={darkMode}
           t={t}
         />
-      </div>
+        <ConfirmModal
+          isOpen={showClearConfirm}
+          onClose={() => setShowClearConfirm(false)}
+          onConfirm={handleConfirmClear}
+          productCount={products.length}
+          darkMode={darkMode}
+          t={t}
+        />
+      </main>
     </div>
   );
 }

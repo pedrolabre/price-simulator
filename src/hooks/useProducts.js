@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { parseNumberInput } from '../utils/formatters';
 
 export function useProducts() {
   const [products, setProducts] = useState([]);
@@ -16,7 +17,7 @@ export function useProducts() {
   const updateProduct = (id, field, value) => {
     setProducts(prev => prev.map(p => 
       p.id === id 
-        ? { ...p, [field]: field === 'descricao' || field === 'fornecedor' || field === 'observacoes' ? value : parseFloat(value) || 0 } 
+        ? { ...p, [field]: field === 'descricao' || field === 'fornecedor' || field === 'observacoes' ? value : parseNumberInput(value) }
         : p
     ));
   };

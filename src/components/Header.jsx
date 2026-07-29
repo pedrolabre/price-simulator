@@ -1,65 +1,65 @@
 import React from 'react';
-import { Moon, Sun, Building2 } from 'lucide-react';
+import { Moon, Sun } from 'lucide-react';
+import Button from './ui/Button';
+import { TextInput } from './ui/Field';
+import { cx, textClasses } from './ui/themeClasses';
 
 export default function Header({ darkMode, onToggleDarkMode, empresa, onEmpresaChange, lang, onToggleLang, t }) {
-  const inputBg = darkMode
-    ? 'bg-white/10 border-white/20 text-white placeholder-white/40'
-    : 'bg-white/60 border-gray-300/60 text-gray-700 placeholder-gray-400';
-
-  const btnBase = darkMode
-    ? 'bg-white/10 hover:bg-white/20'
-    : 'bg-gray-900/80 hover:bg-gray-900';
+  const text = textClasses(darkMode);
+  const companyInputClass = darkMode
+    ? '!rounded-none border-[#454c58] bg-[#191c22] text-[#f5f7fa] placeholder:text-[#7d8594]'
+    : '!rounded-none border-[#cbd2da] bg-white text-[#111827] placeholder:text-[#9aa3b3]';
 
   return (
-    <div className="flex w-full min-w-0 flex-col gap-4 mb-6 sm:mb-8 sm:flex-row sm:items-start sm:justify-between sm:gap-6">
-      <div className="w-full min-w-0 flex-1">
-        <div className="flex min-w-0 flex-col gap-4 sm:flex-row sm:items-end sm:gap-4 sm:flex-wrap">
-          <div className="min-w-0">
-            <h1 className={`text-3xl sm:text-4xl leading-tight font-bold ${darkMode ? 'text-white' : 'text-gray-900'} mb-2`}>
-              {t.appTitle}
-            </h1>
-            <p className={`${darkMode ? 'text-gray-400' : 'text-gray-500'} text-sm`}>
-              {t.appSubtitle}
-            </p>
-          </div>
-          <div className="flex w-full min-w-0 flex-col gap-1 pb-0.5 sm:w-auto">
-            <label className={`text-xs font-medium flex items-center gap-1.5 ${darkMode ? 'text-gray-400' : 'text-gray-500'}`}>
-              <Building2 size={12} />
-              {t.companyLabel}
-            </label>
-            <input
-              type="text"
-              value={empresa}
-              onChange={(e) => onEmpresaChange(e.target.value)}
-              placeholder={t.companyPlaceholder}
-              className={`w-full min-w-0 border rounded-xl px-3 py-2 text-sm backdrop-blur-sm focus:outline-none focus:ring-2 focus:ring-red-500/50 transition sm:min-w-[220px] ${inputBg}`}
-            />
-          </div>
+    <header className="mb-3 flex min-h-[58px] w-full min-w-0 items-center justify-between gap-[18px]">
+      <div className="flex min-w-0 flex-1 flex-col gap-3 min-[760px]:flex-row min-[760px]:items-center min-[760px]:gap-[18px]">
+        <div className="min-w-0 flex-none">
+          <h1 className={cx('m-0 min-h-[34px] whitespace-nowrap text-[30px] font-[820] leading-[34px] tracking-normal', text.title)}>
+            {t.appTitle}
+          </h1>
+          <p className={cx('mt-1 min-h-[18px] text-[13.44px] leading-[18px]', text.muted)}>
+            {t.appSubtitle}
+          </p>
+        </div>
+
+        <div className="flex w-full max-w-[340px] min-w-0 flex-col min-[480px]:max-w-[220px] min-[760px]:w-[220px] min-[760px]:flex-none">
+          <label className={cx('mb-1 min-h-[17px] text-xs font-semibold leading-[17px]', text.body)} htmlFor="companyName">
+            {t.companyLabel}
+          </label>
+          <TextInput
+            id="companyName"
+            darkMode={darkMode}
+            type="text"
+            value={empresa}
+            onChange={(e) => onEmpresaChange(e.target.value)}
+            placeholder={t.companyPlaceholder}
+            autoComplete="organization"
+            size="header"
+            className={companyInputClass}
+          />
         </div>
       </div>
-      <div className="flex flex-shrink-0 items-center gap-2 self-start sm:mt-1 sm:self-auto">
-        <button
+
+      <div className="flex flex-shrink-0 items-center gap-1.5 self-start min-[760px]:self-center" aria-label="Acoes de interface">
+        <Button
+          darkMode={darkMode}
+          variant="topbar"
+          size="topbarLang"
           onClick={onToggleLang}
-          title={lang === 'pt' ? 'Switch to English' : 'Mudar para Português'}
-          className={`p-2 rounded-2xl backdrop-blur-lg transition-all shadow-lg overflow-hidden ${btnBase}`}
+          title={lang === 'pt' ? 'Switch to English' : 'Mudar para Portugues'}
         >
-          <img
-            src={lang === 'pt' ? 'https://flagcdn.com/w40/us.png' : 'https://flagcdn.com/w40/br.png'}
-            alt={lang === 'pt' ? 'English' : 'Português'}
-            className="w-8 h-auto rounded-md block"
-          />
-        </button>
-        <button
+          {lang === 'pt' ? 'US' : 'BR'}
+        </Button>
+        <Button
+          darkMode={darkMode}
+          variant="topbar"
+          size="topbarIcon"
           onClick={onToggleDarkMode}
-          className={`p-3 rounded-2xl backdrop-blur-lg transition-all shadow-lg ${
-            darkMode 
-              ? 'bg-white/10 hover:bg-white/20 text-amber-400' 
-              : 'bg-gray-900/80 hover:bg-gray-900 text-white'
-          }`}
+          aria-label={darkMode ? 'Ativar modo claro' : 'Ativar modo escuro'}
         >
-          {darkMode ? <Sun size={22} /> : <Moon size={22} />}
-        </button>
+          {darkMode ? <Sun size={17} /> : <Moon size={17} />}
+        </Button>
       </div>
-    </div>
+    </header>
   );
 }

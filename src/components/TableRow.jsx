@@ -1,85 +1,139 @@
 import React from 'react';
 import { Trash2 } from 'lucide-react';
 import SupplierInput from './SupplierInput';
+import Button from './ui/Button';
+import { TextInput } from './ui/Field';
+import { REPORT_COLUMNS } from '../constants/columns';
+import { formatMoney, formatNumberInput } from '../utils/formatters';
+import { cx, moneyCellClasses, tableCellClasses, tableInputClasses, tableRowClasses, textClasses } from './ui/themeClasses';
 
-export default function TableRow({ 
-  product, 
-  index, 
+export default function TableRow({
+  product,
+  index,
   calculations,
-  onUpdate, 
-  onDelete, 
+  onUpdate,
+  onDelete,
   darkMode,
   t
 }) {
-  const inputBg = darkMode 
-  ? 'bg-white/10 text-white border-white/20 backdrop-blur-xl' 
-  : 'bg-white/80 backdrop-blur-xl border-gray-300';
+  const text = textClasses(darkMode);
 
-  const textMain = darkMode ? 'text-gray-100' : 'text-gray-900';
-  const textMuted = darkMode ? 'text-gray-400' : 'text-gray-500';
+  const renderCell = (column) => {
+    switch (column.key) {
+      case 'numero':
+        return (
+          <td key={column.key} className={cx(tableCellClasses(darkMode, { align: 'center' }), 'font-medium tabular-nums', text.muted)}>
+            {index + 1}
+          </td>
+        );
+      case 'quantidade':
+        return (
+          <td key={column.key} className={tableCellClasses(darkMode, { align: 'center' })}>
+            <TextInput
+              darkMode={darkMode}
+              type="number"
+              value={product.quantidade}
+              onChange={(e) => onUpdate(product.id, 'quantidade', e.target.value)}
+              size="table"
+              className={tableInputClasses(darkMode, 'text-center tabular-nums')}
+            />
+          </td>
+        );
+      case 'descricao':
+        return (
+          <td key={column.key} className={tableCellClasses(darkMode)}>
+            <TextInput
+              darkMode={darkMode}
+              type="text"
+              value={product.descricao}
+              onChange={(e) => onUpdate(product.id, 'descricao', e.target.value)}
+              size="table"
+              className={tableInputClasses(darkMode, 'truncate')}
+              title={product.descricao}
+            />
+          </td>
+        );
+      case 'fornecedor':
+        return (
+          <td key={column.key} className={tableCellClasses(darkMode)}>
+            <SupplierInput
+              value={product.fornecedor || ''}
+              onChange={(val) => onUpdate(product.id, 'fornecedor', val)}
+              darkMode={darkMode}
+              t={t}
+            />
+          </td>
+        );
+      case 'precoUnitario':
+        return (
+          <td key={column.key} className={tableCellClasses(darkMode, { align: 'right' })}>
+            <TextInput
+              darkMode={darkMode}
+              type="text"
+              inputMode="decimal"
+              value={formatNumberInput(product.preco)}
+              onChange={(e) => onUpdate(product.id, 'preco', e.target.value)}
+              size="table"
+              className={tableInputClasses(darkMode, 'text-right tabular-nums')}
+            />
+          </td>
+        );
+      case 'ipi':
+        return <td key={column.key} className={moneyCellClasses(darkMode)}>{formatMoney(calculations.ipiValue)}</td>;
+      case 'frete':
+        return <td key={column.key} className={moneyCellClasses(darkMode)}>{formatMoney(calculations.freteValue)}</td>;
+      case 'custoRealUnitario':
+        return <td key={column.key} className={moneyCellClasses(darkMode, 'strong')}>{formatMoney(calculations.custoRealUnitario)}</td>;
+      case 'precoVendaUnitario':
+        return <td key={column.key} className={moneyCellClasses(darkMode, 'sale')}>{formatMoney(calculations.precoVistaUnitario)}</td>;
+      case 'totalCusto':
+        return (
+          <td key={column.key} className={moneyCellClasses(darkMode, 'costTotal')}>
+            {formatMoney(calculations.totalCustoReal)}
+          </td>
+        );
+      case 'totalVenda':
+        return (
+          <td key={column.key} className={moneyCellClasses(darkMode, 'saleTotal')}>
+            {formatMoney(calculations.totalPrecoVista)}
+          </td>
+        );
+      case 'observacoes':
+        return (
+          <td key={column.key} className={tableCellClasses(darkMode)}>
+            <TextInput
+              darkMode={darkMode}
+              type="text"
+              value={product.observacoes || ''}
+              onChange={(e) => onUpdate(product.id, 'observacoes', e.target.value)}
+              size="table"
+              focus="amber"
+              placeholder={t.obPlaceholder}
+              className={tableInputClasses(darkMode, 'truncate')}
+              title={product.observacoes || ''}
+            />
+          </td>
+        );
+      default:
+        return null;
+    }
+  };
 
   return (
-    <tr className={`border-b ${darkMode ? 'border-white/10 hover:bg-white/5' : 'border-gray-200 hover:bg-gray-50'} transition`}>
-      <td className={`p-2 ${textMuted} font-medium`}>{index + 1}</td>
-      <td className="p-2">
-        <input
-          type="number"
-          value={product.quantidade}
-          onChange={(e) => onUpdate(product.id, 'quantidade', e.target.value)}
-          className={`w-full border rounded-lg p-1.5 text-center ${inputBg} focus:ring-2 focus:ring-red-500/50 transition`}
-        />
-      </td>
-      <td className="p-2">
-        <input
-          type="text"
-          value={product.descricao}
-          onChange={(e) => onUpdate(product.id, 'descricao', e.target.value)}
-          className={`w-full border rounded-lg p-1.5 ${inputBg} focus:ring-2 focus:ring-red-500/50 transition`}
-        />
-      </td>
-      <td className="p-2">
-        <SupplierInput
-          value={product.fornecedor || ''}
-          onChange={(val) => onUpdate(product.id, 'fornecedor', val)}
+    <tr className={tableRowClasses(darkMode)}>
+      {REPORT_COLUMNS.map(renderCell)}
+      <td className={tableCellClasses(darkMode, { align: 'center' })}>
+        <Button
           darkMode={darkMode}
-          t={t}
-        />
-      </td>
-      <td className="p-2 text-right">
-        <input
-          type="number"
-          step="0.01"
-          value={product.preco}
-          onChange={(e) => onUpdate(product.id, 'preco', e.target.value)}
-          className={`w-full border rounded-lg p-1.5 text-right ${inputBg} focus:ring-2 focus:ring-red-500/50 transition`}
-        />
-      </td>
-      <td className={`p-2 text-right ${textMuted}`}>R$ {calculations.ipiValue.toFixed(2)}</td>
-      <td className={`p-2 text-right ${textMuted}`}>R$ {calculations.freteValue.toFixed(2)}</td>
-      <td className={`p-2 text-right font-semibold ${textMain}`}>R$ {calculations.custoRealUnitario.toFixed(2)}</td>
-      <td className="p-2 text-right font-semibold text-green-600">R$ {calculations.precoVistaUnitario.toFixed(2)}</td>
-      <td className={`p-2 text-right font-bold ${darkMode ? 'bg-amber-500/10 text-amber-300' : 'bg-amber-50 text-amber-700'}`}>
-        R$ {calculations.totalCustoReal.toFixed(2)}
-      </td>
-      <td className={`p-2 text-right font-bold ${darkMode ? 'bg-green-500/10 text-green-300' : 'bg-green-50 text-green-700'}`}>
-        R$ {calculations.totalPrecoVista.toFixed(2)}
-      </td>
-      <td className="p-2">
-        <input
-          type="text"
-          value={product.observacoes || ''}
-          onChange={(e) => onUpdate(product.id, 'observacoes', e.target.value)}
-          className={`w-full border rounded-lg p-1.5 ${inputBg} focus:ring-2 focus:ring-amber-500/50 transition`}
-          placeholder={t.obPlaceholder}
-        />
-      </td>
-      <td className="p-2">
-        <button
+          variant="iconDanger"
+          size="iconPlain"
           onClick={() => onDelete(product.id)}
-          className="text-red-600 hover:text-red-800 transition"
+          aria-label={t.delete || 'Remover'}
+          title={t.delete || 'Remover'}
+          className={darkMode ? 'hover:bg-[#32171d]' : 'hover:bg-[#fff1f3]'}
         >
-          <Trash2 size={18} />
-        </button>
+          <Trash2 size={14} />
+        </Button>
       </td>
     </tr>
   );

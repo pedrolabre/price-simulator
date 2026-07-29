@@ -21,6 +21,10 @@ export function calculateProduct(product, ipi, frete, margem, freteEmbutido) {
   };
 }
 
+export function calculateReverseMargin(margem) {
+  return margem / (100 + margem) * 100;
+}
+
 export function calculateTotals(products, calculations) {
   return products.reduce((acc, product) => {
     const calc = calculations[product.id];

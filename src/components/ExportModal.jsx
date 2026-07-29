@@ -1,61 +1,38 @@
 import React, { useState } from 'react';
-import { X, Check } from 'lucide-react';
+import { Check } from 'lucide-react';
+import Button from './ui/Button';
+import ModalShell from './ui/ModalShell';
+import { REPORT_COLUMNS, createColumnSelection, getColumnLabel } from '../constants/columns';
+import { cx, textClasses } from './ui/themeClasses';
 
-export default function ExportModal({ 
-  isOpen, 
-  onClose, 
-  onExport, 
+export default function ExportModal({
+  isOpen,
+  onClose,
+  onExport,
   exportType,
   darkMode,
   t
 }) {
-  const [selectedColumns, setSelectedColumns] = useState({
-    numero: true,
-    quantidade: true,
-    descricao: true,
-    fornecedor: true,
-    observacoes: true,
-    precoUnitario: true,
-    ipi: true,
-    frete: true,
-    custoRealUnitario: true,
-    precoVendaUnitario: true,
-    totalCusto: true,
-    totalVenda: true
-  });
-
-  const columns = [
-    { key: 'numero' },
-    { key: 'quantidade' },
-    { key: 'descricao' },
-    { key: 'fornecedor' },
-    { key: 'precoUnitario' },
-    { key: 'ipi' },
-    { key: 'frete' },
-    { key: 'custoRealUnitario' },
-    { key: 'precoVendaUnitario' },
-    { key: 'totalCusto' },
-    { key: 'totalVenda' },
-    { key: 'observacoes' }
-  ];
+  const [selectedColumns, setSelectedColumns] = useState(createColumnSelection);
+  const selectedCount = Object.values(selectedColumns).filter(Boolean).length;
+  const noColumnsSelected = selectedCount === 0;
+  const text = textClasses(darkMode);
 
   const toggleColumn = (key) => {
     setSelectedColumns(prev => ({ ...prev, [key]: !prev[key] }));
   };
 
   const selectAll = () => {
-    const allSelected = {};
-    columns.forEach(col => allSelected[col.key] = true);
-    setSelectedColumns(allSelected);
+    setSelectedColumns(createColumnSelection());
   };
 
   const deselectAll = () => {
-    const noneSelected = {};
-    columns.forEach(col => noneSelected[col.key] = false);
-    setSelectedColumns(noneSelected);
+    setSelectedColumns(createColumnSelection(false));
   };
 
   const handleExport = () => {
+    if (noColumnsSelected) return;
+
     try {
       onExport(selectedColumns);
     } catch (err) {
@@ -65,88 +42,81 @@ export default function ExportModal({
     }
   };
 
-  if (!isOpen) return null;
-
-  const overlayBg = darkMode ? 'bg-black/70' : 'bg-black/50';
-  const modalBg = darkMode 
-    ? 'bg-gray-900 border border-white/10' 
-    : 'bg-white border border-gray-200';
-  const textMain = darkMode ? 'text-white' : 'text-gray-900';
-  const textMuted = darkMode ? 'text-gray-400' : 'text-gray-600';
-  const checkboxBg = darkMode ? 'bg-white/10 border-white/20' : 'bg-gray-50 border-gray-300';
-
   return (
-    <div className={`fixed inset-0 ${overlayBg} backdrop-blur-sm z-50 flex items-center justify-center p-4`}>
-      <div className={`${modalBg} rounded-2xl shadow-2xl max-w-2xl w-full max-h-[80vh] overflow-auto`}>
-        {/* Header */}
-        <div className="sticky top-0 bg-gradient-to-r from-[#C8102E] to-[#E31837] text-white p-6 flex justify-between items-center rounded-t-2xl">
-          <div>
-            <h2 className="text-2xl font-bold">{t.selectColumns}</h2>
-            <p className="text-sm text-red-100 mt-1">
-              {t.chooseColumns(exportType)}
-            </p>
-          </div>
-          <button onClick={onClose} className="hover:bg-white/20 p-2 rounded-lg transition">
-            <X size={24} />
-          </button>
-        </div>
-
-        {/* Body */}
-        <div className="p-6">
-          {/* Botões de Ação Rápida */}
-          <div className="flex gap-3 mb-6">
-            <button onClick={selectAll} className="flex-1 bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-lg font-medium transition">
-              {t.selectAll}
-            </button>
-            <button onClick={deselectAll} className="flex-1 bg-gray-500 hover:bg-gray-600 text-white px-4 py-2 rounded-lg font-medium transition">
-              {t.deselectAll}
-            </button>
-          </div>
-
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
-            {columns.map(column => (
-              <label
-                key={column.key}
-                className={`flex items-center gap-3 p-4 rounded-xl cursor-pointer transition ${
-                  darkMode 
-                    ? 'hover:bg-white/5 border border-white/10' 
-                    : 'hover:bg-gray-50 border border-gray-200'
-                }`}
-              >
-                <div className="relative">
-                  <input type="checkbox" checked={selectedColumns[column.key]} onChange={() => toggleColumn(column.key)} className="sr-only" />
-                  <div className={`w-6 h-6 rounded-md border-2 flex items-center justify-center transition ${
-                    selectedColumns[column.key] ? 'bg-[#C8102E] border-[#C8102E]' : checkboxBg
-                  }`}>
-                    {selectedColumns[column.key] && <Check size={16} className="text-white" />}
-                  </div>
-                </div>
-                <span className={`font-medium ${textMain}`}>{t.columnLabels[column.key]}</span>
-              </label>
-            ))}
-          </div>
-
-          <div className={`mt-6 p-4 rounded-xl ${darkMode ? 'bg-white/5' : 'bg-gray-100'}`}>
-            <p className={`text-center ${textMuted}`}>
-              {t.colsSelected(Object.values(selectedColumns).filter(Boolean).length, columns.length)}
-            </p>
-          </div>
-        </div>
-
-        {/* Footer */}
-        <div className="sticky bottom-0 bg-gradient-to-t from-gray-100 to-transparent dark:from-gray-800 p-6 flex gap-3">
-          <button onClick={onClose} className="flex-1 bg-gray-500 hover:bg-gray-600 text-white px-6 py-3 rounded-xl font-semibold transition">
-            {t.cancel}
-          </button>
-          <button
-            onClick={handleExport}
-            disabled={Object.values(selectedColumns).every(v => !v)}
-            className="flex-1 bg-gradient-to-r from-[#C8102E] to-[#E31837] hover:from-[#E31837] hover:to-[#C8102E] text-white px-6 py-3 rounded-xl font-semibold transition disabled:opacity-50 disabled:cursor-not-allowed"
-          >
-            {t.exportBtn(exportType)}
-          </button>
-        </div>
+    <ModalShell
+      isOpen={isOpen}
+      onClose={onClose}
+      darkMode={darkMode}
+      title={t.selectColumns}
+      subtitle={t.chooseColumns(exportType)}
+      maxWidth="max-w-[540px]"
+      closeLabel={t.cancel}
+      headerClassName="!px-3 !py-2.5"
+      bodyClassName="!px-3 !py-3"
+      footerClassName="!px-3 !py-2"
+      footer={(
+        <Button
+          darkMode={darkMode}
+          variant="primary"
+          size="modal"
+          onClick={handleExport}
+          disabled={noColumnsSelected}
+          className="w-full !h-8 sm:w-auto"
+        >
+          {t.exportBtn(exportType)}
+        </Button>
+      )}
+    >
+      <div className="grid grid-cols-2 gap-2">
+        <Button darkMode={darkMode} variant="successOutline" size="modal" onClick={selectAll} className="w-full !h-8">
+          {t.selectAll}
+        </Button>
+        <Button darkMode={darkMode} variant="secondary" size="modal" onClick={deselectAll} className="w-full !h-8">
+          {t.deselectAll}
+        </Button>
       </div>
-    </div>
+
+      <div className="mt-3 grid grid-cols-2 gap-2">
+        {REPORT_COLUMNS.map(column => {
+          const checked = selectedColumns[column.key];
+          const optionClasses = darkMode
+            ? 'border-white/10 bg-[#171b22] hover:border-white/20 hover:bg-[#202631]'
+            : 'border-[#d8dee7] bg-white hover:border-[#cfd5df] hover:bg-[#f8f9fb]';
+
+          return (
+            <label
+              key={column.key}
+              className={cx(
+                'flex min-h-[34px] cursor-pointer items-center gap-2 rounded-none border px-2.5 py-1.5 transition-colors',
+                optionClasses
+              )}
+            >
+              <input
+                type="checkbox"
+                checked={checked}
+                onChange={() => toggleColumn(column.key)}
+                className="sr-only"
+              />
+              <span
+                aria-hidden="true"
+                className={cx(
+                  'grid h-5 w-5 flex-shrink-0 place-items-center rounded-none border transition-colors',
+                  checked
+                    ? 'border-[#cf1026] bg-[#cf1026] text-white'
+                    : darkMode
+                      ? 'border-white/20 bg-[#202631] text-transparent'
+                      : 'border-[#cfd5df] bg-[#f8f9fb] text-transparent'
+                )}
+              >
+                <Check size={13} />
+              </span>
+              <span className={cx('min-w-0 text-[0.82rem] font-bold leading-snug', checked ? text.main : text.body)}>
+                {getColumnLabel(t, column, 'selection')}
+              </span>
+            </label>
+          );
+        })}
+      </div>
+    </ModalShell>
   );
 }

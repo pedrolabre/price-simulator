@@ -19,14 +19,14 @@
 [![React](https://img.shields.io/badge/React-18-20232A?style=for-the-badge&logo=react&logoColor=61DAFB)](#-tecnologias-utilizadas)
 [![Vite](https://img.shields.io/badge/Vite-7-646CFF?style=for-the-badge&logo=vite&logoColor=white)](#-tecnologias-utilizadas)
 [![Tailwind CSS](https://img.shields.io/badge/Tailwind_CSS-3-38B2AC?style=for-the-badge&logo=tailwindcss&logoColor=white)](#-tecnologias-utilizadas)
-[![Documentation](https://img.shields.io/badge/Docs-HTML-E31837?style=for-the-badge&logo=html5&logoColor=white)](./docs/PriceSim-Documentation-v1.html)
+[![Documentation](https://img.shields.io/badge/Docs-HTML-E31837?style=for-the-badge&logo=html5&logoColor=white)](./docs/PriceSim-Documentation-v2.html)
 [![License: MIT](https://img.shields.io/badge/License-MIT-E31837?style=for-the-badge)](#-licença)
 
 </div>
 
 ---
 
-SPA em React desenvolvida para **simulação de preços de produtos**. A aplicação calcula de forma dinâmica o valor dos impostos (IPI), taxas de frete (normal ou embutido no custo) e margem de lucro (markup), além de permitir a importação flexível em formato livre e a exportação em múltiplos formatos (XLS, HTML e PDF).
+SPA em React desenvolvida para **simulação de preços de produtos**. A aplicação calcula de forma dinâmica o valor dos impostos (IPI), taxas de frete (normal ou embutido no custo) e margem de lucro (markup), além de permitir a importação flexível em formato livre e a exportação em múltiplos formatos (Excel/XLS, HTML e PDF).
 
 <div align="center">
 
@@ -68,7 +68,7 @@ SPA em React desenvolvida para **simulação de preços de produtos**. A aplica�
 - **Importação inteligente**: importa produtos via texto livre (CSV, cópia de planilha, lista manual).
 - **Cálculos automáticos**: calcula em tempo real **IPI**, **frete** (normal ou embutido no custo), **custo real** e **preço de venda** com base na margem de lucro.
 - **Tabela dinâmica**: exibe uma tabela totalmente editável com todos os valores calculados em tempo real.
-- **Exportação flexível**: exporta os dados simulados para planilhas **XLS**, documentos **HTML standalone** e **PDF**.
+- **Exportação flexível**: exporta os dados simulados para planilhas **Excel (.xls)**, documentos **HTML standalone** e **PDF**.
 - **Personalização de colunas**: permite escolher quais colunas incluir ou ocultar no relatório final.
 - **Prévia integrada**: modal de prévia de impressão antes de exportar os dados.
 - **Suporte nativo**: suporte a **modo claro/escuro** (light/dark mode) e internacionalização (**PT-BR / EN**).
@@ -77,41 +77,35 @@ SPA em React desenvolvida para **simulação de preços de produtos**. A aplica�
 
 ## 📸 Screenshots
 
-Para demonstrar a interface moderna e totalmente responsiva, você pode expandir as seções abaixo:
+Para demonstrar a interface v02, com layout responsivo inspirado em fluxos SAP, você pode expandir as seções abaixo:
 
 <details>
 <summary>🖥️ Versão Desktop (Clique para expandir)</summary>
 <br/>
 
 <p align="center">
-  <b>Tela Inicial (Modo Claro vs. Modo Escuro)</b>
+  <b>Painel Inicial & Produtos com Frete Não Embutido</b>
 </p>
 <p align="center">
-  <img src="assets/screenshots/home-light-pt.png" width="49%" alt="PriceSimulator — tela inicial modo claro" />
-  <img src="assets/screenshots/home-dark-pt.png" width="49%" alt="PriceSimulator — tela inicial modo escuro" />
-</p>
-
-<p align="center">
-  <b>Tabela de Produtos & Barra de Ações</b>
-</p>
-<p align="center">
-  <img src="assets/screenshots/products-table-pt.png" width="49%" alt="PriceSimulator — tabela de produtos calculados" />
-  <img src="assets/screenshots/dashboard-actions-pt.png" width="49%" alt="PriceSimulator — barra de ações" />
+  <img src="assets/screenshots/v02/PT-BR/desktop-home-empty.png" width="49%" alt="PriceSimulator — painel inicial sem produtos processados" />
+  <img src="assets/screenshots/v02/PT-BR/desktop-products-freight-not-embedded.png" width="49%" alt="PriceSimulator — produtos processados com frete não embutido" />
 </p>
 
 <p align="center">
-  <b>Modal de Prévia & Seleção de Colunas</b>
+  <b>Frete Embutido & Inclusão Manual de Linhas</b>
 </p>
 <p align="center">
-  <img src="assets/screenshots/preview-modal-pt.png" width="49%" alt="PriceSimulator — modal de prévia" />
-  <img src="assets/screenshots/export-columns-modal-pt.png" width="49%" alt="PriceSimulator — seleção de colunas" />
+  <img src="assets/screenshots/v02/PT-BR/desktop-products-freight-embedded.png" width="49%" alt="PriceSimulator — produtos processados com frete embutido" />
+  <img src="assets/screenshots/v02/PT-BR/desktop-add-product-row.png" width="49%" alt="PriceSimulator — inclusão manual de linha na tabela" />
 </p>
 
 <p align="center">
-  <b>PDF Gerado</b>
+  <b>Prévia, Seleção de Colunas & Confirmação</b>
 </p>
 <p align="center">
-  <img src="assets/screenshots/pdf-export-pt.png" width="60%" alt="PriceSimulator — PDF gerado" />
+  <img src="assets/screenshots/v02/PT-BR/desktop-preview-modal.png" width="32%" alt="PriceSimulator — modal de prévia da simulação" />
+  <img src="assets/screenshots/v02/PT-BR/desktop-column-selection-modal.png" width="32%" alt="PriceSimulator — modal de seleção de colunas" />
+  <img src="assets/screenshots/v02/PT-BR/desktop-clear-confirmation-modal.png" width="32%" alt="PriceSimulator — modal de confirmação para limpar simulação" />
 </p>
 
 </details>
@@ -122,14 +116,13 @@ Para demonstrar a interface moderna e totalmente responsiva, você pode expandir
 
 <div align="center">
 
-| ☀️ Modo Claro | 🌙 Modo Escuro |
+| Painel Inicial | Produtos Processados | Frete Embutido |
+| :---: | :---: | :---: |
+| <img src="assets/screenshots/v02/PT-BR/mobile-home-empty.png" width="200" alt="Mobile — painel inicial sem produtos" /> | <img src="assets/screenshots/v02/PT-BR/mobile-products-table.png" width="200" alt="Mobile — tabela de produtos processados" /> | <img src="assets/screenshots/v02/PT-BR/mobile-products-embedded-freight.png" width="200" alt="Mobile — produtos com frete embutido" /> |
+
+| Seleção de Colunas | Confirmação de Limpar |
 | :---: | :---: |
-| **Tela Inicial / Home** | **Tela Inicial / Home** |
-| <img src="assets/screenshots/mobile-home-light-pt.png" width="220" alt="Mobile Home Claro" /> | <img src="assets/screenshots/mobile-home-dark-pt.png" width="220" alt="Mobile Home Escuro" /> |
-| **Tabela de Produtos** | **Tabela de Produtos** |
-| <img src="assets/screenshots/mobile-products-table-light-pt.png" width="220" alt="Mobile Tabela Claro" /> | <img src="assets/screenshots/mobile-products-table-dark-pt.png" width="220" alt="Mobile Tabela Escuro" /> |
-| **Seleção de Colunas** | **Seleção de Colunas** |
-| <img src="assets/screenshots/mobile-export-columns-modal-light-pt.png" width="220" alt="Mobile Colunas Claro" /> | <img src="assets/screenshots/mobile-export-columns-modal-dark-pt.png" width="220" alt="Mobile Colunas Escuro" /> |
+| <img src="assets/screenshots/v02/PT-BR/mobile-column-selection-modal.png" width="220" alt="Mobile — modal de seleção de colunas" /> | <img src="assets/screenshots/v02/PT-BR/mobile-clear-confirmation-modal.png" width="220" alt="Mobile — confirmação para limpar simulação" /> |
 
 </div>
 
@@ -137,7 +130,7 @@ Para demonstrar a interface moderna e totalmente responsiva, você pode expandir
 
 <br/>
 
-> 📑 **Documentação completa:** Acesse a documentação técnica interativa em [docs/PriceSim-Documentation-v1.html](docs/PriceSim-Documentation-v1.html)
+> 📑 **Documentação completa:** Acesse a documentação técnica interativa em [docs/PriceSim-Documentation-v2.html](docs/PriceSim-Documentation-v2.html)
 
 ---
 
@@ -150,7 +143,7 @@ O projeto foi construído utilizando as seguintes tecnologias e ecossistemas:
 - **Tailwind CSS** — Framework CSS utilitário para estilização responsiva e moderna
 - **Lucide React** — Conjunto de ícones consistentes e otimizados em SVG
 - **HTML5 / CSS3** — Estrutura e customizações básicas da página
-- **JS Vanilla (Geradores)** — Lógica customizada nativa para conversão e geração de XLS, HTML e PDF (sem dependências externas pesadas)
+- **JS Vanilla (Geradores)** — Lógica customizada nativa para conversão e geração de Excel/XLS, HTML e PDF (sem dependências externas pesadas)
 
 ---
 
@@ -174,7 +167,7 @@ npm install
 npm run dev
 ```
 
-Acesse a aplicação através do endereço `http://localhost:5173`.
+Acesse a aplicação através do endereço `http://localhost:3000`.
 
 ---
 
@@ -210,8 +203,8 @@ Você pode ajustar os valores padrões globais no cabeçalho:
 | **Margem** | `100%` | Markup/lucro desejado sobre o custo real total do item. |
 
 ### 📤 Exportar relatórios simulados
-1. Na barra de ações superior, escolha o formato desejado: **XLS**, **HTML ou **PDF**.
-2. Na janela pop-up, selecione quais colunas devem fazer parte do relatório final.
+1. Na barra de ações superior, escolha o formato desejado: **Excel**, **HTML** ou **PDF**.
+2. No modal de seleção de colunas, escolha quais colunas devem fazer parte do relatório final.
 3. Visualize a prévia e clique em exportar/imprimir.
 
 ---
