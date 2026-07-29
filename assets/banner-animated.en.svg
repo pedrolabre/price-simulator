@@ -20,39 +20,39 @@
         --text-body: #8b949e;
         
         /* Mockup of page in LIGHT mode (default for dark theme banner) */
-        --mockup-bg: #ffffff;
-        --mockup-border: #e1e4e8;
-        --mockup-titlebar-bg: #f6f8fa;
-        --mockup-url-bg: #ffffff;
-        --mockup-url-border: #e1e4e8;
-        --mockup-url-text: #586069;
-        --mockup-title-text: #24292e;
-        --mockup-subtitle-text: #586069;
-        --mockup-config-title-text: #24292e;
-        --mockup-config-text: #586069;
+        --mockup-bg: #f6f7f9;
+        --mockup-border: #d8dee7;
+        --mockup-titlebar-bg: #ffffff;
+        --mockup-url-bg: #f6f7f9;
+        --mockup-url-border: #d8dee7;
+        --mockup-url-text: #6b7280;
+        --mockup-title-text: #111827;
+        --mockup-subtitle-text: #6b7280;
+        --mockup-config-title-text: #111827;
+        --mockup-config-text: #6b7280;
         --mockup-cell-bg: #ffffff;
-        --mockup-cell-border: #e1e4e8;
-        --mockup-cell-text: #24292e;
+        --mockup-cell-border: #dfe3e8;
+        --mockup-cell-text: #111827;
         
         /* Table Footer / Totals styling */
-        --mockup-footer-bg: #f6f8fa;
-        --mockup-footer-subbg: #e1e4e8;
-        --mockup-totals-cost-bg: #fef3c7;
-        --mockup-totals-cost-text: #b45309;
-        --mockup-totals-sale-bg: #dcfce7;
-        --mockup-totals-sale-text: #15803d;
-        --mockup-footer-text: #586069;
+        --mockup-footer-bg: #f8f9fb;
+        --mockup-footer-subbg: #f8f9fb;
+        --mockup-totals-cost-bg: #fff2bd;
+        --mockup-totals-cost-text: #8a5a00;
+        --mockup-totals-sale-bg: #e9f7ef;
+        --mockup-totals-sale-text: #0f8a45;
+        --mockup-footer-text: #374151;
 
         /* Buttons in status bar */
-        --btn-orange-bg: #fff7ed;
-        --btn-orange-border: #fed7aa;
-        --btn-orange-text: #c2410c;
-        --btn-green-bg: #f0fdf4;
-        --btn-green-border: #bbf7d0;
-        --btn-green-text: #15803d;
-        --btn-red-bg: #fef2f2;
-        --btn-red-border: #fecaca;
-        --btn-red-text: #b91c1c;
+        --btn-orange-bg: #ffffff;
+        --btn-orange-border: #e8c1b5;
+        --btn-orange-text: #cf1026;
+        --btn-green-bg: #ffffff;
+        --btn-green-border: #b9dec7;
+        --btn-green-text: #0f8a45;
+        --btn-red-bg: #ffffff;
+        --btn-red-border: #e8aeb6;
+        --btn-red-text: #cf1026;
         
         --accent-red: #E31837;
         --accent-red-glow: #ff4d6a;
@@ -81,39 +81,39 @@
           --text-body: #586069;
           
           /* Mockup of page in DARK mode (always dark mode for mockup) */
-          --mockup-bg: #0f172a;
-          --mockup-border: #1e293b;
-          --mockup-titlebar-bg: #1e293b;
-          --mockup-url-bg: #0f172a;
-          --mockup-url-border: #334155;
-          --mockup-url-text: #94a3b8;
-          --mockup-title-text: #ffffff;
-          --mockup-subtitle-text: #94a3b8;
-          --mockup-config-title-text: #f8fafc;
-          --mockup-config-text: #94a3b8;
-          --mockup-cell-bg: #1e293b;
-          --mockup-cell-border: #334155;
-          --mockup-cell-text: #f8fafc;
+          --mockup-bg: #111318;
+          --mockup-border: #30363d;
+          --mockup-titlebar-bg: #171b22;
+          --mockup-url-bg: #111318;
+          --mockup-url-border: rgba(255,255,255,0.1);
+          --mockup-url-text: #9ca3af;
+          --mockup-title-text: #f5f7fa;
+          --mockup-subtitle-text: #9ca3af;
+          --mockup-config-title-text: #f5f7fa;
+          --mockup-config-text: #9ca3af;
+          --mockup-cell-bg: #10141b;
+          --mockup-cell-border: rgba(255,255,255,0.1);
+          --mockup-cell-text: #f5f7fa;
           
           /* Table Footer / Totals styling */
-          --mockup-footer-bg: #1e293b;
+          --mockup-footer-bg: #1d242e;
           --mockup-footer-subbg: rgba(255, 255, 255, 0.05);
-          --mockup-totals-cost-bg: rgba(245, 158, 11, 0.15);
-          --mockup-totals-cost-text: #fcd34d;
-          --mockup-totals-sale-bg: rgba(34, 197, 94, 0.15);
-          --mockup-totals-sale-text: #86efac;
-          --mockup-footer-text: #94a3b8;
+          --mockup-totals-cost-bg: #292419;
+          --mockup-totals-cost-text: #f4c95f;
+          --mockup-totals-sale-bg: #17261e;
+          --mockup-totals-sale-text: #4bd486;
+          --mockup-footer-text: #d4d8df;
 
           /* Buttons in status bar */
-          --btn-orange-bg: rgba(249, 115, 22, 0.2);
-          --btn-orange-border: rgba(249, 115, 22, 0.3);
-          --btn-orange-text: #fdba74;
-          --btn-green-bg: rgba(34, 197, 94, 0.2);
-          --btn-green-border: rgba(34, 197, 94, 0.3);
-          --btn-green-text: #86efac;
-          --btn-red-bg: rgba(239, 68, 68, 0.2);
-          --btn-red-border: rgba(239, 68, 68, 0.3);
-          --btn-red-text: #fca5a5;
+          --btn-orange-bg: #3b231d;
+          --btn-orange-border: #573129;
+          --btn-orange-text: #ffb39e;
+          --btn-green-bg: #16281d;
+          --btn-green-border: #22462f;
+          --btn-green-text: #80d29f;
+          --btn-red-bg: #341b20;
+          --btn-red-border: #5c2730;
+          --btn-red-text: #ff9ea9;
           
           --accent-red: #d73a49;
           --accent-red-glow: #ea4a5a;
@@ -329,17 +329,18 @@
     </g>
   </g>
 
-  <!-- Typography Block -->
+  <!-- Typography Block (Shifted left + smaller title to avoid overlap) -->
   <g transform="translate(230, 0)">
     <text x="0" y="215" class="text-title" font-size="44" letter-spacing="1">PRICE SIMULATOR</text>
-    <text x="2" y="255" class="text-subtitle" font-size="15">SIMULATION &amp; PRICING</text>
-    <text x="2" y="295" class="text-body-style" font-size="14">Dynamic calculation of taxes, freight, and profit margin with standalone export</text>
-    <text x="2" y="325" class="text-tech" font-size="10">ECMA // SPA // STANDALONE_HTML // EXCEL // PRINT_PDF</text>
+    <text x="2" y="255" class="text-subtitle" font-size="15">PRODUCT PRICING</text>
+    <text x="2" y="295" class="text-body-style" font-size="14">Dynamic calculation of taxes, freight, and</text>
+    <text x="2" y="315" class="text-body-style" font-size="14">profit margin with standalone export options</text>
+    <text x="2" y="345" class="text-tech" font-size="10">ECMA // SPA // HTML_EXPORT // EXCEL // PRINT_PDF</text>
   </g>
 
   <!-- XLS, PDF, and HTML Circular Badges (Positioned in the empty space below the text block) -->
   <!-- XLS Badge (Green) -->
-  <g transform="translate(270, 390)">
+  <g transform="translate(250, 400)">
     <g class="badge-float-1">
       <circle r="22" fill="#2ea043" stroke="#ffffff" stroke-width="1.5" />
       <text y="4" class="badge-text">XLS</text>
@@ -347,7 +348,7 @@
   </g>
   
   <!-- PDF Badge (Red) -->
-  <g transform="translate(365, 410)">
+  <g transform="translate(310, 400)">
     <g class="badge-float-2">
       <circle r="22" fill="#E31837" stroke="#ffffff" stroke-width="1.5" />
       <text y="4" class="badge-text">PDF</text>
@@ -355,7 +356,7 @@
   </g>
   
   <!-- HTML Badge (Blue) -->
-  <g transform="translate(460, 390)">
+  <g transform="translate(370, 400)">
     <g class="badge-float-3">
       <circle r="22" fill="#0052cc" stroke="#ffffff" stroke-width="1.5" />
       <text y="4" class="badge-text">HTML</text>
