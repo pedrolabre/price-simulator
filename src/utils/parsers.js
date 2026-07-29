@@ -1,3 +1,22 @@
+function parsePriceValue(value) {
+  const valorStr = String(value || '').trim();
+  if (!valorStr) return 0;
+
+  if (valorStr.includes(',')) {
+    return parseFloat(valorStr.replace(/\./g, '').replace(',', '.')) || 0;
+  }
+
+  const dotCount = (valorStr.match(/\./g) || []).length;
+  if (dotCount > 1) {
+    const lastDot = valorStr.lastIndexOf('.');
+    const integerPart = valorStr.slice(0, lastDot).replace(/\./g, '');
+    const decimalPart = valorStr.slice(lastDot + 1);
+    return parseFloat(`${integerPart}.${decimalPart}`) || 0;
+  }
+
+  return parseFloat(valorStr) || 0;
+}
+
 export function parseTextToProducts(text, fornecedorPadrao = '') {
   if (!text.trim()) return [];
   
@@ -32,7 +51,7 @@ export function parseTextToProducts(text, fornecedorPadrao = '') {
         preco = parseFloat(valorStr.replace(',', '.'));
       } else {
         // "249.06" ou "249" — ponto é decimal ou sem decimal
-        preco = parseFloat(valorStr);
+        preco = parsePriceValue(valorStr);
       }
       matched = true;
     }
@@ -46,7 +65,7 @@ export function parseTextToProducts(text, fornecedorPadrao = '') {
         const valorStr = match[3];
         preco = valorStr.includes(',') 
           ? parseFloat(valorStr.replace(/\./g, '').replace(',', '.')) 
-          : parseFloat(valorStr);
+          : parsePriceValue(valorStr);
         matched = true;
       }
     }
@@ -61,7 +80,7 @@ export function parseTextToProducts(text, fornecedorPadrao = '') {
         const valorStr = match[3];
         preco = valorStr.includes(',') 
           ? parseFloat(valorStr.replace(/\./g, '').replace(',', '.')) 
-          : parseFloat(valorStr);
+          : parsePriceValue(valorStr);
         matched = true;
       }
     }
@@ -76,7 +95,7 @@ export function parseTextToProducts(text, fornecedorPadrao = '') {
         const valorStr = match[2];
         preco = valorStr.includes(',') 
           ? parseFloat(valorStr.replace(/\./g, '').replace(',', '.')) 
-          : parseFloat(valorStr);
+          : parsePriceValue(valorStr);
         matched = true;
       }
     }
@@ -91,7 +110,7 @@ export function parseTextToProducts(text, fornecedorPadrao = '') {
         const valorStr = match[3];
         preco = valorStr.includes(',') 
           ? parseFloat(valorStr.replace(/\./g, '').replace(',', '.')) 
-          : parseFloat(valorStr);
+          : parsePriceValue(valorStr);
         matched = true;
       }
     }
@@ -106,7 +125,7 @@ export function parseTextToProducts(text, fornecedorPadrao = '') {
         const valorStr = match[3];
         preco = valorStr.includes(',') 
           ? parseFloat(valorStr.replace(/\./g, '').replace(',', '.')) 
-          : parseFloat(valorStr);
+          : parsePriceValue(valorStr);
         matched = true;
       }
     }

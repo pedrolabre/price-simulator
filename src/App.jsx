@@ -13,7 +13,7 @@ import { useParser } from './hooks/useParser';
 import { useExport } from './hooks/useExport';
 import { DEFAULT_CONFIG } from './constants/defaults';
 import { translations } from './constants/translations';
-import { appContentClasses, appShellClasses } from './components/ui/themeClasses';
+import { appContentClasses, appShellClasses, cx } from './components/ui/themeClasses';
 
 export default function App() {
   const [darkMode, setDarkMode] = useState(false);
@@ -28,7 +28,7 @@ export default function App() {
   const [showPreview, setShowPreview] = useState(false);
   const [showExportModal, setShowExportModal] = useState(false);
   const [showClearConfirm, setShowClearConfirm] = useState(false);
-  const [exportType, setExportType] = useState(null); // 'xls', 'html' or 'pdf'
+  const [exportType, setExportType] = useState(null);
   const [empresa, setEmpresa] = useState('');
 
   const { products, addProducts, updateProduct, deleteProduct, addEmptyRow, clearProducts } = useProducts();
@@ -37,11 +37,16 @@ export default function App() {
 
   const config = { ipi, frete, margem, freteEmbutido, empresa, t };
   const { calculations, totals } = useCalculations(products, config);
+  const hasProducts = products.length > 0;
 
   const handleProcessText = () => {
     const parsedProducts = parse(textInput, fornecedorPadrao);
     addProducts(parsedProducts);
     setTextInput('');
+  };
+
+  const handleUseExample = () => {
+    setTextInput('PRODUTO,1,R$ 99.999.99');
   };
 
   const handleOpenExportModal = (type) => {
@@ -68,8 +73,8 @@ export default function App() {
   };
 
   return (
-    <div className={appShellClasses(darkMode)}>
-      <main className={appContentClasses()}>
+    <div className={appShellClasses(darkMode, hasProducts)}>
+      <main className={appContentClasses(hasProducts)}>
         <Header
           darkMode={darkMode}
           onToggleDarkMode={() => setDarkMode(!darkMode)}
@@ -80,7 +85,14 @@ export default function App() {
           t={t}
         />
 
-        {products.length > 0 && (
+        <div
+          className={cx(
+            'grid min-w-0 gap-[10px] min-[981px]:grid-cols-2',
+            hasProducts
+              ? 'min-[981px]:min-h-0 min-[981px]:flex-1 min-[981px]:grid-rows-[52px_auto_minmax(0,1fr)] min-[981px]:overflow-hidden'
+              : 'min-[981px]:grid-rows-[52px_auto]'
+          )}
+        >
           <StatusBar
             productCount={products.length}
             darkMode={darkMode}
@@ -90,16 +102,18 @@ export default function App() {
             onPreview={() => setShowPreview(true)}
             onClear={() => setShowClearConfirm(true)}
             t={t}
+            isEmpty={!hasProducts}
+            className="min-[981px]:col-span-2"
           />
-        )}
 
-        <div className="mb-6 grid w-full min-w-0 gap-4 lg:grid-cols-2 lg:items-stretch">
           <ImportSection
             textInput={textInput}
             onTextChange={setTextInput}
             onProcess={handleProcessText}
+            onUseExample={handleUseExample}
             darkMode={darkMode}
             t={t}
+            compact
           />
 
           <ConfigPanel
@@ -115,19 +129,23 @@ export default function App() {
             onFornecedorChange={setFornecedorPadrao}
             darkMode={darkMode}
             t={t}
+            compact
           />
-        </div>
 
-        <ProductTable
-          products={products}
-          calculations={calculations}
-          totals={totals}
-          onAddRow={handleAddRow}
-          onUpdateProduct={updateProduct}
-          onDeleteProduct={deleteProduct}
-          darkMode={darkMode}
-          t={t}
-        />
+          {hasProducts && (
+            <ProductTable
+              products={products}
+              calculations={calculations}
+              totals={totals}
+              onAddRow={handleAddRow}
+              onUpdateProduct={updateProduct}
+              onDeleteProduct={deleteProduct}
+              darkMode={darkMode}
+              t={t}
+              className="min-[981px]:col-span-2 min-[981px]:min-h-0"
+            />
+          )}
+        </div>
 
         <PreviewModal
           isOpen={showPreview}

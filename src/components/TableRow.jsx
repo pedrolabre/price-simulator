@@ -4,7 +4,7 @@ import SupplierInput from './SupplierInput';
 import Button from './ui/Button';
 import { TextInput } from './ui/Field';
 import { REPORT_COLUMNS } from '../constants/columns';
-import { formatMoney } from '../utils/formatters';
+import { formatMoney, formatNumberInput } from '../utils/formatters';
 import { cx, moneyCellClasses, tableCellClasses, tableInputClasses, tableRowClasses, textClasses } from './ui/themeClasses';
 
 export default function TableRow({
@@ -17,6 +17,7 @@ export default function TableRow({
   t
 }) {
   const text = textClasses(darkMode);
+
   const renderCell = (column) => {
     switch (column.key) {
       case 'numero':
@@ -68,9 +69,9 @@ export default function TableRow({
           <td key={column.key} className={tableCellClasses(darkMode, { align: 'right' })}>
             <TextInput
               darkMode={darkMode}
-              type="number"
-              step="0.01"
-              value={product.preco}
+              type="text"
+              inputMode="decimal"
+              value={formatNumberInput(product.preco)}
               onChange={(e) => onUpdate(product.id, 'preco', e.target.value)}
               size="table"
               className={tableInputClasses(darkMode, 'text-right tabular-nums')}
@@ -129,12 +130,9 @@ export default function TableRow({
           onClick={() => onDelete(product.id)}
           aria-label={t.delete || 'Remover'}
           title={t.delete || 'Remover'}
-          className={cx(
-            '!h-7 !w-7 !rounded-sm',
-            darkMode ? 'hover:bg-[#32171d]' : 'hover:bg-[#fff1f3]'
-          )}
+          className={darkMode ? 'hover:bg-[#32171d]' : 'hover:bg-[#fff1f3]'}
         >
-          <Trash2 size={15} />
+          <Trash2 size={14} />
         </Button>
       </td>
     </tr>

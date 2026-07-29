@@ -62,13 +62,13 @@ export default function ModalShell({
   };
 
   return (
-    <div className={cx(modalOverlayClasses(darkMode), className)} onMouseDown={handleBackdropMouseDown}>
+    <div className={cx('modal-backdrop open', modalOverlayClasses(darkMode), className)} onMouseDown={handleBackdropMouseDown}>
       <section
         role="dialog"
         aria-modal="true"
         aria-label={typeof title === 'string' ? title : undefined}
         className={cx(
-          'my-auto flex w-full min-w-0 flex-col overflow-hidden rounded-[20px]',
+          'modal my-auto flex w-full min-w-0 flex-col overflow-hidden rounded-none',
           maxWidth,
           maxHeight,
           modalPanelClasses(darkMode),
@@ -76,15 +76,15 @@ export default function ModalShell({
         )}
       >
         {(title || subtitle || showClose) && (
-          <header className={cx('flex flex-shrink-0 items-start justify-between gap-4 px-4 py-4 sm:px-6 sm:py-5', modalHeaderClasses(), headerClassName)}>
+          <header className={cx('modal-header flex flex-shrink-0 items-start justify-between gap-4 px-[15px] py-[13px]', modalHeaderClasses(), headerClassName)}>
             <div className="min-w-0">
               {title && (
-                <h2 className="m-0 text-lg font-extrabold leading-tight tracking-tight sm:text-xl">
+                <h2 className="modal-title m-0 text-base font-extrabold leading-tight tracking-normal">
                   {title}
                 </h2>
               )}
               {subtitle && (
-                <p className="mt-1 text-xs leading-relaxed text-white/85 sm:text-sm">
+                <p className="modal-subtitle mt-[3px] text-[0.72rem] leading-relaxed text-white/85">
                   {subtitle}
                 </p>
               )}
@@ -95,7 +95,7 @@ export default function ModalShell({
                 type="button"
                 autoFocus
                 onClick={onClose}
-                className="grid h-9 w-9 flex-shrink-0 place-items-center rounded-md text-white transition hover:bg-white/15 focus:outline-none focus:ring-2 focus:ring-white/70"
+                className="modal-close grid h-[34px] w-[34px] flex-shrink-0 place-items-center rounded-none border border-white/50 bg-transparent text-white transition hover:border-white/75 hover:bg-white/10 focus:outline-none focus:ring-2 focus:ring-white/70"
                 aria-label={closeLabel}
                 title={closeLabel}
               >
@@ -105,12 +105,12 @@ export default function ModalShell({
           </header>
         )}
 
-        <div className={cx('min-h-0 flex-1 overflow-auto px-4 py-4 sm:px-6 sm:py-5', bodyClassName)}>
+        <div className={cx('modal-body min-h-0 flex-1 overflow-auto px-[15px] py-[14px]', bodyClassName)}>
           {children}
         </div>
 
         {footer && (
-          <footer className={cx('flex flex-shrink-0 flex-col-reverse gap-2 border-t px-4 py-4 sm:flex-row sm:justify-end sm:px-6', modalFooterClasses(darkMode), footerClassName)}>
+          <footer className={cx('modal-footer flex flex-shrink-0 flex-col-reverse gap-2 border-t px-[15px] py-[9px] sm:flex-row sm:justify-end', modalFooterClasses(darkMode), footerClassName)}>
             {footer}
           </footer>
         )}

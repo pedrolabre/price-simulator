@@ -9,33 +9,49 @@ export default function ImportSection({
   textInput,
   onTextChange,
   onProcess,
+  onUseExample,
   darkMode,
-  t
+  t,
+  compact = false,
+  className = ''
 }) {
   const text = textClasses(darkMode);
 
   return (
-    <Card darkMode={darkMode} className={cx('h-full', operationalCardClasses(darkMode, { accent: 'top' }))}>
-      <div className="flex h-full flex-col p-4 sm:p-[18px]">
-        <div className="mb-3 min-w-0">
-          <h2 className={cx('text-sm font-bold leading-5', text.main)}>
+    <Card as="section" darkMode={darkMode} className={cx('h-full min-w-0', operationalCardClasses(darkMode, { accent: 'top' }), className)}>
+      <div className={cx('flex h-full flex-col px-4', compact ? 'py-2' : 'py-[12px]')}>
+        <div className={cx('flex min-w-0 flex-col gap-1 min-[640px]:flex-row min-[640px]:items-center min-[640px]:justify-between min-[640px]:gap-4', compact ? 'mb-1' : 'mb-1.5')}>
+          <h2 className={cx('flex-shrink-0 text-[0.9rem] font-bold leading-[1.18]', text.main)}>
             {t.importTitle}
           </h2>
-          <p className={cx('mt-1 text-xs leading-5', text.muted)}>
-            {t.importHint}
-          </p>
+          <div className="flex min-w-0 flex-1 items-center justify-between gap-3 min-[640px]:justify-end">
+            <p className={cx('min-w-0 truncate text-[0.72rem] leading-[1.25]', text.muted)} title={t.importHint}>
+              {t.importHint}
+            </p>
+            <button
+              type="button"
+              onClick={onUseExample}
+              className="flex-shrink-0 text-[0.75rem] font-bold leading-4 text-[#cf1026] transition hover:text-[#ad0b1d]"
+            >
+              {t.useExample || 'Usar exemplo'}
+            </button>
+          </div>
         </div>
 
         <Textarea
           darkMode={darkMode}
-          className={cx('min-h-[118px] flex-1 resize-y !p-3 font-sans text-[0.82rem] leading-6 lg:min-h-[104px]', operationalInputClasses(darkMode))}
+          className={cx(
+            'flex-1 resize-y font-sans text-[0.8rem] leading-[1.45]',
+            compact ? 'h-[60px] min-h-[60px] !py-2' : 'h-[104px] min-h-[104px]',
+            operationalInputClasses(darkMode)
+          )}
           rows="5"
           placeholder={t.importPlaceholder}
           value={textInput}
           onChange={(e) => onTextChange(e.target.value)}
         />
 
-        <div className="mt-3 flex justify-end">
+        <div className={cx('flex flex-col gap-[10px] min-[640px]:flex-row min-[640px]:items-center min-[640px]:justify-between', compact ? 'mt-1.5' : 'mt-2')}>
           <Button
             darkMode={darkMode}
             variant="flatPrimary"
@@ -43,8 +59,11 @@ export default function ImportSection({
             onClick={onProcess}
             className="w-full min-[420px]:w-auto"
           >
-            <Check size={15} className="flex-shrink-0" /> {t.processBtn}
+            <Check size={14} className="flex-shrink-0" /> {t.processBtn}
           </Button>
+          <span className={cx('text-[0.7rem] leading-4', text.muted)}>
+            {t.formatHint || 'Aceita virgula, ponto e virgula ou tabulacao como separador.'}
+          </span>
         </div>
       </div>
     </Card>

@@ -24,7 +24,8 @@ export default function ProductTable({
   onUpdateProduct,
   onDeleteProduct,
   darkMode,
-  t
+  t,
+  className = ''
 }) {
   if (products.length === 0) return null;
 
@@ -32,10 +33,10 @@ export default function ProductTable({
   const totalsLabelColSpan = countTotalsLabelColumns(REPORT_COLUMNS);
 
   return (
-    <Card darkMode={darkMode} className={cx('overflow-hidden', operationalCardClasses(darkMode, { accent: 'top' }))}>
-      <div className="flex flex-col p-3 sm:p-[14px]">
-        <div className="mb-2 flex flex-col gap-2 min-[380px]:flex-row min-[380px]:items-center min-[380px]:justify-between">
-          <h2 className={cx('min-w-0 truncate text-sm font-bold leading-5', text.main)}>
+    <Card as="section" darkMode={darkMode} className={cx('min-w-0 overflow-hidden', operationalCardClasses(darkMode, { accent: 'top' }), className)}>
+      <div className="flex h-full min-h-0 flex-col px-[14px] pb-[14px] pt-3">
+        <div className="mb-2 flex flex-shrink-0 flex-col gap-2 min-[380px]:flex-row min-[380px]:items-center min-[380px]:justify-between">
+          <h2 className={cx('min-w-0 truncate text-[0.9rem] font-bold leading-[1.25]', text.main)}>
             {t.processedProducts}
           </h2>
           <Button
@@ -49,19 +50,23 @@ export default function ProductTable({
           </Button>
         </div>
 
-        <div className={cx(tableWrapClasses(darkMode), 'max-h-[62vh] lg:max-h-[calc(100vh-156px)]')}>
-          <table className={productTableClasses()}>
+        <div className={cx(tableWrapClasses(darkMode), 'min-h-[210px] flex-1 min-[981px]:min-h-0')}>
+          <table className={productTableClasses()} aria-label={t.processedProducts}>
             <thead className={tableHeaderClasses(darkMode)}>
               <tr>
-                {REPORT_COLUMNS.map(column => (
+                {REPORT_COLUMNS.map((column, columnIndex) => (
                   <th
                     key={column.key}
-                    className={cx(tableHeaderCellClasses(darkMode, column.tableHeaderTone), column.tableHeaderClassName)}
+                    className={cx(
+                      tableHeaderCellClasses(darkMode, column.tableHeaderTone),
+                      columnIndex === 0 && 'rounded-tl-[2px]',
+                      column.tableHeaderClassName
+                    )}
                   >
                     {getColumnLabel(t, column, 'table')}
                   </th>
                 ))}
-                <th className={cx(tableHeaderCellClasses(darkMode), 'w-10')} aria-label={t.delete || 'Remover'}></th>
+                <th className={cx(tableHeaderCellClasses(darkMode), 'w-9 rounded-tr-[2px]')} aria-label={t.delete || 'Remover'}></th>
               </tr>
             </thead>
             <tbody>

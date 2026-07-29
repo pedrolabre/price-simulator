@@ -1,9 +1,8 @@
 import React from 'react';
-import Button from './ui/Button';
 import ModalShell from './ui/ModalShell';
 import { REPORT_COLUMNS, countTotalsLabelColumns, getColumnLabel } from '../constants/columns';
 import { getReportColumnValue, getReportTotalValue } from '../utils/exportRows';
-import { formatMoney, formatReverseMargin } from '../utils/formatters';
+import { formatMoney } from '../utils/formatters';
 import { cx, tableFooterCellClasses, textClasses } from './ui/themeClasses';
 
 function previewHeaderCellClasses(darkMode, align = 'left') {
@@ -14,7 +13,7 @@ function previewHeaderCellClasses(darkMode, align = 'left') {
   };
 
   return cx(
-    'sticky top-0 z-10 whitespace-nowrap border-b border-r px-2 py-2 align-middle text-[0.66rem] font-bold uppercase leading-tight last:border-r-0',
+    'sticky top-0 z-10 whitespace-nowrap border-b border-r px-[7px] py-[7px] align-middle text-[0.62rem] font-bold leading-tight last:border-r-0',
     darkMode
       ? 'border-white/10 bg-[#252b34] text-[#f5f7fa]'
       : 'border-[#d8dee7] bg-[#f1f3f6] text-[#111827]',
@@ -39,13 +38,20 @@ function previewCellClasses(darkMode, { align = 'left', tone = 'default', strong
   };
 
   return cx(
-    'border-b border-r px-2 py-2 align-top text-[0.74rem] last:border-r-0',
+    'border-b border-r px-[7px] py-[7px] align-top text-[0.72rem] last:border-r-0',
     darkMode ? 'border-white/10' : 'border-[#dfe3e8]',
     alignClasses[align] || alignClasses.left,
     tones[tone] || tones.default,
     strong && 'font-bold',
     align === 'right' && 'whitespace-nowrap tabular-nums'
   );
+}
+
+function formatPercentValue(value) {
+  const numeric = Number(value || 0);
+  return Number.isInteger(numeric)
+    ? String(numeric)
+    : String(numeric).replace('.', ',');
 }
 
 export default function PreviewModal({
@@ -59,9 +65,9 @@ export default function PreviewModal({
   t
 }) {
   const text = textClasses(darkMode);
-  const marginReduction = formatReverseMargin(config.margem, { clampNonPositive: true });
+  const previewTableDarkMode = false;
   const marginPrefix = config.margem >= 0 ? '+' : '';
-  const subtitle = `${t.ipiLabel.replace(' (%)', '')}: ${config.ipi}% | ${t.freightLabel.replace(' (%)', '')}: ${config.frete}% | ${t.marginLabel.replace(' (%)', '')}: ${marginPrefix}${config.margem}% / -${marginReduction}%`;
+  const subtitle = `${t.ipiLabel.replace(' (%)', '')}: ${formatPercentValue(config.ipi)}% | ${t.freightLabel.replace(' (%)', '')}: ${formatPercentValue(config.frete)}% | ${t.marginLabel}: ${marginPrefix}${formatPercentValue(config.margem)}%`;
   const totalsLabelColSpan = countTotalsLabelColumns(REPORT_COLUMNS);
 
   const previewCellConfig = {
@@ -84,7 +90,7 @@ export default function PreviewModal({
     const { className, ...cellConfig } = previewCellConfig[column.key] || {};
 
     return (
-      <td key={column.key} className={cx(previewCellClasses(darkMode, cellConfig), className)}>
+      <td key={column.key} className={cx(previewCellClasses(previewTableDarkMode, cellConfig), className)}>
         {getReportColumnValue(column.key, product, calc, index, formatMoney)}
       </td>
     );
@@ -97,32 +103,27 @@ export default function PreviewModal({
       darkMode={darkMode}
       title={t.previewTitle}
       subtitle={subtitle}
-      maxWidth="max-w-6xl"
+      maxWidth="max-w-[1240px]"
       maxHeight="max-h-[calc(100vh-2rem)]"
       closeLabel={t.previewClose}
-      footer={(
-        <Button darkMode={darkMode} variant="secondary" size="modal" onClick={onClose} className="w-full sm:w-auto">
-          {t.previewClose}
-        </Button>
-      )}
     >
       <div className={cx('mb-4 flex flex-wrap gap-2 text-xs', text.muted)}>
-        <span className={cx('rounded-md border px-2.5 py-1.5', darkMode ? 'border-white/10 bg-[#202631]' : 'border-[#e2e6ec] bg-[#f8f9fb]')}>
-          <strong className={text.body}>{t.companyLabel}:</strong> {config.empresa || '-'}
+        <span className={cx('rounded-none border px-2.5 py-1.5', darkMode ? 'border-white/10 bg-[#202631]' : 'border-[#e2e6ec] bg-[#f8f9fb]')}>
+          <strong className={text.body}>{t.companyLabel}:</strong> {config.empresa || t.notInformed || '-'}
         </span>
-        <span className={cx('rounded-md border px-2.5 py-1.5', darkMode ? 'border-white/10 bg-[#202631]' : 'border-[#e2e6ec] bg-[#f8f9fb]')}>
+        <span className={cx('rounded-none border px-2.5 py-1.5', darkMode ? 'border-white/10 bg-[#202631]' : 'border-[#e2e6ec] bg-[#f8f9fb]')}>
           <strong className={text.body}>{t.totalProducts}:</strong> {products.length}
         </span>
       </div>
 
-      <div className={cx('w-full max-w-full overflow-auto rounded-md border', darkMode ? 'border-white/10 bg-[#10141b]' : 'border-[#d8dee7] bg-white')}>
-        <table className="w-full min-w-[980px] table-fixed border-separate border-spacing-0 text-[0.74rem]">
+      <div className="preview-table-wrap w-full max-w-full overflow-auto rounded-none border border-[#d8dee7] bg-white">
+        <table className="w-full min-w-[1184px] table-fixed border-separate border-spacing-0 text-[0.72rem] text-[#111827]">
           <thead>
             <tr>
               {REPORT_COLUMNS.map(column => (
                 <th
                   key={column.key}
-                  className={cx(previewHeaderCellClasses(darkMode, column.align), column.previewHeaderClassName)}
+                  className={cx(previewHeaderCellClasses(previewTableDarkMode, column.align), column.previewHeaderClassName)}
                 >
                   {getColumnLabel(t, column, 'table')}
                 </th>
@@ -138,7 +139,7 @@ export default function PreviewModal({
           </tbody>
           <tfoot>
             <tr>
-              <td colSpan={totalsLabelColSpan} className={cx(tableFooterCellClasses(darkMode, { align: 'right' }), 'text-[0.66rem] uppercase')}>
+              <td colSpan={totalsLabelColSpan} className={cx(tableFooterCellClasses(previewTableDarkMode, { align: 'right' }), 'text-[0.66rem] uppercase')}>
                 {t.totals}
               </td>
               {REPORT_COLUMNS.filter(column => !column.totalsLabelColumn).map(column => {
@@ -149,7 +150,7 @@ export default function PreviewModal({
                   <td
                     key={column.key}
                     className={cx(
-                      tableFooterCellClasses(darkMode, { align: totalValue ? 'right' : 'left', tone: totalTone }),
+                      tableFooterCellClasses(previewTableDarkMode, { align: totalValue ? 'right' : 'left', tone: totalTone }),
                       totalValue && 'whitespace-nowrap tabular-nums'
                     )}
                   >

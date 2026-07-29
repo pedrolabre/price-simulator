@@ -14,12 +14,17 @@ export const translations = {
     clear: 'Limpar',
     preview: 'Preview',
     confirmClear: (n) => `Tem certeza que deseja limpar todos os ${n} ${n === 1 ? 'produto' : 'produtos'}?`,
+    clearTitle: 'Limpar simula\u00e7\u00e3o?',
+    clearText: 'Os produtos processados ser\u00e3o removidos, mas suas configura\u00e7\u00f5es ser\u00e3o mantidas.',
+    clearSimulation: 'Limpar simula\u00e7\u00e3o',
 
     // ImportSection
     importTitle: 'Importar Lista de Produtos',
-    importHint: 'Exemplo: "PRODUTO,1,R$ 249,06"',
+    importHint: 'Exemplo: "PRODUTO,1,R$ 99.999.99"',
     importPlaceholder: 'Cole aqui sua lista de produtos...',
     processBtn: 'Processar Lista',
+    useExample: 'Usar exemplo',
+    formatHint: 'Aceita v\u00edrgula, ponto e v\u00edrgula ou tabula\u00e7\u00e3o como separador.',
 
     // ConfigPanel
     configTitle: 'Configurações de Cálculo',
@@ -62,6 +67,8 @@ export const translations = {
     // PreviewModal
     previewTitle: 'Preview da Simulação',
     previewClose: 'Fechar',
+    printSave: 'Imprimir / Salvar PDF',
+    notInformed: 'N\u00e3o informada',
     totals: 'TOTAIS:',
 
     // ExportModal
@@ -137,12 +144,17 @@ export const translations = {
     clear: 'Clear',
     preview: 'Preview',
     confirmClear: (n) => `Are you sure you want to clear all ${n} ${n === 1 ? 'product' : 'products'}?`,
+    clearTitle: 'Clear simulation?',
+    clearText: 'Processed products will be removed, but your settings will be kept.',
+    clearSimulation: 'Clear simulation',
 
     // ImportSection
     importTitle: 'Import Product List',
     importHint: 'Example: "PRODUCT,1,$ 249.06"',
     importPlaceholder: 'Paste your product list here...',
     processBtn: 'Process List',
+    useExample: 'Use example',
+    formatHint: 'Accepts comma, semicolon or tab as separators.',
 
     // ConfigPanel
     configTitle: 'Calculation Settings',
@@ -185,6 +197,8 @@ export const translations = {
     // PreviewModal
     previewTitle: 'Simulation Preview',
     previewClose: 'Close',
+    printSave: 'Print / Save PDF',
+    notInformed: 'Not informed',
     totals: 'TOTALS:',
 
     // ExportModal

@@ -2,25 +2,31 @@ export function cx(...classes) {
   return classes.filter(Boolean).join(' ');
 }
 
-export function appShellClasses(darkMode) {
+export function appShellClasses(darkMode, hasResults = false) {
   return cx(
-    'min-h-screen overflow-x-hidden px-3 py-4 text-base transition-colors duration-200 sm:px-4 lg:px-6',
+    'min-h-screen overflow-x-hidden text-base transition-colors duration-200',
+    hasResults && 'min-[981px]:h-screen min-[981px]:overflow-hidden',
     darkMode
       ? 'bg-[#111318] text-[#f5f7fa]'
       : 'bg-[#f6f7f9] text-[#111827]'
   );
 }
 
-export function appContentClasses() {
-  return 'app-shell mx-auto flex w-full max-w-[1320px] min-w-0 flex-col pb-6';
+export function appContentClasses(hasResults = false) {
+  return cx(
+    'mx-auto flex w-[calc(100%_-_28px)] max-w-[1360px] min-w-0 flex-col pt-4',
+    hasResults
+      ? 'pb-2.5 min-[981px]:h-screen min-[981px]:min-h-0 min-[981px]:overflow-hidden'
+      : 'pb-7'
+  );
 }
 
 export function surfaceCardClasses(darkMode) {
   return cx(
-    'w-full max-w-full rounded-2xl shadow-xl',
+    'w-full max-w-full overflow-hidden rounded-[4px] border shadow-none backdrop-blur-none',
     darkMode
-      ? 'bg-white/10 backdrop-blur-2xl border border-white/20 shadow-2xl'
-      : 'bg-white/70 backdrop-blur-2xl border border-gray-300/30 shadow-2xl'
+      ? 'border-white/10 bg-[#171b22]'
+      : 'border-[#d8dee7] bg-white'
   );
 }
 
@@ -32,7 +38,7 @@ export function operationalCardClasses(darkMode, { accent = 'none' } = {}) {
   };
 
   return cx(
-    'overflow-hidden !rounded-md !shadow-none !backdrop-blur-none',
+    '!rounded-none !shadow-none !backdrop-blur-none',
     darkMode
       ? '!border-white/10 !bg-[#171b22]'
       : '!border-[#d8dee7] !bg-white',
@@ -51,35 +57,35 @@ export function textClasses(darkMode) {
 }
 
 const inputSizes = {
-  header: 'h-9 px-2.5 text-[0.82rem] rounded-xl',
-  md: 'p-3 rounded-xl',
-  textarea: 'p-4 rounded-xl',
-  control: 'h-9 px-3 text-sm rounded-md',
-  compact: 'p-2 text-sm rounded-lg',
-  table: 'h-8 px-2 py-0 text-[0.76rem] rounded-sm'
+  header: 'h-9 px-2.5 text-[0.82rem] rounded-[3px]',
+  md: 'p-3 rounded-[3px]',
+  textarea: 'px-3 py-[11px] rounded-[3px]',
+  control: 'h-9 px-3 text-[0.82rem] rounded-[3px]',
+  compact: 'p-2 text-sm rounded-[3px]',
+  table: 'h-[22px] px-1.5 py-0 text-[0.73rem] rounded-[2px]'
 };
 
 const focusRings = {
-  red: 'focus:ring-red-500/50',
-  amber: 'focus:ring-amber-500/50',
-  green: 'focus:ring-green-500/50'
+  red: 'focus:ring-[#111827]/5',
+  amber: 'focus:ring-[#111827]/5',
+  green: 'focus:ring-[#111827]/5'
 };
 
 export function inputClasses(darkMode, { size = 'md', focus = 'red', className = '' } = {}) {
   return cx(
-    'w-full min-w-0 border transition backdrop-blur-sm focus:outline-none focus:ring-2',
+    'w-full min-w-0 border transition focus:outline-none focus:ring-2',
     inputSizes[size],
     focusRings[focus],
     darkMode
-      ? 'bg-white/10 text-white border-white/20 placeholder-white/40 backdrop-blur-xl'
-      : 'bg-white/80 text-gray-900 border-gray-300 placeholder-gray-400 backdrop-blur-xl',
+      ? 'border-white/10 bg-[#10141b] text-[#f5f7fa] placeholder:text-[#697386]'
+      : 'border-[#c7ced8] bg-white text-[#111827] placeholder:text-[#99a3b3]',
     className
   );
 }
 
 export function operationalInputClasses(darkMode, className = '') {
   return cx(
-    '!rounded !border !shadow-none !backdrop-blur-none focus:!border-[#8d98a7] focus:!ring-1',
+    '!rounded-[3px] !border !shadow-none !backdrop-blur-none focus:!border-[#8d98a7] focus:!ring-2',
     darkMode
       ? '!border-white/10 !bg-[#10141b] !text-[#f5f7fa] placeholder:!text-[#697386] focus:!ring-white/10'
       : '!border-[#c7ced8] !bg-white !text-[#111827] placeholder:!text-[#99a3b3] focus:!ring-gray-900/5',
@@ -90,7 +96,7 @@ export function operationalInputClasses(darkMode, className = '') {
 export function tableInputClasses(darkMode, className = '') {
   return cx(
     operationalInputClasses(darkMode),
-    '!h-8 !rounded-sm !border-transparent !bg-transparent !px-2 !py-0 text-[0.76rem]',
+    '!h-[22px] !rounded-[2px] !border-transparent !bg-transparent !px-1.5 !py-0 text-[0.73rem]',
     'hover:!border-[#c7ced8] focus:!border-[#8d98a7] focus:!ring-1',
     darkMode
       ? 'hover:!border-white/20 focus:!bg-[#10141b] focus:!ring-white/10'
@@ -100,28 +106,33 @@ export function tableInputClasses(darkMode, className = '') {
 }
 
 const buttonSizes = {
-  sm: 'px-4 py-2 rounded-xl text-sm shadow-lg',
-  md: 'px-4 py-2.5 rounded-xl shadow-md',
-  lg: 'px-6 py-3 rounded-xl font-semibold shadow-lg',
-  modal: 'h-10 px-4 rounded-md text-sm font-semibold shadow-none',
-  action: 'px-3 py-2.5 rounded-xl shadow-md backdrop-blur-sm text-sm sm:px-4 sm:text-base whitespace-nowrap',
-  summaryAction: 'h-8 px-2.5 rounded-md border text-xs shadow-none backdrop-blur-none sm:px-3 whitespace-nowrap',
-  primaryCompact: 'h-9 px-4 rounded-md text-sm font-semibold shadow-none',
-  toggle: 'h-8 px-3 rounded-md border text-xs shadow-none',
-  icon: 'p-3 rounded-2xl shadow-lg backdrop-blur-lg',
-  iconLang: 'p-2 rounded-2xl shadow-lg backdrop-blur-lg',
-  topbarIcon: 'h-9 w-9 rounded-xl shadow-sm',
-  topbarLang: 'h-9 w-9 rounded-xl shadow-sm',
-  iconPlain: 'p-1 rounded-lg'
+  sm: 'px-4 py-2 rounded-[3px] text-sm shadow-none',
+  md: 'px-4 py-2.5 rounded-[3px] shadow-none',
+  lg: 'px-6 py-3 rounded-[3px] font-semibold shadow-none',
+  modal: 'h-[34px] px-3 rounded-none text-[0.78rem] font-semibold shadow-none',
+  action: 'px-3 py-2.5 rounded-[3px] shadow-none text-sm sm:px-4 sm:text-base whitespace-nowrap',
+  summaryAction: 'h-8 px-[9px] rounded-[3px] border text-[0.7rem] font-semibold shadow-none whitespace-nowrap',
+  primaryCompact: 'h-[34px] px-3 rounded-[3px] text-[0.78rem] font-bold shadow-none',
+  toggle: 'h-8 px-3 rounded-[3px] border text-xs shadow-none',
+  icon: 'p-3 rounded-[3px] shadow-none',
+  iconLang: 'p-2 rounded-[3px] shadow-none',
+  topbarIcon: 'h-9 w-9 rounded-[3px] shadow-none',
+  topbarLang: 'h-9 w-9 rounded-[3px] shadow-none text-xs font-semibold',
+  iconPlain: 'h-[23px] w-[23px] p-0 rounded-[2px] shadow-none'
 };
 
 export function buttonVariantClasses(variant, darkMode) {
   const variants = {
-    primary: 'bg-gradient-to-r from-red-500 to-red-600 hover:from-red-600 hover:to-red-700 text-white',
-    success: 'bg-gradient-to-r from-green-500 to-green-600 hover:from-green-600 hover:to-green-700 text-white',
-    solidSuccess: 'bg-green-600 hover:bg-green-700 text-white',
-    solidDanger: 'bg-red-500 hover:bg-red-600 text-white',
-    neutral: 'bg-gray-500 hover:bg-gray-600 text-white',
+    primary: 'border border-[#cf1026] bg-[#cf1026] text-white hover:bg-[#ad0b1d]',
+    success: 'border border-[#159447] bg-[#159447] text-white hover:bg-[#0f7a3d]',
+    solidSuccess: darkMode
+      ? 'border border-[#2b7448] bg-[#171b22] text-[#80d29f] hover:bg-[#1b3525]'
+      : 'border border-[#9bcfb0] bg-white text-[#0f8a45] hover:bg-[#e9f7ef]',
+    successOutline: darkMode
+      ? 'border border-[#2b7448] bg-[#171b22] text-[#80d29f] hover:bg-[#1b3525]'
+      : 'border border-[#9bcfb0] bg-white text-[#0f8a45] hover:bg-[#e9f7ef]',
+    solidDanger: 'border border-[#cf1026] bg-[#cf1026] text-white hover:bg-[#ad0b1d]',
+    neutral: 'border border-[#8d98a7] bg-[#8d98a7] text-white hover:bg-[#778393]',
     secondary: darkMode
       ? 'border border-white/10 bg-[#171b22] text-[#d4d8df] hover:bg-[#202631]'
       : 'border border-[#d8dee7] bg-white text-[#374151] hover:bg-[#f8f9fb]',
@@ -129,38 +140,36 @@ export function buttonVariantClasses(variant, darkMode) {
       ? 'border border-[#5a2e25] bg-[#3b211b] text-[#ffb8a7] hover:bg-[#4a2b22]'
       : 'border border-[#ffded0] bg-[#fff1ea] text-[#b93a20] hover:bg-[#ffe8dc]',
     subtleGreen: darkMode
-      ? 'bg-green-500/20 hover:bg-green-500/30 text-green-300'
-      : 'bg-green-500/10 hover:bg-green-500/20 text-green-700',
+      ? 'bg-green-500/20 text-green-300 hover:bg-green-500/30'
+      : 'bg-green-500/10 text-green-700 hover:bg-green-500/20',
     subtleRed: darkMode
-      ? 'bg-red-500/20 hover:bg-red-500/30 text-red-300'
-      : 'bg-red-500/10 hover:bg-red-500/20 text-red-700',
+      ? 'bg-red-500/20 text-red-300 hover:bg-red-500/30'
+      : 'bg-red-500/10 text-red-700 hover:bg-red-500/20',
     subtleBlue: darkMode
-      ? 'bg-blue-500/20 hover:bg-blue-500/30 text-blue-300'
-      : 'bg-blue-500/10 hover:bg-blue-500/20 text-blue-700',
+      ? 'bg-blue-500/20 text-blue-300 hover:bg-blue-500/30'
+      : 'bg-blue-500/10 text-blue-700 hover:bg-blue-500/20',
     subtleTeal: darkMode
-      ? 'bg-teal-500/20 hover:bg-teal-500/30 text-teal-300'
-      : 'bg-teal-500/10 hover:bg-teal-500/20 text-teal-700',
+      ? 'bg-teal-500/20 text-teal-300 hover:bg-teal-500/30'
+      : 'bg-teal-500/10 text-teal-700 hover:bg-teal-500/20',
     subtleOrange: darkMode
-      ? 'bg-orange-500/20 hover:bg-orange-500/30 text-orange-300'
-      : 'bg-orange-500/10 hover:bg-orange-500/20 text-orange-700',
-    flatPrimary: darkMode
-      ? 'border border-[#cf1026] bg-[#cf1026] text-white hover:bg-[#ad0b1d]'
-      : 'border border-[#cf1026] bg-[#cf1026] text-white hover:bg-[#ad0b1d]',
+      ? 'bg-orange-500/20 text-orange-300 hover:bg-orange-500/30'
+      : 'bg-orange-500/10 text-orange-700 hover:bg-orange-500/20',
+    flatPrimary: 'border border-[#cf1026] bg-[#cf1026] text-white hover:bg-[#ad0b1d]',
     actionClear: darkMode
-      ? 'border-[#573129] bg-[#3b231d] text-[#ffb39e] hover:bg-[#4a2b22]'
-      : 'border-[#e8c1b5] bg-white text-[#cf1026] hover:bg-[#fff1f3] hover:text-[#ad0b1d]',
+      ? 'border border-[#573129] bg-[#3b231d] text-[#ffb39e] hover:bg-[#4a2b22]'
+      : 'border border-[#e8c1b5] bg-white text-[#cf1026] hover:bg-[#fff1f3] hover:text-[#ad0b1d]',
     actionPreview: darkMode
-      ? 'border-[#263d63] bg-[#172437] text-[#9ec4ff] hover:bg-[#1d2e48]'
-      : 'border-[#cfdcf2] bg-white text-[#275ad8] hover:bg-[#eef4ff]',
+      ? 'border border-white/10 bg-[#171b22] text-[#d4d8df] hover:bg-[#202631]'
+      : 'border border-[#d8dee7] bg-white text-[#111827] hover:bg-[#f8f9fb]',
     actionExcel: darkMode
-      ? 'border-[#22462f] bg-[#16281d] text-[#80d29f] hover:bg-[#1b3525]'
-      : 'border-[#b9dec7] bg-white text-[#0f8a45] hover:bg-[#e9f7ef]',
+      ? 'border border-[#22462f] bg-[#16281d] text-[#80d29f] hover:bg-[#1b3525]'
+      : 'border border-[#b9dec7] bg-white text-[#0f8a45] hover:bg-[#e9f7ef]',
     actionHtml: darkMode
-      ? 'border-[#245052] bg-[#153434] text-[#70d8d6] hover:bg-[#1a4141]'
-      : 'border-[#bfdfdd] bg-white text-[#087d7e] hover:bg-[#e9f8f7]',
+      ? 'border border-white/10 bg-[#171b22] text-[#d4d8df] hover:bg-[#202631]'
+      : 'border border-[#d8dee7] bg-white text-[#111827] hover:bg-[#f8f9fb]',
     actionPdf: darkMode
-      ? 'border-[#5c2730] bg-[#341b20] text-[#ff9ea9] hover:bg-[#421f26]'
-      : 'border-[#e8aeb6] bg-white text-[#cf1026] hover:bg-[#fff1f3]',
+      ? 'border border-[#5c2730] bg-[#341b20] text-[#ff9ea9] hover:bg-[#421f26]'
+      : 'border border-[#e8aeb6] bg-white text-[#cf1026] hover:bg-[#fff1f3]',
     freightOn: darkMode
       ? 'border-[#2b7448] bg-[#12321e] text-[#9df0b8] hover:bg-[#183f27]'
       : 'border-[#91caa3] bg-[#e9f7ef] text-[#0f7a3d] hover:bg-[#dcf2e5]',
@@ -171,8 +180,8 @@ export function buttonVariantClasses(variant, darkMode) {
       ? 'bg-white/10 hover:bg-white/20'
       : 'bg-gray-900/80 hover:bg-gray-900',
     topbar: darkMode
-      ? 'border border-white/10 bg-[#303744] text-white shadow-[0_8px_18px_rgba(0,0,0,0.22)] hover:-translate-y-px hover:bg-[#3a4352]'
-      : 'border border-transparent bg-[#303744] text-white shadow-[0_8px_18px_rgba(24,31,43,0.18)] hover:-translate-y-px hover:bg-[#232a35]',
+      ? 'border border-white/10 bg-[#303744] text-white hover:bg-[#3a4352]'
+      : 'border border-[#cfd5df] bg-white text-[#111827] hover:bg-[#f8f9fb]',
     iconDanger: 'text-red-600 hover:text-red-800'
   };
 
@@ -181,7 +190,7 @@ export function buttonVariantClasses(variant, darkMode) {
 
 export function buttonClasses({ darkMode, variant = 'primary', size = 'md' }) {
   return cx(
-    'inline-flex min-w-0 items-center justify-center gap-2 transition-all font-medium disabled:cursor-not-allowed disabled:opacity-50',
+    'inline-flex min-w-0 items-center justify-center gap-1.5 transition-colors font-medium disabled:cursor-not-allowed disabled:opacity-50',
     buttonSizes[size],
     buttonVariantClasses(variant, darkMode)
   );
@@ -189,8 +198,8 @@ export function buttonClasses({ darkMode, variant = 'primary', size = 'md' }) {
 
 export function freightNoticeClasses(darkMode) {
   return darkMode
-    ? 'bg-yellow-500/20 border-yellow-500/40 backdrop-blur-xl'
-    : 'bg-yellow-100/80 border-yellow-300/50 backdrop-blur-xl';
+    ? 'bg-yellow-500/20 border-yellow-500/40'
+    : 'bg-yellow-100/80 border-yellow-300/50';
 }
 
 export function tableHeaderClasses() {
@@ -199,13 +208,13 @@ export function tableHeaderClasses() {
 
 export function tableWrapClasses(darkMode) {
   return cx(
-    'w-full max-w-full overflow-auto rounded border shadow-none',
+    'w-full max-w-full overflow-auto rounded-[3px] border shadow-none',
     darkMode ? 'border-white/10 bg-[#10141b]' : 'border-[#d8dee7] bg-white'
   );
 }
 
 export function productTableClasses() {
-  return 'w-full min-w-[1120px] table-fixed border-separate border-spacing-0 text-[0.74rem]';
+  return 'w-full min-w-[1080px] border-separate border-spacing-0 text-[0.74rem]';
 }
 
 export function tableHeaderCellClasses(darkMode, tone = 'default', className = '') {
@@ -222,7 +231,7 @@ export function tableHeaderCellClasses(darkMode, tone = 'default', className = '
   };
 
   return cx(
-    'sticky top-0 z-10 whitespace-nowrap border-b border-r px-2 py-2 align-middle text-[0.66rem] font-bold leading-tight last:border-r-0',
+    'sticky top-0 z-10 whitespace-nowrap border-b border-r px-[7px] py-[6px] align-middle text-[0.62rem] font-bold leading-tight last:border-r-0',
     tones[tone] || tones.default,
     className
   );
@@ -240,7 +249,7 @@ export function tableCellClasses(darkMode, { align = 'left', interactive = true,
   };
 
   return cx(
-    'border-b border-r px-[5px] py-[5px] align-middle last:border-r-0 transition-colors',
+    'border-b border-r px-[5px] py-px align-middle last:border-r-0 transition-colors',
     darkMode ? 'border-white/10 bg-[#10141b]' : 'border-[#dfe3e8] bg-white',
     interactive && (darkMode ? 'group-hover:bg-[#1d242e]' : 'group-hover:bg-[#fbfcfd]'),
     alignClasses[align] || alignClasses.left,
@@ -262,7 +271,7 @@ export function tableFooterCellClasses(darkMode, { align = 'left', tone = 'defau
   };
 
   return cx(
-    'border-r border-t px-[5px] py-[7px] align-middle text-[0.74rem] font-bold last:border-r-0',
+    'border-r border-t px-[5px] py-[4px] align-middle text-[0.74rem] font-bold last:border-r-0',
     darkMode ? 'border-white/10' : 'border-[#d0d7e2]',
     alignClasses[align] || alignClasses.left,
     tones[tone] || tones.default,
@@ -306,19 +315,19 @@ export function totalCellClasses(tone, darkMode) {
 
 export function modalOverlayClasses(darkMode) {
   return cx(
-    'fixed inset-0 z-50 grid place-items-center overflow-y-auto p-3 backdrop-blur-[7px] sm:p-5',
-    darkMode ? 'bg-[#05070b]/75' : 'bg-[#0d121a]/60'
+    'fixed inset-0 z-50 grid place-items-center overflow-y-auto p-3 backdrop-blur-none sm:p-5',
+    darkMode ? 'bg-[#05070b]/75' : 'bg-[#0f1218]/55'
   );
 }
 
 export function modalPanelClasses(darkMode) {
   return darkMode
-    ? 'border border-white/10 bg-[#171b22] text-[#f5f7fa] shadow-[0_24px_70px_rgba(0,0,0,0.46)]'
-    : 'border border-[#e2e6ec] bg-white text-[#111827] shadow-[0_20px_55px_rgba(17,24,39,0.18)]';
+    ? 'border border-white/10 bg-[#171b22] text-[#f5f7fa] shadow-none'
+    : 'border border-[#cfd5df] bg-white text-[#111827] shadow-none';
 }
 
 export function modalHeaderClasses() {
-  return 'bg-gradient-to-r from-[#C8102E] to-[#E31837] text-white';
+  return 'bg-[#cf1026] text-white';
 }
 
 export function modalFooterClasses(darkMode) {

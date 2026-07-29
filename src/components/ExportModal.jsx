@@ -49,50 +49,46 @@ export default function ExportModal({
       darkMode={darkMode}
       title={t.selectColumns}
       subtitle={t.chooseColumns(exportType)}
+      maxWidth="max-w-[540px]"
       closeLabel={t.cancel}
+      headerClassName="!px-3 !py-2.5"
+      bodyClassName="!px-3 !py-3"
+      footerClassName="!px-3 !py-2"
       footer={(
-        <>
-          <Button darkMode={darkMode} variant="secondary" size="modal" onClick={onClose} className="w-full sm:w-auto">
-            {t.cancel}
-          </Button>
-          <Button
-            darkMode={darkMode}
-            variant="primary"
-            size="modal"
-            onClick={handleExport}
-            disabled={noColumnsSelected}
-            className="w-full sm:w-auto"
-          >
-            {t.exportBtn(exportType)}
-          </Button>
-        </>
+        <Button
+          darkMode={darkMode}
+          variant="primary"
+          size="modal"
+          onClick={handleExport}
+          disabled={noColumnsSelected}
+          className="w-full !h-8 sm:w-auto"
+        >
+          {t.exportBtn(exportType)}
+        </Button>
       )}
     >
-      <div className="grid grid-cols-2 gap-2 sm:gap-3">
-        <Button darkMode={darkMode} variant="secondary" size="modal" onClick={selectAll} className="w-full">
+      <div className="grid grid-cols-2 gap-2">
+        <Button darkMode={darkMode} variant="successOutline" size="modal" onClick={selectAll} className="w-full !h-8">
           {t.selectAll}
         </Button>
-        <Button darkMode={darkMode} variant="secondary" size="modal" onClick={deselectAll} className="w-full">
+        <Button darkMode={darkMode} variant="secondary" size="modal" onClick={deselectAll} className="w-full !h-8">
           {t.deselectAll}
         </Button>
       </div>
 
-      <div className="mt-4 grid grid-cols-1 gap-2 sm:grid-cols-2 sm:gap-3">
+      <div className="mt-3 grid grid-cols-2 gap-2">
         {REPORT_COLUMNS.map(column => {
           const checked = selectedColumns[column.key];
+          const optionClasses = darkMode
+            ? 'border-white/10 bg-[#171b22] hover:border-white/20 hover:bg-[#202631]'
+            : 'border-[#d8dee7] bg-white hover:border-[#cfd5df] hover:bg-[#f8f9fb]';
 
           return (
             <label
               key={column.key}
               className={cx(
-                'flex min-h-[52px] cursor-pointer items-center gap-3 rounded-md border px-3 py-2.5 transition hover:-translate-y-px',
-                checked
-                  ? darkMode
-                    ? 'border-[#cf1026] bg-[#35171b]'
-                    : 'border-[#cf1026] bg-[#fff0f1]'
-                  : darkMode
-                    ? 'border-white/10 bg-[#171b22] hover:border-white/20 hover:bg-[#202631]'
-                    : 'border-[#e2e6ec] bg-white hover:border-[#cfd5df] hover:bg-[#f8f9fb]'
+                'flex min-h-[34px] cursor-pointer items-center gap-2 rounded-none border px-2.5 py-1.5 transition-colors',
+                optionClasses
               )}
             >
               <input
@@ -104,7 +100,7 @@ export default function ExportModal({
               <span
                 aria-hidden="true"
                 className={cx(
-                  'grid h-[22px] w-[22px] flex-shrink-0 place-items-center rounded-md border transition',
+                  'grid h-5 w-5 flex-shrink-0 place-items-center rounded-none border transition-colors',
                   checked
                     ? 'border-[#cf1026] bg-[#cf1026] text-white'
                     : darkMode
@@ -112,18 +108,14 @@ export default function ExportModal({
                       : 'border-[#cfd5df] bg-[#f8f9fb] text-transparent'
                 )}
               >
-                <Check size={14} />
+                <Check size={13} />
               </span>
-              <span className={cx('min-w-0 text-sm font-semibold leading-snug', checked ? text.main : text.body)}>
+              <span className={cx('min-w-0 text-[0.82rem] font-bold leading-snug', checked ? text.main : text.body)}>
                 {getColumnLabel(t, column, 'selection')}
               </span>
             </label>
           );
         })}
-      </div>
-
-      <div className={cx('mt-4 rounded-md border px-3 py-2 text-center text-sm', darkMode ? 'border-white/10 bg-[#202631]' : 'border-[#e2e6ec] bg-[#f8f9fb]', noColumnsSelected ? 'text-[#cf1026]' : text.softMuted)}>
-        {t.colsSelected(selectedCount, REPORT_COLUMNS.length)}
       </div>
     </ModalShell>
   );
