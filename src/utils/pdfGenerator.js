@@ -32,6 +32,11 @@ function renderDataCell(column, value) {
   return `<td class="${classes}">${value}</td>`;
 }
 
+function getColumnWeight(column) {
+  const width = Number.parseFloat(column.pdfWidth);
+  return Number.isFinite(width) && width > 0 ? width : 1;
+}
+
 export function generatePDF(products, calculations, totals, config, selectedColumns = {}) {
   let printWindow;
 
@@ -47,9 +52,12 @@ export function generatePDF(products, calculations, totals, config, selectedColu
   }
 
   const columns = getSelectedReportColumns(selectedColumns);
+  const totalColumnWeight = columns.reduce((sum, column) => sum + getColumnWeight(column), 0);
+  const columnWidths = columns.map(column => `${(getColumnWeight(column) / totalColumnWeight * 100).toFixed(3)}%`);
+  const colGroup = `<colgroup>${columnWidths.map(width => `<col style="width:${width}">`).join('')}</colgroup>`;
   const tableHeader = `<tr>${columns.map(column => {
     const alignClass = column.align === 'right' ? ' class="money"' : column.align === 'center' ? ' class="center"' : '';
-    return `<th${alignClass} style="width:${column.pdfWidth}">${getColumnLabel(config.t, column, 'export')}</th>`;
+    return `<th${alignClass}>${getColumnLabel(config.t, column, 'export')}</th>`;
   }).join('')}</tr>`;
 
   const tableRows = products.map((product, index) => {
@@ -89,6 +97,8 @@ export function generatePDF(products, calculations, totals, config, selectedColu
     <!DOCTYPE html>
     <html>
     <head>
+      <meta charset="UTF-8">
+      <meta name="viewport" content="width=device-width, initial-scale=1">
       <title>${config.t ? config.t.reportTitle : 'Simulador de Precos'}</title>
       <style>
         * {
@@ -101,16 +111,19 @@ export function generatePDF(products, calculations, totals, config, selectedColu
 
         body {
           margin: 0;
-          padding: 28px;
+          padding: 18px;
+          overflow-x: hidden;
           background: #f4f5f7;
           color: #111827;
           font-family: Arial, Helvetica, sans-serif;
+          -webkit-text-size-adjust: 100%;
         }
 
         .report {
-          max-width: 1280px;
+          width: 100%;
+          max-width: 1120px;
           margin: 0 auto;
-          padding: 28px;
+          padding: 24px;
           background: #fff;
           border: 1px solid #dfe3e8;
           border-radius: 0;
@@ -167,34 +180,40 @@ export function generatePDF(products, calculations, totals, config, selectedColu
 
         .table-wrap {
           margin-top: 18px;
-          overflow: auto;
+          overflow: hidden;
           border: 1px solid #dfe3e8;
           border-radius: 0;
         }
 
         table {
           width: 100%;
-          min-width: 860px;
+          min-width: 0;
           border-collapse: collapse;
-          font-size: 12px;
+          table-layout: fixed;
+          font-size: 11px;
         }
 
         th {
-          padding: 12px 10px;
+          padding: 10px 6px;
           background: #cf1026;
           color: #fff;
           text-align: left;
           text-transform: uppercase;
-          font-size: 10px;
+          font-size: 8px;
           font-weight: 700;
+          line-height: 1.2;
           border-right: 1px solid rgba(255, 255, 255, .18);
+          overflow-wrap: anywhere;
         }
 
         td {
-          padding: 11px 10px;
+          padding: 8px 6px;
           border-right: 1px solid #dfe3e8;
           border-bottom: 1px solid #dfe3e8;
           color: #111827;
+          line-height: 1.25;
+          vertical-align: top;
+          overflow-wrap: anywhere;
         }
 
         th:last-child,
@@ -214,7 +233,7 @@ export function generatePDF(products, calculations, totals, config, selectedColu
 
         .money {
           text-align: right;
-          white-space: nowrap;
+          white-space: normal;
           font-variant-numeric: tabular-nums;
         }
 
@@ -260,17 +279,108 @@ export function generatePDF(products, calculations, totals, config, selectedColu
           box-shadow: none;
         }
 
+        @media screen and (max-width: 700px) {
+          body {
+            padding: 10px;
+          }
+
+          .report {
+            padding: 14px;
+          }
+
+          .report-head {
+            align-items: flex-start;
+            flex-direction: column;
+            gap: 10px;
+            padding-bottom: 12px;
+          }
+
+          .title {
+            align-items: flex-start;
+            flex-direction: column;
+            gap: 4px;
+          }
+
+          .title h1 {
+            font-size: 18px;
+            line-height: 1.1;
+          }
+
+          .title span {
+            font-size: 10px;
+          }
+
+          .meta {
+            text-align: left;
+            font-size: 9px;
+            line-height: 1.4;
+          }
+
+          .badge {
+            margin-left: 0;
+            margin-top: 6px;
+            padding: 5px 7px;
+            font-size: 8px;
+          }
+
+          .table-wrap {
+            margin-top: 12px;
+          }
+
+          table {
+            font-size: 6px;
+          }
+
+          th {
+            padding: 4px 2px;
+            font-size: 4.8px;
+            line-height: 1.05;
+          }
+
+          td {
+            padding: 4px 2px;
+            font-size: 5.8px;
+            line-height: 1.12;
+          }
+
+          .totals-label {
+            font-size: 5.2px;
+          }
+        }
+
         @media print {
           body {
             background: #fff;
             padding: 0;
+            overflow: visible;
           }
 
           .report {
+            width: 100%;
             max-width: none;
             padding: 0;
             border: 0;
             box-shadow: none;
+          }
+
+          .table-wrap {
+            overflow: visible;
+          }
+
+          table {
+            width: 100%;
+            min-width: 0;
+            table-layout: fixed;
+            font-size: 9px;
+          }
+
+          th {
+            padding: 6px 4px;
+            font-size: 6.8px;
+          }
+
+          td {
+            padding: 6px 4px;
           }
 
           .footer {
@@ -278,8 +388,7 @@ export function generatePDF(products, calculations, totals, config, selectedColu
           }
 
           @page {
-            size: landscape;
-            margin: 10mm;
+            margin: 8mm;
           }
         }
       </style>
@@ -299,6 +408,7 @@ export function generatePDF(products, calculations, totals, config, selectedColu
 
         <div class="table-wrap">
           <table>
+            ${colGroup}
             <thead>${tableHeader}</thead>
             <tbody>${tableRows}</tbody>
             <tfoot>${totalsRow}</tfoot>

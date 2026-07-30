@@ -11,10 +11,10 @@ export default function Header({ darkMode, onToggleDarkMode, empresa, onEmpresaC
     : '!rounded-none border-[#cbd2da] bg-white text-[#111827] placeholder:text-[#9aa3b3]';
 
   return (
-    <header className="mb-3 flex min-h-[58px] w-full min-w-0 items-center justify-between gap-[18px]">
+    <header className="mb-3 flex min-h-[58px] w-full min-w-0 items-center justify-between gap-3 min-[760px]:gap-[18px]">
       <div className="flex min-w-0 flex-1 flex-col gap-3 min-[760px]:flex-row min-[760px]:items-center min-[760px]:gap-[18px]">
-        <div className="min-w-0 flex-none">
-          <h1 className={cx('m-0 min-h-[34px] whitespace-nowrap text-[30px] font-[820] leading-[34px] tracking-normal', text.title)}>
+        <div className="min-w-0 max-w-full flex-none">
+          <h1 className={cx('m-0 max-w-full whitespace-normal text-[24px] font-[820] leading-[29px] tracking-normal min-[380px]:whitespace-nowrap min-[760px]:min-h-[34px] min-[760px]:text-[30px] min-[760px]:leading-[34px]', text.title)}>
             {t.appTitle}
           </h1>
           <p className={cx('mt-1 min-h-[18px] text-[13.44px] leading-[18px]', text.muted)}>
