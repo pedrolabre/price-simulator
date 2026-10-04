@@ -55,16 +55,17 @@ export function generateHTML(products, calculations, config, selectedColumns = {
   totalsRow += '</tr>';
 
   return `<!DOCTYPE html>
-<html lang="pt-BR">
+<html lang="${config.t?.reportTitle === 'Price Simulator' ? 'en' : 'pt-BR'}">
 <head>
   <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>${config.t ? config.t.reportTitle : 'Simulador de Preços'} — ${date}</title>
   <style>
     * { margin: 0; padding: 0; box-sizing: border-box; }
-    body { font-family: 'Segoe UI', Arial, sans-serif; background: #f3f4f6; padding: 24px; color: #1f2937; }
-    .container { background: white; border-radius: 16px; box-shadow: 0 20px 60px rgba(0,0,0,0.12); max-width: 1400px; margin: 0 auto; overflow: hidden; }
-    .top-bar { display: flex; align-items: center; justify-content: space-between; background: linear-gradient(135deg, #C8102E, #E31837); padding: 20px 32px; gap: 24px; }
-    .title-block { display: flex; align-items: baseline; gap: 12px; }
+    body { font-family: 'Segoe UI', Arial, sans-serif; background: #f3f4f6; padding: 16px 20px; color: #1f2937; width: 100%; min-height: 100vh; }
+    .container { background: white; border-radius: 16px; box-shadow: 0 20px 60px rgba(0,0,0,0.12); width: 100%; max-width: 100%; margin: 0; overflow: hidden; }
+    .top-bar { display: flex; align-items: center; justify-content: space-between; background: linear-gradient(135deg, #C8102E, #E31837); padding: 20px 32px; gap: 24px; width: 100%; }
+    .title-block { display: flex; align-items: baseline; gap: 12px; flex-wrap: wrap; }
     h1 { color: white; font-size: 22px; font-weight: 700; letter-spacing: -0.5px; white-space: nowrap; }
     .subtitle { color: rgba(255,255,255,0.75); font-size: 12px; white-space: nowrap; }
     .empresa { color: white; font-size: 16px; font-weight: 700; border-left: 2px solid rgba(255,255,255,0.5); padding-left: 12px; white-space: nowrap; }
@@ -72,14 +73,29 @@ export function generateHTML(products, calculations, config, selectedColumns = {
     .info-text { font-size: 12px; color: rgba(255,255,255,0.9); text-align: right; line-height: 1.7; }
     .info-text strong { color: white; }
     .badge { background: rgba(255,255,255,0.2); border: 1px solid rgba(255,255,255,0.3); color: white; padding: 8px 18px; border-radius: 8px; font-weight: 700; font-size: 13px; white-space: nowrap; }
-    .table-wrapper { padding: 24px; }
+    .table-wrapper { padding: 24px; width: 100%; overflow-x: auto; }
     table { width: 100%; border-collapse: collapse; table-layout: fixed; font-size: 14px; }
     thead tr { background: linear-gradient(135deg, #1f2937, #374151); }
     th { color: white; padding: 13px 10px; text-align: left; font-weight: 600; font-size: 12px; text-transform: uppercase; letter-spacing: 0.4px; word-break: break-word; }
     td { border-bottom: 1px solid #f3f4f6; padding: 11px 10px; font-size: 14px; word-break: break-word; overflow-wrap: break-word; }
     tbody tr:hover { background: #f8fafc !important; }
     .footer { padding: 16px 32px 20px; font-size: 11px; color: #9ca3af; border-top: 1px solid #f3f4f6; text-align: right; }
-    @media print { body { background: white; padding: 0; } .container { box-shadow: none; } }
+    @media (max-width: 900px) {
+      .top-bar { flex-direction: column; align-items: flex-start; gap: 16px; }
+      .info-block { width: 100%; justify-content: space-between; flex-wrap: wrap; }
+      .info-text { text-align: left; }
+    }
+    @media (max-width: 640px) {
+      body { padding: 8px; }
+      .top-bar { padding: 16px; }
+      .table-wrapper { padding: 16px 10px; }
+      .footer { padding: 12px 16px; }
+    }
+    @media print {
+      body { background: white; padding: 0; }
+      .container { box-shadow: none; border-radius: 0; width: 100%; }
+      .table-wrapper { padding: 0; }
+    }
   </style>
 </head>
 <body>
