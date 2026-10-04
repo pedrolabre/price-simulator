@@ -11,7 +11,7 @@ function formatPercent(value) {
 }
 
 function getColumnWeight(column) {
-  const width = Number.parseFloat(column.htmlWidth || column.pdfWidth);
+  const width = Number.parseFloat(column.pdfWidth || column.htmlWidth);
   return Number.isFinite(width) && width > 0 ? width : 1;
 }
 
@@ -239,7 +239,7 @@ export function generateHTML(products, calculations, config, selectedColumns = {
       color: #111827;
       line-height: 1.3;
       vertical-align: top;
-      overflow-wrap: anywhere;
+      overflow-wrap: break-word;
     }
 
     th:last-child,
@@ -268,17 +268,19 @@ export function generateHTML(products, calculations, config, selectedColumns = {
 
     .money {
       text-align: right;
-      white-space: normal;
+      white-space: nowrap !important;
       font-variant-numeric: tabular-nums;
     }
 
     .desc {
       font-weight: 600;
       color: #111827;
+      overflow-wrap: anywhere;
     }
 
     .obs {
       color: #596273;
+      overflow-wrap: anywhere;
     }
 
     .strong {
@@ -354,27 +356,97 @@ export function generateHTML(products, calculations, config, selectedColumns = {
       body {
         background: #fff;
         padding: 0;
+        margin: 0;
         overflow: visible;
+        color: #111827;
       }
 
       .report {
         width: 100%;
         max-width: none;
         padding: 0;
+        margin: 0;
         border: 0;
         box-shadow: none;
       }
 
+      .report-head {
+        padding-bottom: 8px;
+        border-bottom: 2px solid #cf1026;
+        gap: 10px;
+      }
+
+      .title h1 {
+        font-size: 16px;
+      }
+
+      .title .empresa {
+        font-size: 11px;
+      }
+
+      .title .subtitle {
+        font-size: 10px;
+      }
+
+      .meta {
+        font-size: 8.5px;
+        line-height: 1.3;
+        gap: 8px;
+      }
+
+      .badge {
+        font-size: 8px;
+        padding: 3px 6px;
+      }
+
       .table-wrap {
+        margin-top: 8px;
         overflow: visible;
+        border: 1px solid #dfe3e8;
+      }
+
+      table {
+        width: 100%;
+        min-width: 0;
+        table-layout: fixed;
+        font-size: 8px;
+      }
+
+      th {
+        padding: 4px 2px;
+        font-size: 6.8px;
+        line-height: 1.1;
+      }
+
+      td {
+        padding: 4px 2px;
+        font-size: 7.5px;
+        line-height: 1.15;
+      }
+
+      .money {
+        white-space: nowrap !important;
+        font-size: 7.5px;
+      }
+
+      tfoot td {
+        padding: 4px 2px;
+        font-size: 7.5px;
+      }
+
+      .totals-label {
+        font-size: 7px;
       }
 
       .footer {
-        display: none;
+        margin-top: 8px;
+        font-size: 7.5px;
+        color: #596273;
+        text-align: right;
       }
 
       @page {
-        margin: 8mm;
+        margin: 6mm;
       }
     }
   </style>
