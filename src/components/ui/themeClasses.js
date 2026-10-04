@@ -14,7 +14,7 @@ export function appShellClasses(darkMode, hasResults = false) {
 
 export function appContentClasses(hasResults = false) {
   return cx(
-    'mx-auto flex w-[calc(100%_-_28px)] max-w-[1360px] min-w-0 flex-col pt-4',
+    'mx-auto flex w-full min-w-0 flex-col px-3.5 pt-4 sm:px-5 lg:px-6',
     hasResults
       ? 'pb-2.5 min-[981px]:h-screen min-[981px]:min-h-0 min-[981px]:overflow-hidden'
       : 'pb-7'
