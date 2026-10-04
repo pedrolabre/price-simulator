@@ -3,21 +3,41 @@ import { calculateTotals } from './calculations';
 import { getReportColumnValue, getReportTotalValue } from './exportRows';
 import { formatMoney, formatReverseMargin } from './formatters';
 
-function renderDataCell(column, value) {
-  if (column.key === 'numero') return `<td style="text-align:center;color:#6b7280;font-weight:500">${value}</td>`;
-  if (column.key === 'quantidade') return `<td style="text-align:center">${value}</td>`;
-  if (column.key === 'descricao') return `<td style="font-weight:500;color:#111827">${value}</td>`;
-  if (column.key === 'fornecedor') return `<td style="color:#374151">${value}</td>`;
-  if (column.key === 'precoUnitario') return `<td style="text-align:right">${value}</td>`;
-  if (column.key === 'ipi') return `<td style="text-align:right;color:#6b7280">${value}</td>`;
-  if (column.key === 'frete') return `<td style="text-align:right;color:#6b7280">${value}</td>`;
-  if (column.key === 'custoRealUnitario') return `<td style="text-align:right;font-weight:600">${value}</td>`;
-  if (column.key === 'precoVendaUnitario') return `<td style="text-align:right;font-weight:600;color:#16a34a">${value}</td>`;
-  if (column.key === 'totalCusto') return `<td style="text-align:right;font-weight:700;background:#fffbeb;color:#92400e">${value}</td>`;
-  if (column.key === 'totalVenda') return `<td style="text-align:right;font-weight:700;background:#f0fdf4;color:#166534">${value}</td>`;
-  if (column.key === 'observacoes') return `<td style="color:#6b7280;font-style:italic">${value}</td>`;
+function formatPercent(value) {
+  return Number(value || 0).toLocaleString('pt-BR', {
+    minimumFractionDigits: 0,
+    maximumFractionDigits: 2
+  });
+}
 
-  return '';
+function getColumnWeight(column) {
+  const width = Number.parseFloat(column.htmlWidth || column.pdfWidth);
+  return Number.isFinite(width) && width > 0 ? width : 1;
+}
+
+function renderDataCell(column, value) {
+  const moneyColumns = [
+    'precoUnitario',
+    'ipi',
+    'frete',
+    'custoRealUnitario',
+    'precoVendaUnitario',
+    'totalCusto',
+    'totalVenda'
+  ];
+
+  const classes = [
+    moneyColumns.includes(column.key) ? 'money' : '',
+    column.key === 'descricao' ? 'desc' : '',
+    column.key === 'custoRealUnitario' ? 'strong' : '',
+    column.key === 'precoVendaUnitario' ? 'sale' : '',
+    column.key === 'totalCusto' ? 'total-cost' : '',
+    column.key === 'totalVenda' ? 'total-sale' : '',
+    column.key === 'observacoes' ? 'obs' : '',
+    column.key === 'numero' || column.key === 'quantidade' ? 'center' : ''
+  ].filter(Boolean).join(' ');
+
+  return `<td class="${classes}">${value}</td>`;
 }
 
 export function generateHTML(products, calculations, config, selectedColumns = {}) {
@@ -25,34 +45,53 @@ export function generateHTML(products, calculations, config, selectedColumns = {
   const date = new Date().toLocaleDateString('pt-BR', { day: '2-digit', month: '2-digit', year: 'numeric', hour: '2-digit', minute: '2-digit' });
   const totalsCalc = calculateTotals(products, calculations);
 
-  const headerCells = columns.map(column => {
-    const alignStyle = column.align === 'right' ? ';text-align:right' : '';
-    return `<th style="width:${column.htmlWidth}${alignStyle}">${getColumnLabel(config.t, column, 'export')}</th>`;
+  const totalColumnWeight = columns.reduce((sum, column) => sum + getColumnWeight(column), 0);
+  const columnWidths = columns.map(column => `${(getColumnWeight(column) / totalColumnWeight * 100).toFixed(3)}%`);
+  const colGroup = `<colgroup>${columnWidths.map(width => `<col style="width:${width}">`).join('')}</colgroup>`;
+
+  const tableHeader = `<tr>${columns.map(column => {
+    const alignClass = column.align === 'right' ? ' class="money"' : column.align === 'center' ? ' class="center"' : '';
+    return `<th${alignClass}>${getColumnLabel(config.t, column, 'export')}</th>`;
+  }).join('')}</tr>`;
+
+  const tableRows = products.map((product, index) => {
+    const calc = calculations[product.id];
+    const cells = columns.map(column =>
+      renderDataCell(column, getReportColumnValue(column.key, product, calc, index, formatMoney))
+    ).join('');
+
+    return `<tr>${cells}</tr>`;
   }).join('');
 
-  let dataRows = '';
-  products.forEach((product, index) => {
-    const calc = calculations[product.id];
-    const rowBg = index % 2 === 0 ? '#ffffff' : '#f9fafb';
-    const rowCells = columns
-      .map(column => renderDataCell(column, getReportColumnValue(column.key, product, calc, index, formatMoney)))
-      .join('');
-
-    dataRows += `<tr style="background:${rowBg}">${rowCells}</tr>`;
-  });
-
   const colspanCount = countTotalsLabelColumns(columns);
-  let totalsRow = '<tr style="background:linear-gradient(135deg,#FDB913,#FFCA3A);font-weight:700;font-size:14px;color:#78350f">';
-  if (colspanCount > 0) totalsRow += `<td colspan="${colspanCount}" style="text-align:right;padding:14px 10px;letter-spacing:0.5px">${config.t ? config.t.grandTotalsLabel : 'TOTAIS GERAIS:'}</td>`;
+  let totalsRow = '<tr>';
+
+  if (colspanCount > 0) {
+    totalsRow += `<td colspan="${colspanCount}" class="totals-label">${config.t ? config.t.grandTotalsLabel : 'TOTAIS GERAIS:'}</td>`;
+  }
+
   totalsRow += columns
     .filter(column => !column.totalsLabelColumn)
     .map(column => {
       const totalValue = getReportTotalValue(column.key, totalsCalc, formatMoney);
-      const totalStyle = totalValue ? 'text-align:right;padding:14px 10px' : 'padding:14px 10px';
-      return `<td style="${totalStyle}">${totalValue}</td>`;
+      const classes = [
+        totalValue ? 'money' : '',
+        column.key === 'totalCusto' ? 'total-cost' : '',
+        column.key === 'totalVenda' ? 'total-sale' : ''
+      ].filter(Boolean).join(' ');
+
+      return `<td class="${classes}">${totalValue}</td>`;
     })
     .join('');
   totalsRow += '</tr>';
+
+  const freightEmbeddedText = config.freteEmbutido
+    ? (config.t ? config.t.embedded_short : '(Embutido)')
+    : (config.t ? config.t.notEmbedded_short : '(Não Embutido)');
+  const freightInfo = `Frete: ${formatPercent(config.frete)}% ${freightEmbeddedText}`;
+  const marginLabel = config.t ? config.t.marginLabel.replace(' (%)', '') : 'Margem';
+  const marginInfo = `${marginLabel}: +${formatPercent(config.margem)}% / -${formatReverseMargin(config.margem)}%`;
+  const configText = `<strong>${config.t ? config.t.configLabel : 'Configurações:'}</strong> IPI: ${formatPercent(config.ipi)}% &nbsp;|&nbsp; ${freightInfo} &nbsp;|&nbsp; ${marginInfo}`;
 
   return `<!DOCTYPE html>
 <html lang="${config.t?.reportTitle === 'Price Simulator' ? 'en' : 'pt-BR'}">
@@ -61,68 +100,312 @@ export function generateHTML(products, calculations, config, selectedColumns = {
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>${config.t ? config.t.reportTitle : 'Simulador de Preços'} — ${date}</title>
   <style>
-    * { margin: 0; padding: 0; box-sizing: border-box; }
-    body { font-family: 'Segoe UI', Arial, sans-serif; background: #f3f4f6; padding: 16px 20px; color: #1f2937; width: 100%; min-height: 100vh; }
-    .container { background: white; border-radius: 16px; box-shadow: 0 20px 60px rgba(0,0,0,0.12); width: 100%; max-width: 100%; margin: 0; overflow: hidden; }
-    .top-bar { display: flex; align-items: center; justify-content: space-between; background: linear-gradient(135deg, #C8102E, #E31837); padding: 20px 32px; gap: 24px; width: 100%; }
-    .title-block { display: flex; align-items: baseline; gap: 12px; flex-wrap: wrap; }
-    h1 { color: white; font-size: 22px; font-weight: 700; letter-spacing: -0.5px; white-space: nowrap; }
-    .subtitle { color: rgba(255,255,255,0.75); font-size: 12px; white-space: nowrap; }
-    .empresa { color: white; font-size: 16px; font-weight: 700; border-left: 2px solid rgba(255,255,255,0.5); padding-left: 12px; white-space: nowrap; }
-    .info-block { display: flex; align-items: center; gap: 16px; }
-    .info-text { font-size: 12px; color: rgba(255,255,255,0.9); text-align: right; line-height: 1.7; }
-    .info-text strong { color: white; }
-    .badge { background: rgba(255,255,255,0.2); border: 1px solid rgba(255,255,255,0.3); color: white; padding: 8px 18px; border-radius: 8px; font-weight: 700; font-size: 13px; white-space: nowrap; }
-    .table-wrapper { padding: 24px; width: 100%; overflow-x: auto; }
-    table { width: 100%; border-collapse: collapse; table-layout: fixed; font-size: 14px; }
-    thead tr { background: linear-gradient(135deg, #1f2937, #374151); }
-    th { color: white; padding: 13px 10px; text-align: left; font-weight: 600; font-size: 12px; text-transform: uppercase; letter-spacing: 0.4px; word-break: break-word; }
-    td { border-bottom: 1px solid #f3f4f6; padding: 11px 10px; font-size: 14px; word-break: break-word; overflow-wrap: break-word; }
-    tbody tr:hover { background: #f8fafc !important; }
-    .footer { padding: 16px 32px 20px; font-size: 11px; color: #9ca3af; border-top: 1px solid #f3f4f6; text-align: right; }
-    @media (max-width: 900px) {
-      .top-bar { flex-direction: column; align-items: flex-start; gap: 16px; }
-      .info-block { width: 100%; justify-content: space-between; flex-wrap: wrap; }
-      .info-text { text-align: left; }
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      -webkit-print-color-adjust: exact !important;
+      print-color-adjust: exact !important;
     }
-    @media (max-width: 640px) {
-      body { padding: 8px; }
-      .top-bar { padding: 16px; }
-      .table-wrapper { padding: 16px 10px; }
-      .footer { padding: 12px 16px; }
+
+    body {
+      margin: 0;
+      padding: 16px 20px;
+      overflow-x: hidden;
+      background: #f4f5f7;
+      color: #111827;
+      font-family: Arial, Helvetica, sans-serif;
+      -webkit-text-size-adjust: 100%;
+      min-height: 100vh;
     }
+
+    .report {
+      width: 100%;
+      max-width: 100%;
+      margin: 0;
+      padding: 24px;
+      background: #fff;
+      border: 1px solid #dfe3e8;
+      border-radius: 0;
+      box-shadow: none;
+    }
+
+    .report-head {
+      display: flex;
+      align-items: flex-end;
+      justify-content: space-between;
+      gap: 20px;
+      padding-bottom: 18px;
+      border-bottom: 3px solid #cf1026;
+      flex-wrap: wrap;
+    }
+
+    .title {
+      display: flex;
+      align-items: baseline;
+      gap: 12px;
+      flex-wrap: wrap;
+    }
+
+    .title h1 {
+      margin: 0;
+      color: #cf1026;
+      font-size: 24px;
+      font-weight: 700;
+      letter-spacing: -0.3px;
+    }
+
+    .title .empresa {
+      color: #111827;
+      font-size: 14px;
+      font-weight: 700;
+      border-left: 2px solid #cf1026;
+      padding-left: 10px;
+    }
+
+    .title .subtitle {
+      color: #596273;
+      font-size: 13px;
+    }
+
+    .meta {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      text-align: right;
+      font-size: 12px;
+      color: #374151;
+      line-height: 1.6;
+      flex-wrap: wrap;
+    }
+
+    .meta strong {
+      color: #111827;
+    }
+
+    .badge {
+      display: inline-block;
+      padding: 6px 12px;
+      border: 1px solid #cf1026;
+      border-radius: 0;
+      background: #cf1026;
+      color: #fff;
+      font-weight: 700;
+      font-size: 12px;
+      box-shadow: none;
+      white-space: nowrap;
+    }
+
+    .table-wrap {
+      margin-top: 18px;
+      overflow-x: auto;
+      border: 1px solid #dfe3e8;
+      border-radius: 0;
+    }
+
+    table {
+      width: 100%;
+      min-width: 0;
+      border-collapse: collapse;
+      table-layout: fixed;
+      font-size: 12px;
+    }
+
+    th {
+      padding: 10px 8px;
+      background: #cf1026;
+      color: #fff;
+      text-align: left;
+      text-transform: uppercase;
+      font-size: 10px;
+      font-weight: 700;
+      line-height: 1.2;
+      border-right: 1px solid rgba(255, 255, 255, .18);
+      overflow-wrap: anywhere;
+    }
+
+    th.money {
+      text-align: right;
+    }
+
+    th.center {
+      text-align: center;
+    }
+
+    td {
+      padding: 9px 8px;
+      border-right: 1px solid #dfe3e8;
+      border-bottom: 1px solid #dfe3e8;
+      color: #111827;
+      line-height: 1.3;
+      vertical-align: top;
+      overflow-wrap: anywhere;
+    }
+
+    th:last-child,
+    td:last-child {
+      border-right: 0;
+    }
+
+    tbody tr:nth-child(even) {
+      background: #fafbfc;
+    }
+
+    tbody tr:hover {
+      background: #f1f5f9;
+    }
+
+    tfoot td {
+      background: #f8f9fb;
+      font-weight: 800;
+      border-bottom: 0;
+      padding: 10px 8px;
+    }
+
+    .center {
+      text-align: center;
+    }
+
+    .money {
+      text-align: right;
+      white-space: normal;
+      font-variant-numeric: tabular-nums;
+    }
+
+    .desc {
+      font-weight: 600;
+      color: #111827;
+    }
+
+    .obs {
+      color: #596273;
+    }
+
+    .strong {
+      font-weight: 800;
+      color: #111827;
+    }
+
+    .sale {
+      color: #0f8a45;
+      font-weight: 700;
+    }
+
+    .total-cost {
+      color: #8a5a00 !important;
+      background: #fff2bd !important;
+      font-weight: 800;
+    }
+
+    .total-sale {
+      color: #0f8a45 !important;
+      background: #e9f7ef !important;
+      font-weight: 800;
+    }
+
+    .totals-label {
+      text-align: right;
+      text-transform: uppercase;
+      color: #111827;
+      font-weight: 800;
+    }
+
+    .footer {
+      margin-top: 18px;
+      font-size: 11px;
+      color: #596273;
+      text-align: right;
+    }
+
+    @media screen and (max-width: 768px) {
+      body {
+        padding: 10px;
+      }
+
+      .report {
+        padding: 14px;
+      }
+
+      .report-head {
+        align-items: flex-start;
+        flex-direction: column;
+        gap: 12px;
+        padding-bottom: 14px;
+      }
+
+      .title {
+        align-items: flex-start;
+        flex-direction: column;
+        gap: 4px;
+      }
+
+      .title h1 {
+        font-size: 20px;
+      }
+
+      .meta {
+        text-align: left;
+        width: 100%;
+        justify-content: space-between;
+      }
+    }
+
     @media print {
-      body { background: white; padding: 0; }
-      .container { box-shadow: none; border-radius: 0; width: 100%; }
-      .table-wrapper { padding: 0; }
+      body {
+        background: #fff;
+        padding: 0;
+        overflow: visible;
+      }
+
+      .report {
+        width: 100%;
+        max-width: none;
+        padding: 0;
+        border: 0;
+        box-shadow: none;
+      }
+
+      .table-wrap {
+        overflow: visible;
+      }
+
+      .footer {
+        display: none;
+      }
+
+      @page {
+        margin: 8mm;
+      }
     }
   </style>
 </head>
 <body>
-  <div class="container">
-    <div class="top-bar">
-      <div class="title-block">
+  <main class="report">
+    <header class="report-head">
+      <div class="title">
         <h1>${config.t ? config.t.reportTitle : 'Simulador de Preços'}</h1>
         ${config.empresa ? `<span class="empresa">${config.empresa}</span>` : ''}
         <span class="subtitle">${config.t ? config.t.reportSubtitle : 'Relatório de Análise de Produtos'}</span>
       </div>
-      <div class="info-block">
-        <div class="info-text">
-          <strong>${config.t ? config.t.configLabel : 'Configurações:'}</strong>
-          IPI: ${config.ipi}% &nbsp;|&nbsp; Frete: ${config.frete}% ${config.freteEmbutido ? (config.t ? config.t.embedded_short : '(Embutido)') : (config.t ? config.t.notEmbedded_short : '(Não Embutido)')} &nbsp;|&nbsp; ${config.t ? config.t.marginLabel.replace(' (%)', '') : 'Margem'}: +${config.margem}% / -${formatReverseMargin(config.margem)}%
+      <div class="meta">
+        <div class="config-text">
+          ${configText}
         </div>
-        <div class="badge">${config.t ? config.t.products_badge(products.length) : `${products.length} ${products.length === 1 ? 'produto' : 'produtos'}`}</div>
+        <span class="badge">${config.t ? config.t.products_badge(products.length) : `${products.length} ${products.length === 1 ? 'produto' : 'produtos'}`}</span>
       </div>
-    </div>
-    <div class="table-wrapper">
+    </header>
+
+    <div class="table-wrap">
       <table>
-        <thead><tr>${headerCells}</tr></thead>
-        <tbody>${dataRows}</tbody>
+        ${colGroup}
+        <thead>${tableHeader}</thead>
+        <tbody>${tableRows}</tbody>
         <tfoot>${totalsRow}</tfoot>
       </table>
     </div>
-    <div class="footer">${config.t ? config.t.generatedAt(date, '') : `Gerado em ${date}`} &nbsp;&bull;&nbsp; ${config.t ? config.t.reportTitle : 'Simulador de Preços'}</div>
-  </div>
+
+    <div class="footer">${config.t ? config.t.generatedAt(date, '') : `Gerado em ${date}`} &bull; ${config.t ? config.t.reportTitle : 'Simulador de Preços'}</div>
+  </main>
 </body>
 </html>`;
 }
